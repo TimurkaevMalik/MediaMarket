@@ -1,14 +1,29 @@
 import UIKit
 
 final class TabBarController: UITabBarController {
-
-    var servicesAssembly: ServicesAssembly
-
+    
+    private var servicesAssembly: ServicesAssembly
+    
+    private let profileTabBarItem = UITabBarItem(
+        title: "Профиль",
+        image: UIImage(named: "profileItem"),
+        selectedImage: nil)
+    
     private let catalogTabBarItem = UITabBarItem(
-        title: NSLocalizedString("Tab.catalog", comment: ""),
-        image: UIImage(systemName: "square.stack.3d.up.fill"),
-        tag: 0
-    )
+        title: "Каталог",
+        image: UIImage(named: "catalogItem"),
+        selectedImage: nil)
+    
+    private let cartTabBarItem = UITabBarItem(
+        title: "Корзина",
+        image: UIImage(named: "cartItem"),
+        selectedImage: nil)
+    
+    private let statisticTabBarItem = UITabBarItem(
+        title: "Статистика",
+        image: UIImage(named: "statisticItem"),
+        selectedImage: nil)
+    
     
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
@@ -21,16 +36,26 @@ final class TabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        tabBar.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "YPWhite")
+        tabBar.backgroundColor = UIColor(named: "YPWhite")
+        tabBar.unselectedItemTintColor = UIColor(named: "YPBlack")
+        tabBar.tintColor = UIColor(named: "YPBlue")
+        addTabBarItems()
+    }
+    
+    private func addTabBarItems(){
         
-        let catalogController = TestCatalogViewController(
-            servicesAssembly: servicesAssembly
-        )
+        let profileViewController = ProfileViewController(servicesAssembly: servicesAssembly)
+        let catalogController = CatalogViewController(
+            servicesAssembly: servicesAssembly)
+        let cartViewController = CartViewController(servicesAssembly: servicesAssembly)
+        let statisticVeiwController = StatisticViewController(servicesAssembly: servicesAssembly)
+        
+        profileViewController.tabBarItem = profileTabBarItem
         catalogController.tabBarItem = catalogTabBarItem
-
-        viewControllers = [catalogController]
-
-        view.backgroundColor = .systemBackground
+        cartViewController.tabBarItem = cartTabBarItem
+        statisticVeiwController.tabBarItem = statisticTabBarItem
+        
+        self.viewControllers = [profileViewController, catalogController, cartViewController, statisticVeiwController]
     }
 }
