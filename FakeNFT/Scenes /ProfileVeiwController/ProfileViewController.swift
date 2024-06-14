@@ -9,6 +9,7 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
+    private lazy var redactButton = UIButton()
     private lazy var userName = UILabel()
     private lazy var userPhoto = UIImageView(image: UIImage(systemName: "person.crop.circle"))
     
@@ -28,6 +29,11 @@ final class ProfileViewController: UIViewController {
         view.backgroundColor = UIColor(named: "YPWhite")
         configureUserPhoto()
         configureUserName()
+        configureRedactButton()
+    }
+    
+    @objc func redactButtonTapped() {
+        print("Redact button tapped")
     }
     
     private func configureUserPhoto() {
@@ -59,6 +65,22 @@ final class ProfileViewController: UIViewController {
             userName.centerYAnchor.constraint(equalTo: userPhoto.centerYAnchor),
             userName.leadingAnchor.constraint(equalTo: userPhoto.trailingAnchor, constant: 16),
             userName.trailingAnchor.constraint(greaterThanOrEqualTo: view.trailingAnchor, constant: -16)
+        ])
+    }
+    
+    private func configureRedactButton() {
+        redactButton.tintColor = UIColor(named: "YPBlack")
+        redactButton.setImage(UIImage(named: "editButtonImage"), for: .normal)
+        redactButton.addTarget(self, action: #selector(redactButtonTapped), for: .touchUpInside)
+        
+        redactButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(redactButton)
+        
+        NSLayoutConstraint.activate([
+            redactButton.widthAnchor.constraint(equalToConstant: 42),
+            redactButton.heightAnchor.constraint(equalToConstant: 42),
+            redactButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 46),
+            redactButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9)
         ])
     }
 }
