@@ -9,6 +9,7 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
+    private lazy var userName = UILabel()
     private lazy var userPhoto = UIImageView(image: UIImage(systemName: "person.crop.circle"))
     
     private let servicesAssembly: ServicesAssembly
@@ -26,6 +27,7 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "YPWhite")
         configureUserPhoto()
+        configureUserName()
     }
     
     private func configureUserPhoto() {
@@ -42,6 +44,21 @@ final class ProfileViewController: UIViewController {
             userPhoto.heightAnchor.constraint(equalToConstant: 70),
             userPhoto.topAnchor.constraint(equalTo: view.topAnchor, constant: 108),
             userPhoto.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16)
+        ])
+    }
+    
+    private func configureUserName() {
+        userName.text = "Name wasn't found"
+        userName.font = UIFont.headline3
+        userName.textColor = UIColor(named: "YPBlack")
+        
+        userName.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(userName)
+        
+        NSLayoutConstraint.activate([
+            userName.centerYAnchor.constraint(equalTo: userPhoto.centerYAnchor),
+            userName.leadingAnchor.constraint(equalTo: userPhoto.trailingAnchor, constant: 16),
+            userName.trailingAnchor.constraint(greaterThanOrEqualTo: view.trailingAnchor, constant: -16)
         ])
     }
 }
