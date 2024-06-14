@@ -9,8 +9,10 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
+    private lazy var linkButton = UIButton()
     private lazy var redactButton = UIButton()
     private lazy var userName = UILabel()
+    private lazy var userDescription = UITextView()
     private lazy var userPhoto = UIImageView(image: UIImage(systemName: "person.crop.circle"))
     
     private let servicesAssembly: ServicesAssembly
@@ -30,10 +32,16 @@ final class ProfileViewController: UIViewController {
         configureUserPhoto()
         configureUserName()
         configureRedactButton()
+        configureUserDescription()
+        configureLinkButton()
     }
     
     @objc func redactButtonTapped() {
         print("Redact button tapped")
+    }
+    
+    @objc func linkButtonTapped() {
+        print("Link button tapped")
     }
     
     private func configureUserPhoto() {
@@ -54,9 +62,9 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUserName() {
+        userName.textColor = UIColor(named: "YPBlack")
         userName.text = "Name wasn't found"
         userName.font = UIFont.headline3
-        userName.textColor = UIColor(named: "YPBlack")
         
         userName.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userName)
@@ -81,6 +89,46 @@ final class ProfileViewController: UIViewController {
             redactButton.heightAnchor.constraint(equalToConstant: 42),
             redactButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 46),
             redactButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9)
+        ])
+    }
+    
+    private func configureUserDescription() {
+        userDescription.textColor = UIColor(named: "YPBlack")
+        userDescription.isEditable = false
+        userDescription.isScrollEnabled = false
+        userDescription.sizeToFit()
+        
+        userDescription.textAlignment = .left
+        userDescription.textContainer.maximumNumberOfLines = 4
+        userDescription.font = UIFont.caption2
+        userDescription.text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."
+        
+        userDescription.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(userDescription)
+        
+        NSLayoutConstraint.activate([
+            userDescription.topAnchor.constraint(equalTo: userPhoto.bottomAnchor, constant: 20),
+            userDescription.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            userDescription.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
+    }
+    
+    private func configureLinkButton() {
+        linkButton.setTitleColor(UIColor(named: "YPBlue"), for: .normal)
+        linkButton.setTitle("Link wasn't found", for: .normal)
+        linkButton.titleLabel?.font = UIFont.caption1
+        linkButton.contentHorizontalAlignment = .left
+        
+        linkButton.addTarget(self, action: #selector(linkButtonTapped), for: .touchUpInside)
+        
+        linkButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(linkButton)
+        
+        NSLayoutConstraint.activate([
+            linkButton.heightAnchor.constraint(equalToConstant: 20),
+            linkButton.topAnchor.constraint(equalTo: userDescription.bottomAnchor, constant: 8),
+            linkButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
+            linkButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
 }
