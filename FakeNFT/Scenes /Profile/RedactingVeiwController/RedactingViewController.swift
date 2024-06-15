@@ -11,6 +11,6 @@ final class RedactingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.ypWhite
+        view.backgroundColor = .ypWhite
     }
 }

@@ -28,7 +28,7 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.ypWhite
+        view.backgroundColor = .ypWhite
         configureUserPhoto()
         configureUserName()
         configureRedactButton()
@@ -46,7 +46,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUserPhoto() {
-        userPhoto.tintColor = UIColor.ypBlack
+        userPhoto.tintColor = .ypBlack
         userPhoto.layer.masksToBounds = true
         userPhoto.layer.cornerRadius = 35
         
@@ -62,7 +62,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUserName() {
-        userName.textColor = UIColor.ypBlack
+        userName.textColor = .ypBlack
         userName.text = "Name wasn't found"
         userName.font = UIFont.headline3
         
@@ -77,7 +77,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureRedactButton() {
-        redactButton.tintColor = UIColor.ypBlack
+        redactButton.tintColor = .ypBlack
         redactButton.setImage(UIImage(named: "editButtonImage"), for: .normal)
         redactButton.addTarget(self, action: #selector(redactButtonTapped), for: .touchUpInside)
         
@@ -93,7 +93,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUserDescription() {
-        userDescription.textColor = UIColor.ypBlack
+        userDescription.textColor = .ypBlack
         userDescription.backgroundColor = .clear
         userDescription.isEditable = false
         userDescription.isScrollEnabled = false
@@ -123,7 +123,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureLinkButton() {
-        linkButton.setTitleColor(UIColor.ypBlue, for: .normal)
+        linkButton.setTitleColor(.ypBlue, for: .normal)
         linkButton.setTitle("Link wasn't found", for: .normal)
         linkButton.titleLabel?.font = UIFont.caption1
         linkButton.contentHorizontalAlignment = .left
