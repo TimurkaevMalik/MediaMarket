@@ -93,16 +93,22 @@ final class ProfileViewController: UIViewController {
     
     private func configureUserDescription() {
         userDescription.textColor = UIColor(named: "YPBlack")
-        userDescription.backgroundColor = .clear
         userDescription.isEditable = false
         userDescription.isScrollEnabled = false
         userDescription.sizeToFit()
         
         userDescription.textContainer.lineFragmentPadding = 0
+        userDescription.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         userDescription.textAlignment = .left
         userDescription.textContainer.maximumNumberOfLines = 4
         userDescription.font = UIFont.caption2
-        userDescription.text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."
+        
+        let text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."
+        
+        let style = NSMutableParagraphStyle()
+        style.lineSpacing =  3
+        let attributes = [NSAttributedString.Key.paragraphStyle : style]
+        userDescription.attributedText = NSAttributedString(string: text, attributes: attributes)
         
         userDescription.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userDescription)
