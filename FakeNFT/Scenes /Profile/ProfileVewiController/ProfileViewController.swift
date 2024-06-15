@@ -13,7 +13,7 @@ final class ProfileViewController: UIViewController {
     private lazy var redactButton = UIButton(type: .system)
     private lazy var userName = UILabel()
     private lazy var userDescription = UITextView()
-    private lazy var userPhoto = UIImageView(image: UIImage(systemName: "person.crop.circle"))
+    private lazy var userPhoto = UIImageView(image: UIImage(named: "avatarPlug"))
     
     private let servicesAssembly: ServicesAssembly
     
@@ -46,9 +46,10 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUserPhoto() {
-        userPhoto.tintColor = .ypBlack
         userPhoto.layer.masksToBounds = true
         userPhoto.layer.cornerRadius = 35
+        userPhoto.clipsToBounds = true
+        userPhoto.contentMode = .scaleAspectFill
         
         userPhoto.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userPhoto)
@@ -93,7 +94,6 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUserDescription() {
-        userDescription.textColor = .ypBlack
         userDescription.backgroundColor = .clear
         userDescription.isEditable = false
         userDescription.isScrollEnabled = false
@@ -109,8 +109,10 @@ final class ProfileViewController: UIViewController {
         
         let style = NSMutableParagraphStyle()
         style.lineSpacing =  3
-        let attributes = [NSAttributedString.Key.paragraphStyle : style]
-        userDescription.attributedText = NSAttributedString(string: text, attributes: attributes)
+        let attributes = [NSAttributedString.Key.paragraphStyle : style,
+                          .foregroundColor: UIColor.ypBlack]
+        
+        userDescription.attributedText = NSAttributedString(string: text, attributes: attributes as [NSAttributedString.Key : Any])
         
         userDescription.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userDescription)
