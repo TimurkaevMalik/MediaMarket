@@ -19,12 +19,24 @@ extension CartViewController: UITableViewDelegate {
 extension CartViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        mokNfts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        let cell = NftInCartCell()
+        cell.setupCell(nftModel: mokNfts[indexPath.row])
+        cell.delegate = self
+        return cell
     }
+}
+
+// MARK: - NftInCartCellDelegate
+
+extension CartViewController: NftInCartCellDelegate {
     
-    
+    func deleteNftFromCart(nftModel: NftInCartModel) {
+        let vc = DeleteNftFromCartViewController()
+        vc.image = nftModel.picture
+        self.present(vc, animated: true)
+    }
 }

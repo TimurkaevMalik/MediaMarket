@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-struct NftInCart {
+struct NftInCartModel {
     let name: String
     let rating: Int
     let price: String

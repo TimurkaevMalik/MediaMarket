@@ -12,6 +12,11 @@ final class CartViewController: UIViewController {
     // MARK: - Public Properties
     
     let servicesAssembly: ServicesAssembly
+    let mokNfts = [
+        NftInCartModel(name: "April", rating: 1, price: "1,78 ETH", picture: UIImage(named: "NFT card 0")!),
+        NftInCartModel(name: "Greena", rating: 3, price: "1,78 ETH", picture: UIImage(named: "NFT card 1")!),
+        NftInCartModel(name: "Spring", rating: 5, price: "1,78 ETH", picture: UIImage(named: "NFT card 2")!)
+    ]
     
     // MARK: - Private Properties
     
@@ -39,7 +44,6 @@ final class CartViewController: UIViewController {
         setupViews()
     }
     
-    // MARK: - Public Methods
     // MARK: - Private Methods
     
     private func setupViews() {
@@ -68,6 +72,8 @@ final class CartViewController: UIViewController {
     private func addNftTableView() {
         nftTableView.delegate = self
         nftTableView.dataSource = self
+        nftTableView.rowHeight = 140
+        nftTableView.separatorStyle = .none
         nftTableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nftTableView)
         NSLayoutConstraint.activate([
@@ -119,11 +125,10 @@ final class CartViewController: UIViewController {
             nftPriceLable.topAnchor.constraint(equalTo: nftCountLable.bottomAnchor, constant: 2)
         ])
     }
-    // MARK: - Public Actions
+    
     // MARK: - Private Actions
     
     @objc private func paymentButtonTap() {
         print("Кнопка оплаты нажата")
     }
-    
 }
