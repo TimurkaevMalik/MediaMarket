@@ -10,7 +10,7 @@ import UIKit
 final class ProfileViewController: UIViewController {
     
     private lazy var linkButton = UIButton()
-    private lazy var redactButton = UIButton()
+    private lazy var redactButton = UIButton(type: .system)
     private lazy var userName = UILabel()
     private lazy var userDescription = UITextView()
     private lazy var userPhoto = UIImageView(image: UIImage(systemName: "person.crop.circle"))
@@ -28,7 +28,7 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(named: "YPWhite")
+        view.backgroundColor = UIColor.ypWhite
         configureUserPhoto()
         configureUserName()
         configureRedactButton()
@@ -46,7 +46,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUserPhoto() {
-        userPhoto.tintColor = UIColor(named: "YPBlack")
+        userPhoto.tintColor = UIColor.ypBlack
         userPhoto.layer.masksToBounds = true
         userPhoto.layer.cornerRadius = 35
         
@@ -62,7 +62,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUserName() {
-        userName.textColor = UIColor(named: "YPBlack")
+        userName.textColor = UIColor.ypBlack
         userName.text = "Name wasn't found"
         userName.font = UIFont.headline3
         
@@ -77,7 +77,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureRedactButton() {
-        redactButton.tintColor = UIColor(named: "YPBlack")
+        redactButton.tintColor = UIColor.ypBlack
         redactButton.setImage(UIImage(named: "editButtonImage"), for: .normal)
         redactButton.addTarget(self, action: #selector(redactButtonTapped), for: .touchUpInside)
         
@@ -93,7 +93,8 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUserDescription() {
-        userDescription.textColor = UIColor(named: "YPBlack")
+        userDescription.textColor = UIColor.ypBlack
+        userDescription.backgroundColor = .clear
         userDescription.isEditable = false
         userDescription.isScrollEnabled = false
         userDescription.sizeToFit()
@@ -122,7 +123,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureLinkButton() {
-        linkButton.setTitleColor(UIColor(named: "YPBlue"), for: .normal)
+        linkButton.setTitleColor(UIColor.ypBlue, for: .normal)
         linkButton.setTitle("Link wasn't found", for: .normal)
         linkButton.titleLabel?.font = UIFont.caption1
         linkButton.contentHorizontalAlignment = .left
