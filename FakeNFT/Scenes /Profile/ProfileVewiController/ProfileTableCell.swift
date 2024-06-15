@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TableViewCell: UITableViewCell {
+class ProfileTableCell: UITableViewCell {
     
     let cellTextLabel = UILabel()
     

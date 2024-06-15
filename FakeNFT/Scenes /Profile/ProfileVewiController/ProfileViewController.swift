@@ -150,7 +150,7 @@ final class ProfileViewController: UIViewController {
         tableView.backgroundColor = .clear
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(TableViewCell.self, forCellReuseIdentifier: tableCellIdentifier)
+        tableView.register(ProfileTableCell.self, forCellReuseIdentifier: tableCellIdentifier)
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 1000)
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -172,7 +172,7 @@ extension ProfileViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: tableCellIdentifier, for: indexPath) as? TableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: tableCellIdentifier, for: indexPath) as? ProfileTableCell else {
             return UITableViewCell()
         }
         
