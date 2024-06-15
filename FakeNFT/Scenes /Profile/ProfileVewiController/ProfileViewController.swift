@@ -9,6 +9,7 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
+    private lazy var tableView = UITableView()
     private lazy var linkButton = UIButton()
     private lazy var redactButton = UIButton(type: .system)
     private lazy var userNameLabel = UILabel()
@@ -16,7 +17,8 @@ final class ProfileViewController: UIViewController {
     private lazy var userPhotoView = UIImageView(image: UIImage(named: "avatarPlug"))
     
     private let servicesAssembly: ServicesAssembly
-    
+    private let tableCellIdentifier = "tableCellIdentifier"
+    private let tableViewCells = ["Мои NFT", "Избранные NFT", "О разрабротчике"]
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
@@ -34,6 +36,7 @@ final class ProfileViewController: UIViewController {
         configureRedactButton()
         configureUserDescription()
         configureLinkButton()
+        configureTableView()
     }
     
     @objc func redactButtonTapped() {
@@ -141,5 +144,52 @@ final class ProfileViewController: UIViewController {
             linkButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
             linkButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
+    }
+    
+    private func configureTableView() {
+        tableView.backgroundColor = .clear
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(TableViewCell.self, forCellReuseIdentifier: tableCellIdentifier)
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 1000)
+        
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(tableView)
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: linkButton.bottomAnchor, constant: 44),
+            tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 162),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+}
+
+extension ProfileViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return tableViewCells.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: tableCellIdentifier, for: indexPath) as? TableViewCell else {
+            return UITableViewCell()
+        }
+        
+        cell.cellTextLabel.text = tableViewCells[indexPath.row]
+        cell.accessoryType = .disclosureIndicator
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 54
+    }
+}
+
+extension ProfileViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
