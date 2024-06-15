@@ -11,9 +11,9 @@ final class ProfileViewController: UIViewController {
     
     private lazy var linkButton = UIButton()
     private lazy var redactButton = UIButton(type: .system)
-    private lazy var userName = UILabel()
-    private lazy var userDescription = UITextView()
-    private lazy var userPhoto = UIImageView(image: UIImage(named: "avatarPlug"))
+    private lazy var userNameLabel = UILabel()
+    private lazy var userDescriptionView = UITextView()
+    private lazy var userPhotoView = UIImageView(image: UIImage(named: "avatarPlug"))
     
     private let servicesAssembly: ServicesAssembly
     
@@ -46,34 +46,34 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUserPhoto() {
-        userPhoto.layer.masksToBounds = true
-        userPhoto.layer.cornerRadius = 35
-        userPhoto.clipsToBounds = true
-        userPhoto.contentMode = .scaleAspectFill
+        userPhotoView.layer.masksToBounds = true
+        userPhotoView.layer.cornerRadius = 35
+        userPhotoView.clipsToBounds = true
+        userPhotoView.contentMode = .scaleAspectFill
         
-        userPhoto.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(userPhoto)
+        userPhotoView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(userPhotoView)
         
         NSLayoutConstraint.activate([
-            userPhoto.widthAnchor.constraint(equalToConstant: 70),
-            userPhoto.heightAnchor.constraint(equalToConstant: 70),
-            userPhoto.topAnchor.constraint(equalTo: view.topAnchor, constant: 108),
-            userPhoto.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16)
+            userPhotoView.widthAnchor.constraint(equalToConstant: 70),
+            userPhotoView.heightAnchor.constraint(equalToConstant: 70),
+            userPhotoView.topAnchor.constraint(equalTo: view.topAnchor, constant: 108),
+            userPhotoView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16)
         ])
     }
     
     private func configureUserName() {
-        userName.textColor = .ypBlack
-        userName.text = "Name wasn't found"
-        userName.font = UIFont.headline3
+        userNameLabel.textColor = .ypBlack
+        userNameLabel.text = "Name wasn't found"
+        userNameLabel.font = UIFont.headline3
         
-        userName.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(userName)
+        userNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(userNameLabel)
         
         NSLayoutConstraint.activate([
-            userName.centerYAnchor.constraint(equalTo: userPhoto.centerYAnchor),
-            userName.leadingAnchor.constraint(equalTo: userPhoto.trailingAnchor, constant: 16),
-            userName.trailingAnchor.constraint(greaterThanOrEqualTo: view.trailingAnchor, constant: -16)
+            userNameLabel.centerYAnchor.constraint(equalTo: userPhotoView.centerYAnchor),
+            userNameLabel.leadingAnchor.constraint(equalTo: userPhotoView.trailingAnchor, constant: 16),
+            userNameLabel.trailingAnchor.constraint(greaterThanOrEqualTo: view.trailingAnchor, constant: -16)
         ])
     }
     
@@ -94,16 +94,16 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUserDescription() {
-        userDescription.backgroundColor = .clear
-        userDescription.isEditable = false
-        userDescription.isScrollEnabled = false
-        userDescription.sizeToFit()
+        userDescriptionView.backgroundColor = .clear
+        userDescriptionView.isEditable = false
+        userDescriptionView.isScrollEnabled = false
+        userDescriptionView.sizeToFit()
         
-        userDescription.textContainer.lineFragmentPadding = 0
-        userDescription.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        userDescription.textAlignment = .left
-        userDescription.textContainer.maximumNumberOfLines = 4
-        userDescription.font = UIFont.caption2
+        userDescriptionView.textContainer.lineFragmentPadding = 0
+        userDescriptionView.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        userDescriptionView.textAlignment = .left
+        userDescriptionView.textContainer.maximumNumberOfLines = 4
+        userDescriptionView.font = UIFont.caption2
         
         let text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."
         
@@ -112,15 +112,15 @@ final class ProfileViewController: UIViewController {
         let attributes = [NSAttributedString.Key.paragraphStyle : style,
                           .foregroundColor: UIColor.ypBlack]
         
-        userDescription.attributedText = NSAttributedString(string: text, attributes: attributes as [NSAttributedString.Key : Any])
+        userDescriptionView.attributedText = NSAttributedString(string: text, attributes: attributes as [NSAttributedString.Key : Any])
         
-        userDescription.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(userDescription)
+        userDescriptionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(userDescriptionView)
         
         NSLayoutConstraint.activate([
-            userDescription.topAnchor.constraint(equalTo: userPhoto.bottomAnchor, constant: 20),
-            userDescription.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            userDescription.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            userDescriptionView.topAnchor.constraint(equalTo: userPhotoView.bottomAnchor, constant: 20),
+            userDescriptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            userDescriptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
     
@@ -137,7 +137,7 @@ final class ProfileViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             linkButton.heightAnchor.constraint(equalToConstant: 20),
-            linkButton.topAnchor.constraint(equalTo: userDescription.bottomAnchor, constant: 8),
+            linkButton.topAnchor.constraint(equalTo: userDescriptionView.bottomAnchor, constant: 8),
             linkButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
             linkButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
