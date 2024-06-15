@@ -41,6 +41,7 @@
 		3FC8C38B29D242E90081F015 /* ProductDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC8C38A29D242E90081F015 /* ProductDetailsTableViewCell.swift */; };
 		3FC8C39129D2453B0081F015 /* ExampleRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC8C39029D2453B0081F015 /* ExampleRequest.swift */; };
 		3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC8C39229D246BA0081F015 /* DateFormatters+Presets.swift */; };
+		BCB354D82C1D7A10005FA7DD /* RedactingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB354D72C1D7A10005FA7DD /* RedactingViewController.swift */; };
 		BCDC91642C1B7A57008CCAA9 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDC91632C1B7A57008CCAA9 /* ProfileViewController.swift */; };
 		BCDC91672C1B81AF008CCAA9 /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDC91662C1B81AF008CCAA9 /* CartViewController.swift */; };
 		BCDC916A2C1B8249008CCAA9 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDC91692C1B8249008CCAA9 /* StatisticViewController.swift */; };
@@ -103,6 +104,7 @@
 		3FC8C38A29D242E90081F015 /* ProductDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		3FC8C39029D2453B0081F015 /* ExampleRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleRequest.swift; sourceTree = "<group>"; };
 		3FC8C39229D246BA0081F015 /* DateFormatters+Presets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatters+Presets.swift"; sourceTree = "<group>"; };
+		BCB354D72C1D7A10005FA7DD /* RedactingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedactingViewController.swift; sourceTree = "<group>"; };
 		BCDC91632C1B7A57008CCAA9 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		BCDC91662C1B81AF008CCAA9 /* CartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
 		BCDC91692C1B8249008CCAA9 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
@@ -268,7 +270,7 @@
 			isa = PBXGroup;
 			children = (
 				E1A1B9D82AA01C9700C3AFBC /* TabBarController */,
-				BCDC91622C1B7A3F008CCAA9 /* ProfileVeiwController */,
+				BCDC91622C1B7A3F008CCAA9 /* Profile */,
 				0CFCB7472A7808870009A829 /* CatalogViewController */,
 				BCDC91652C1B818D008CCAA9 /* CartViewController */,
 				BCDC91682C1B81DC008CCAA9 /* StatisticVeiwController */,
@@ -336,12 +338,29 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
-		BCDC91622C1B7A3F008CCAA9 /* ProfileVeiwController */ = {
+		BCB354D92C1D7A1F005FA7DD /* ProfileVewiController */ = {
 			isa = PBXGroup;
 			children = (
 				BCDC91632C1B7A57008CCAA9 /* ProfileViewController.swift */,
 			);
-			path = ProfileVeiwController;
+			path = ProfileVewiController;
+			sourceTree = "<group>";
+		};
+		BCB354DA2C1D7A32005FA7DD /* RedactingVeiwController */ = {
+			isa = PBXGroup;
+			children = (
+				BCB354D72C1D7A10005FA7DD /* RedactingViewController.swift */,
+			);
+			path = RedactingVeiwController;
+			sourceTree = "<group>";
+		};
+		BCDC91622C1B7A3F008CCAA9 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				BCB354D92C1D7A1F005FA7DD /* ProfileVewiController */,
+				BCB354DA2C1D7A32005FA7DD /* RedactingVeiwController */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		BCDC91652C1B818D008CCAA9 /* CartViewController */ = {
@@ -575,6 +594,7 @@
 				3F6806D729CBC50A00B4F915 /* CellsReusingUtils.swift in Sources */,
 				0C79EE612A76DCD600EE90EA /* NftByIdRequest.swift in Sources */,
 				E19CD5AB2A98B56600CA39A5 /* NftImageCollectionViewCell.swift in Sources */,
+				BCB354D82C1D7A10005FA7DD /* RedactingViewController.swift in Sources */,
 				0CF2C2E12A784C7000FDC837 /* LinePageControl.swift in Sources */,
 				3F6806D329CBBE9600B4F915 /* NetworkRequest.swift in Sources */,
 				0CFCB7492A7808900009A829 /* CatalogViewController.swift in Sources */,

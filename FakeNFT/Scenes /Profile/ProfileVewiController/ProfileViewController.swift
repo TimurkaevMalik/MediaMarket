@@ -37,7 +37,8 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc func redactButtonTapped() {
-        print("Redact button tapped")
+        let viewController = RedactingViewController()
+        present(viewController, animated: true)
     }
     
     @objc func linkButtonTapped() {
