@@ -45,10 +45,9 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUserPhoto() {
-        
         userPhoto.tintColor = UIColor(named: "YPBlack")
         userPhoto.layer.masksToBounds = true
-        userPhoto.layer.cornerRadius = 25
+        userPhoto.layer.cornerRadius = 35
         
         userPhoto.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userPhoto)
@@ -94,10 +93,12 @@ final class ProfileViewController: UIViewController {
     
     private func configureUserDescription() {
         userDescription.textColor = UIColor(named: "YPBlack")
+        userDescription.backgroundColor = .clear
         userDescription.isEditable = false
         userDescription.isScrollEnabled = false
         userDescription.sizeToFit()
         
+        userDescription.textContainer.lineFragmentPadding = 0
         userDescription.textAlignment = .left
         userDescription.textContainer.maximumNumberOfLines = 4
         userDescription.font = UIFont.caption2
