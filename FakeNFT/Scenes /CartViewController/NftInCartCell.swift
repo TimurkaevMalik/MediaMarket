@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
 protocol NftInCartCellDelegate: AnyObject {
     func deleteNftFromCart(nftModel: NftInCartModel)
@@ -30,7 +31,7 @@ final class NftInCartCell: UITableViewCell {
     // MARK: - Public Methods
     
     func setupCell(nftModel: NftInCartModel) {
-        addNftImage(image: nftModel.picture)
+        addNftImage(imageStr: nftModel.picture)
         addNftName(name: nftModel.name)
         addRatingView(rating: nftModel.rating)
         addNftPriceLable(price: nftModel.price)
@@ -40,13 +41,19 @@ final class NftInCartCell: UITableViewCell {
     
     // MARK: - Private Methods
     
-    private func addNftImage(image: UIImage) {
-        nftImageView.image = image
+    private func addNftImage(imageStr: String) {
+        guard let url = URL(string: imageStr) else { return }
+        nftImageView.kf.indicatorType = .activity
+        nftImageView.kf.setImage(with: url, placeholder: UIImage(named: "placeholder"))
+        nftImageView.layer.masksToBounds = true
+        nftImageView.layer.cornerRadius = 12
         nftImageView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(nftImageView)
         NSLayoutConstraint.activate([
             nftImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             nftImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            nftImageView.widthAnchor.constraint(equalToConstant: 108),
+            nftImageView.heightAnchor.constraint(equalToConstant: 108)
         ])
     }
     

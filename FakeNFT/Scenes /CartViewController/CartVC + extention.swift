@@ -19,12 +19,12 @@ extension CartViewController: UITableViewDelegate {
 extension CartViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        mokNfts.count
+        nfts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = NftInCartCell()
-        cell.setupCell(nftModel: mokNfts[indexPath.row])
+        cell.setupCell(nftModel: nfts[indexPath.row])
         cell.delegate = self
         return cell
     }
@@ -36,7 +36,7 @@ extension CartViewController: NftInCartCellDelegate {
     
     func deleteNftFromCart(nftModel: NftInCartModel) {
         let vc = DeleteNftFromCartViewController()
-        vc.image = nftModel.picture
+        vc.imageStr = nftModel.picture
         if let sceneDelegate = UIApplication.shared.connectedScenes
             .first?.delegate as? SceneDelegate {
             sceneDelegate.addBlurEffectToWindow()

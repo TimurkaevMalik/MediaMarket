@@ -12,5 +12,5 @@ struct NftInCartModel {
     let name: String
     let rating: Int
     let price: String
-    let picture: UIImage
+    let picture: String
 }

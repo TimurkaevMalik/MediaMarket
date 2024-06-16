@@ -6,17 +6,14 @@
 //
 
 import UIKit
+import ProgressHUD
 
 final class CartViewController: UIViewController {
     
     // MARK: - Public Properties
     
     let servicesAssembly: ServicesAssembly
-    let mokNfts = [
-        NftInCartModel(name: "April", rating: 1, price: "1,78 ETH", picture: UIImage(named: "NFT card 0")!),
-        NftInCartModel(name: "Greena", rating: 3, price: "1,78 ETH", picture: UIImage(named: "NFT card 1")!),
-        NftInCartModel(name: "Spring", rating: 5, price: "1,78 ETH", picture: UIImage(named: "NFT card 2")!)
-    ]
+    var nfts: [NftInCartModel] = []
     
     // MARK: - Private Properties
     
@@ -25,8 +22,8 @@ final class CartViewController: UIViewController {
     private let paymentButton = UIButton()
     private let nftCountLable = UILabel()
     private let nftPriceLable = UILabel()
-//    private let blurEffect = UIBlurEffect(style: .light)
-//    private let blurEffectView = UIVisualEffectView(effect: blurEffect)
+    private let cartIsEmptyLable = UILabel()
+    private let cartNetworkService = CartNetworkService()
     
     // MARK: - Initializers
     
@@ -43,18 +40,73 @@ final class CartViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupViews()
+        reloadNfts()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        reloadNfts()
     }
     
     // MARK: - Private Methods
     
     private func setupViews() {
         view.backgroundColor = UIColor(named: "YPWhite")
-        addBottomBackground()
-        addNftTableView()
-        addPaymentButton()
-        addNftCountLable()
-        addNftPriceLable()
+        if nfts.isEmpty {
+            addCartIsEmptyLable()
+        } else {
+            addBottomBackground()
+            addNftTableView()
+            addPaymentButton()
+            addNftCountLable()
+            addNftPriceLable()
+        }
+    }
+    
+    private func reloadView() {
+        bottomBackground.removeFromSuperview()
+        nftTableView.removeFromSuperview()
+        paymentButton.removeFromSuperview()
+        nftCountLable.removeFromSuperview()
+        nftPriceLable.removeFromSuperview()
+        cartIsEmptyLable.removeFromSuperview()
+        setupViews()
+    }
+    
+    private func reloadNfts() {
+    var nfts: [NftInCartModel] = []
+        ProgressHUD.show()
+        cartNetworkService.fetchOrder() { result in
+            switch result {
+            case .success(let order):
+                var numberOfCicle = 0
+                order.nfts.forEach({ id in
+                    self.cartNetworkService.requestByNftId(id: id) { result in
+                        switch result {
+                        case .success(let nft):
+                            let nftInCard = NftInCartModel(
+                                name: nft.name,
+                                rating: nft.rating,
+                                price: "\(nft.price) ETH",
+                                picture: nft.images[0])
+                            nfts.append(nftInCard)
+                            numberOfCicle += 1
+                            if numberOfCicle == order.nfts.count {
+                                DispatchQueue.main.async {
+                                    self.nfts = nfts
+                                    ProgressHUD.dismiss()
+                                    self.reloadView()
+                                }
+                            }
+                        case .failure(let error):
+                            print("Error: \(error.localizedDescription)")
+                        }
+                    }
+                })
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        }
     }
     
     private func addBottomBackground() {
@@ -140,6 +192,18 @@ final class CartViewController: UIViewController {
             tabBarBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             tabBar.addSubview(tabBarBlurEffectView)
         }
+    }
+    
+    private func addCartIsEmptyLable() {
+        cartIsEmptyLable.text = "Корзина пустая"
+        cartIsEmptyLable.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        cartIsEmptyLable.textColor = UIColor(named: "YPBlack")
+        cartIsEmptyLable.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(cartIsEmptyLable)
+        NSLayoutConstraint.activate([
+            cartIsEmptyLable.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            cartIsEmptyLable.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
     
     // MARK: - Private Actions

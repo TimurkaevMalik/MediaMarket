@@ -12,7 +12,7 @@ final class DeleteNftFromCartViewController: UIViewController {
     
     // MARK: - Public Properties
     
-    var image: UIImage? = nil
+    var imageStr: String? = nil
     
     // MARK: - Private Properties
     
@@ -34,8 +34,8 @@ final class DeleteNftFromCartViewController: UIViewController {
         addTextLable()
         addDeleteButton()
         addCancelButton()
-        if let image {
-            addNftImageView(image: image)
+        if let imageStr {
+            addNftImageView(imageStr: imageStr)
         }
     }
     
@@ -54,9 +54,12 @@ final class DeleteNftFromCartViewController: UIViewController {
         ])
     }
     
-    private func addNftImageView(image: UIImage) {
-        nftImageView.image = image
+    private func addNftImageView(imageStr: String) {
+        guard let url = URL(string: imageStr) else { return }
+        nftImageView.kf.setImage(with: url, placeholder: UIImage(named: "placeholder"))
         nftImageView.translatesAutoresizingMaskIntoConstraints = false
+        nftImageView.layer.masksToBounds = true
+        nftImageView.layer.cornerRadius = 12
         view.addSubview(nftImageView)
         NSLayoutConstraint.activate([
             nftImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -109,6 +112,6 @@ final class DeleteNftFromCartViewController: UIViewController {
             .first?.delegate as? SceneDelegate {
             sceneDelegate.removeBlurEffectToWindow()
         }
-        self.dismiss(animated: false) 
+        self.dismiss(animated: false)
     }
 }
