@@ -25,6 +25,8 @@ final class CartViewController: UIViewController {
     private let paymentButton = UIButton()
     private let nftCountLable = UILabel()
     private let nftPriceLable = UILabel()
+//    private let blurEffect = UIBlurEffect(style: .light)
+//    private let blurEffectView = UIVisualEffectView(effect: blurEffect)
     
     // MARK: - Initializers
     
@@ -32,7 +34,7 @@ final class CartViewController: UIViewController {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -83,7 +85,7 @@ final class CartViewController: UIViewController {
             nftTableView.bottomAnchor.constraint(equalTo: bottomBackground.topAnchor)
         ])
     }
-
+    
     private func addPaymentButton() {
         paymentButton.setTitle("К оплате", for: .normal)
         paymentButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -124,6 +126,20 @@ final class CartViewController: UIViewController {
             nftPriceLable.leadingAnchor.constraint(equalTo: bottomBackground.leadingAnchor, constant: 16),
             nftPriceLable.topAnchor.constraint(equalTo: nftCountLable.bottomAnchor, constant: 2)
         ])
+    }
+    
+    private func addBlurEffect() {
+        let blurEffect = UIBlurEffect(style: .regular)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.addSubview(blurEffectView)
+        if let tabBar = tabBarController?.tabBar {
+            let tabBarBlurEffectView = UIVisualEffectView(effect: blurEffect)
+            tabBarBlurEffectView.frame = tabBar.bounds
+            tabBarBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            tabBar.addSubview(tabBarBlurEffectView)
+        }
     }
     
     // MARK: - Private Actions

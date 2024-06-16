@@ -31,21 +31,12 @@ final class DeleteNftFromCartViewController: UIViewController {
     // MARK: - Private Methods
     
     private func setupViews() {
-        view.backgroundColor = .systemBackground
-        setupBlurredBackground()
         addTextLable()
         addDeleteButton()
         addCancelButton()
         if let image {
             addNftImageView(image: image)
         }
-    }
-    
-    private func setupBlurredBackground() {
-        let blurEffect = UIBlurEffect(style: .light)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = view.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
     
     private func addTextLable() {
@@ -100,6 +91,7 @@ final class DeleteNftFromCartViewController: UIViewController {
     private func addCancelButton() {
         guard let color = UIColor(named: "YPWhite") else { return }
         setupButton(name: "Вернутся", color: color, button: cancelButton)
+        cancelButton.addTarget(self, action: #selector(cancelButtonTap), for: .touchUpInside)
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(cancelButton)
         NSLayoutConstraint.activate([
@@ -108,5 +100,15 @@ final class DeleteNftFromCartViewController: UIViewController {
             cancelButton.widthAnchor.constraint(equalToConstant: 127),
             cancelButton.heightAnchor.constraint(equalToConstant: 44)
         ])
+    }
+    
+    // MARK: - Private Actions
+    
+    @objc private func cancelButtonTap() {
+        if let sceneDelegate = UIApplication.shared.connectedScenes
+            .first?.delegate as? SceneDelegate {
+            sceneDelegate.removeBlurEffectToWindow()
+        }
+        self.dismiss(animated: false) 
     }
 }

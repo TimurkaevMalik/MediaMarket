@@ -183,6 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				0CF2C2E02A784C7000FDC837 /* LinePageControl.swift */,
+				D50B7A9D2C1D74A5009C6730 /* StarRatingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -208,7 +209,6 @@
 			children = (
 				3F478ECE29DB474E00F6D39E /* Colors.swift */,
 				3F478ED029DB476500F6D39E /* Fonts.swift */,
-				D50B7A9D2C1D74A5009C6730 /* StarRatingView.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";

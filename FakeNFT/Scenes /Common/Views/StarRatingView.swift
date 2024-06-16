@@ -35,7 +35,6 @@ class StarRatingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Public Methods
     // MARK: - Private Methods
     
     private func setupView() {
@@ -73,8 +72,5 @@ class StarRatingView: UIView {
             }
         }
     }
-    
-    // MARK: - Public Actions
-    // MARK: - Private Actions
 }
 
