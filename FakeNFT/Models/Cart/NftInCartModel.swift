@@ -11,6 +11,6 @@ import UIKit
 struct NftInCartModel {
     let name: String
     let rating: Int
-    let price: String
+    let price: Double
     let picture: String
 }

@@ -87,7 +87,7 @@ final class CartViewController: UIViewController {
                             let nftInCard = NftInCartModel(
                                 name: nft.name,
                                 rating: nft.rating,
-                                price: "\(nft.price) ETH",
+                                price: nft.price,
                                 picture: nft.images[0])
                             nfts.append(nftInCard)
                             numberOfCicle += 1
@@ -128,6 +128,7 @@ final class CartViewController: UIViewController {
         nftTableView.dataSource = self
         nftTableView.rowHeight = 140
         nftTableView.separatorStyle = .none
+        nftTableView.allowsSelection = false
         nftTableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nftTableView)
         NSLayoutConstraint.activate([
@@ -157,7 +158,7 @@ final class CartViewController: UIViewController {
     }
     
     private func addNftCountLable() {
-        nftCountLable.text = "3 NFT"
+        nftCountLable.text = "\(nfts.count) NFT"
         nftCountLable.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         nftCountLable.textColor = UIColor(named: "YPBlack")
         nftCountLable.translatesAutoresizingMaskIntoConstraints = false
@@ -169,7 +170,11 @@ final class CartViewController: UIViewController {
     }
     
     private func addNftPriceLable() {
-        nftPriceLable.text = "5,34 ETH"
+        var price: Double = 0
+        nfts.forEach { nft in
+            price += nft.price
+        }
+        nftPriceLable.text = "\(price) ETH"
         nftPriceLable.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         nftPriceLable.textColor = UIColor(named: "YPGreen")
         nftPriceLable.translatesAutoresizingMaskIntoConstraints = false

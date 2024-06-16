@@ -81,7 +81,7 @@ final class NftInCartCell: UITableViewCell {
         ])
     }
     
-    private func addNftPriceLable(price: String) {
+    private func addNftPriceLable(price: Double) {
         let title = UILabel()
         title.text = "Цена"
         title.font = UIFont.systemFont(ofSize: 13, weight: .regular)
@@ -92,7 +92,7 @@ final class NftInCartCell: UITableViewCell {
             title.leadingAnchor.constraint(equalTo: nftImageView.trailingAnchor, constant: 20),
             title.topAnchor.constraint(equalTo: ratingView.bottomAnchor, constant: 12)
         ])
-        nftPriceLable.text = price
+        nftPriceLable.text = "\(price) ETH"
         nftPriceLable.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         nftPriceLable.textColor = UIColor(named: "YPBlack")
         nftPriceLable.translatesAutoresizingMaskIntoConstraints = false
