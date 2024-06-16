@@ -11,8 +11,13 @@ final class RedactingViewController: UIViewController {
     
     private lazy var userPhotoButton = UIButton()
     private lazy var userPhotoTitleLabel = UILabel()
+    private let warningLabel = UILabel()
+    private let warningLabelContainer = UIView()
     
     private var alertPresenter: AlertPresenter?
+    
+    private var warningLabelBottomConstraint: [NSLayoutConstraint] = []
+    
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -28,6 +33,7 @@ final class RedactingViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
         configureUserPhoto()
+        configureLimitWarningLabel()
     }
     
     @objc func userPhotoButtonTapped() {
@@ -70,6 +76,60 @@ final class RedactingViewController: UIViewController {
         ])
     }
     
+    private func configureLimitWarningLabel(){
+        warningLabelContainer.backgroundColor = UIColor.ypWhite
+        warningLabel.textColor = UIColor(named: "YPRed")
+        warningLabel.font = UIFont.systemFont(ofSize: 17)
+        
+        view.addSubview(warningLabel)
+        view.addSubview(warningLabelContainer)
+        warningLabel.translatesAutoresizingMaskIntoConstraints = false
+        warningLabelContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            warningLabelContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            warningLabelContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            warningLabelContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            warningLabelContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+        
+        let constraint = warningLabel.topAnchor.constraint(equalTo: warningLabelContainer.topAnchor)
+        
+        warningLabelBottomConstraint.append(constraint)
+        
+        warningLabelBottomConstraint.first?.isActive = true
+        warningLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    }
+    
+    private func showWarningLabel(with text: String){
+        
+        warningLabel.text = text
+        isTextFieldAndSaveButtonEnabled(bool: false)
+        
+        DispatchQueue.main.async {
+            
+            UIView.animate(withDuration: 0.5, delay: 0.03) {
+                self.warningLabelBottomConstraint.first?.constant = -50
+                self.view.layoutIfNeeded()
+                
+            } completion: { isCompleted in
+                
+                UIView.animate(withDuration: 0.4, delay: 2) {
+                    self.warningLabelBottomConstraint.first?.constant = 0
+                    self.view.layoutIfNeeded()
+                }
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(wallDeadline: .now() + 1.1, execute: {
+            
+            self.isTextFieldAndSaveButtonEnabled(bool: true)
+        })
+    }
+    
+    private func isTextFieldAndSaveButtonEnabled(bool: Bool){
+        userPhotoButton.isEnabled = bool
+    }
 }
 
 extension RedactingViewController: AlertDelegateProtocol {
@@ -80,6 +140,7 @@ extension RedactingViewController: AlertDelegateProtocol {
             !text.filter({$0 != Character(" ")}).isEmpty 
         else {
             alertPresenter?.textFieldAlertController()
+            showWarningLabel(with: "Не удалось сохранить фото")
             return
         }
         print(text)
