@@ -12,6 +12,17 @@ final class RedactingViewController: UIViewController {
     private lazy var userPhotoButton = UIButton()
     private lazy var userPhotoTitleLabel = UILabel()
     
+    private var alertPresenter: AlertPresenter?
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        let alertType = AlertType.textFieldAlert(value: TextFieldAlert(viewController: self, delegate: self))
+        alertPresenter = AlertPresenter(type: alertType)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +32,8 @@ final class RedactingViewController: UIViewController {
     
     @objc func userPhotoButtonTapped() {
         print("user photo button tapped")
+        
+        alertPresenter?.textFieldAlertController()
     }
     
     private func configureUserPhoto() {
@@ -31,7 +44,7 @@ final class RedactingViewController: UIViewController {
         
         userPhotoTitleLabel.text = title
         userPhotoTitleLabel.numberOfLines = 2
-        userPhotoTitleLabel.textColor = .ypWhite
+        userPhotoTitleLabel.textColor = .white
         userPhotoTitleLabel.textAlignment = .center
         userPhotoTitleLabel.font = UIFont.systemFont(ofSize: 10, weight: .medium)
         
@@ -57,4 +70,18 @@ final class RedactingViewController: UIViewController {
         ])
     }
     
+}
+
+extension RedactingViewController: AlertDelegateProtocol {
+    func alertSaveButtonTappep(text: String?) {
+        
+        guard
+            let text = text,
+            !text.filter({$0 != Character(" ")}).isEmpty 
+        else {
+            alertPresenter?.textFieldAlertController()
+            return
+        }
+        print(text)
+    }
 }
