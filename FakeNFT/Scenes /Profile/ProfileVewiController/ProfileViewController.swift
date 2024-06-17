@@ -49,16 +49,20 @@ final class ProfileViewController: UIViewController {
     func fetchProfile() {
         
         let token = "838f0366-1991-4b2c-bd1c-d136072f8080"
+        
+        UIBlockingProgressHUD.show()
+        
         fetchProfileService.fecthProfile(token) { result in
             
             switch result {
                 
             case .success(let profile):
-                print(profile)
                 self.updateProfileInfo(profile)
             case .failure(let error):
                 print(error)
             }
+            
+            UIBlockingProgressHUD.dismiss()
         }
     }
     
