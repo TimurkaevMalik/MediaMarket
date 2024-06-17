@@ -9,8 +9,13 @@ import UIKit
 
 final class RedactingViewController: UIViewController {
     
+    private lazy var nameTitleLabel = UILabel()
+    private lazy var nameTextField = UITextField()
+    private let clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
+    
     private lazy var userPhotoButton = UIButton()
     private lazy var userPhotoTitleLabel = UILabel()
+    
     private let warningLabel = UILabel()
     private let warningLabelContainer = UIView()
     
@@ -34,12 +39,35 @@ final class RedactingViewController: UIViewController {
         view.backgroundColor = .ypWhite
         configureUserPhoto()
         configureLimitWarningLabel()
+        configureNameTitleAndTextField()
     }
     
     @objc func userPhotoButtonTapped() {
         print("user photo button tapped")
         
         alertPresenter?.textFieldAlertController()
+    }
+    
+    @objc func clearTextFieldButtonTapped(){
+        nameTextField.text?.removeAll()
+    }
+    
+    @objc func didEnterNameInTextField(_ sender: UITextField){
+        
+        guard
+            let text = sender.text,
+            !text.isEmpty,
+            !text.filter({ $0 != Character(" ") }).isEmpty
+        else {
+        
+            let warningText = "Не удалось сохранить имя"
+            clearTextFieldButtonTapped()
+            showWarningLabel(with: warningText)
+            return
+        }
+        
+        nameTextField.text = text.trimmingCharacters(in: .whitespaces)
+        saveUserInfo(text)
     }
     
     private func configureUserPhoto() {
@@ -73,6 +101,47 @@ final class RedactingViewController: UIViewController {
             
             userPhotoTitleLabel.centerXAnchor.constraint(equalTo: userPhotoButton.centerXAnchor),
             userPhotoTitleLabel.centerYAnchor.constraint(equalTo: userPhotoButton.centerYAnchor)
+        ])
+    }
+    
+    private func configureNameTitleAndTextField(){
+        nameTitleLabel.textColor = .ypBlack
+        nameTextField.backgroundColor = UIColor(named: "YPMediumLightGray")
+        clearTextFieldButton.backgroundColor = UIColor(named: "YPMediumLightGray")
+        
+        nameTitleLabel.text = "Имя"
+        nameTitleLabel.font = UIFont.headline3
+        
+        nameTextField.placeholder = "Введите фамилию и имя"
+        nameTextField.delegate = self
+        nameTextField.layer.cornerRadius = 16
+        nameTextField.layer.masksToBounds = true
+        nameTextField.leftViewMode = .always
+        
+        nameTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
+        nameTextField.addTarget(self, action: #selector(didEnterNameInTextField(_:)), for: .editingDidEndOnExit)
+        nameTextField.rightView = clearTextFieldButton
+        nameTextField.rightViewMode = .whileEditing
+        
+        clearTextFieldButton.contentHorizontalAlignment = .leading
+        clearTextFieldButton.addTarget(self, action: #selector(clearTextFieldButtonTapped), for: .touchUpInside)
+        clearTextFieldButton.setImage(UIImage(named: "x.mark.circle"), for: .normal)
+        
+        nameTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameTextField.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(nameTextField)
+        view.addSubview(nameTitleLabel)
+        
+        NSLayoutConstraint.activate([
+            nameTitleLabel.topAnchor.constraint(equalTo: userPhotoButton.bottomAnchor, constant: 24),
+            nameTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            
+            nameTextField.heightAnchor.constraint(equalToConstant: 44),
+            nameTextField.topAnchor.constraint(equalTo: nameTitleLabel.bottomAnchor, constant: 8),
+            nameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            nameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            
+            clearTextFieldButton.widthAnchor.constraint(equalToConstant: clearTextFieldButton.frame.width + 12)
         ])
     }
     
@@ -129,6 +198,12 @@ final class RedactingViewController: UIViewController {
     
     private func isTextFieldAndSaveButtonEnabled(bool: Bool){
         userPhotoButton.isEnabled = bool
+        nameTextField.isEnabled = bool
+    }
+    
+    private func saveUserInfo(_ text: String) {
+        let name = text.trimmingCharacters(in: .whitespaces)
+        print(name)
     }
 }
 
@@ -144,5 +219,32 @@ extension RedactingViewController: AlertDelegateProtocol {
             return
         }
         print(text)
+    }
+}
+
+extension RedactingViewController: UITextFieldDelegate {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        let maxLength = 38
+        
+        let currentString = (textField.text ?? "") as NSString
+        
+        let newString = currentString.replacingCharacters(in: range, with: string).trimmingCharacters(in: .newlines)
+        
+        guard newString.count <= maxLength else {
+            
+            let limititationText = NSLocalizedString("warning.limititation", comment: "Text before the number of the limit")
+            let charatersText = NSLocalizedString("warning.caracters", comment: "Text after the number of the limit")
+            
+            showWarningLabel(with: limititationText + " \(38) " + charatersText)
+            return false
+        }
+        
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        didEnterNameInTextField(textField)
     }
 }
