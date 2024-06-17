@@ -46,61 +46,6 @@ final class ProfileViewController: UIViewController {
         fetchProfile()
     }
     
-    func fetchProfile() {
-        
-        let token = "838f0366-1991-4b2c-bd1c-d136072f8080"
-        
-        UIBlockingProgressHUD.show()
-        
-        fetchProfileService.fecthProfile(token) { result in
-            
-            switch result {
-                
-            case .success(let profile):
-                self.updateProfileInfo(profile)
-            case .failure(let error):
-                print(error)
-            }
-            
-            UIBlockingProgressHUD.dismiss()
-        }
-    }
-    
-    func updateProfileInfo(_ profile: ProfileResult) {
-        userNameLabel.text = profile.name
-        userDescriptionView.text = profile.description
-        
-        updateUserPhotoWith(url: profile.avatar)
-        updateNftsArray(profile.nfts)
-        updateLikesArray(profile.likes)
-        
-        tableView.reloadData()
-    }
-    
-    private func updateUserPhotoWith(url: String) {
-        guard let avatarUrl = URL(string: url) else {
-            return
-        }
-        userPhotoView.kf.setImage(with: avatarUrl)
-    }
-    
-    private func updateNftsArray(_ nfts: [String?]) {
-        
-        for nft in nfts {
-            if let nft {
-                self.nfts.append(nft)
-            }
-        }
-    }
-    
-    private func updateLikesArray(_ likes: [String?]) {
-        for like in likes {
-            if let like {
-                self.likes.append(like)
-            }
-        }
-    }
-    
     @objc func redactButtonTapped() {
         let viewController = RedactingViewController()
         present(viewController, animated: true)
@@ -129,7 +74,7 @@ final class ProfileViewController: UIViewController {
     
     private func configureUserName() {
         userNameLabel.textColor = .ypBlack
-        userNameLabel.text = "Name wasn't found"
+        userNameLabel.text = "Поиск имени и фамилии"
         userNameLabel.font = UIFont.headline3
         
         userNameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -169,7 +114,7 @@ final class ProfileViewController: UIViewController {
         userDescriptionView.textAlignment = .left
         userDescriptionView.textContainer.maximumNumberOfLines = 4
         
-        let text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."
+        let text = "Поиск описания"
         
         let style = NSMutableParagraphStyle()
         style.lineSpacing =  3
@@ -192,7 +137,7 @@ final class ProfileViewController: UIViewController {
     
     private func configureLinkButton() {
         linkButton.setTitleColor(.ypBlue, for: .normal)
-        linkButton.setTitle("Link wasn't found", for: .normal)
+        linkButton.setTitle("Поиск ссылки сайта", for: .normal)
         linkButton.titleLabel?.font = UIFont.caption1
         linkButton.contentHorizontalAlignment = .left
         
@@ -225,6 +170,62 @@ final class ProfileViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
+    }
+    
+    func fetchProfile() {
+        
+        let token = "838f0366-1991-4b2c-bd1c-d136072f8080"
+        
+        UIBlockingProgressHUD.show()
+        
+        fetchProfileService.fecthProfile(token) { result in
+            
+            switch result {
+                
+            case .success(let profile):
+                self.updateProfileInfo(profile)
+            case .failure(let error):
+                print(error)
+            }
+            
+            UIBlockingProgressHUD.dismiss()
+        }
+    }
+    
+    func updateProfileInfo(_ profile: ProfileResult) {
+        userNameLabel.text = profile.name
+        userDescriptionView.text = profile.description
+        linkButton.setTitle(profile.website, for: .normal) 
+        
+        updateUserPhotoWith(url: profile.avatar)
+        updateNftsArray(profile.nfts)
+        updateLikesArray(profile.likes)
+        
+        tableView.reloadData()
+    }
+    
+    private func updateUserPhotoWith(url: String) {
+        guard let avatarUrl = URL(string: url) else {
+            return
+        }
+        userPhotoView.kf.setImage(with: avatarUrl)
+    }
+    
+    private func updateNftsArray(_ nfts: [String?]) {
+        
+        for nft in nfts {
+            if let nft {
+                self.nfts.append(nft)
+            }
+        }
+    }
+    
+    private func updateLikesArray(_ likes: [String?]) {
+        for like in likes {
+            if let like {
+                self.likes.append(like)
+            }
+        }
     }
 }
 

@@ -27,9 +27,11 @@ final class RedactingViewController: UIViewController {
     private let warningLabelContainer = UIView()
     
     private var alertPresenter: AlertPresenter?
+    private let fetchProfileService = FetchProfileService.shared
     
     private var warningLabelBottomConstraint: [NSLayoutConstraint] = []
-    
+    private var nfts: [String] = []
+    private var likes: [String] = []
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -49,6 +51,11 @@ final class RedactingViewController: UIViewController {
         configureNameTitleAndTextField()
         configureUserDescriptionViewAndTitle()
         configureLinkTitleAndTextField()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        fetchProfile()
     }
     
     @objc func userPhotoButtonTapped() {
@@ -101,9 +108,10 @@ final class RedactingViewController: UIViewController {
     
     private func configureUserPhoto() {
         let image = UIImage(named: "avatarPlug")
-        let title = "Сменить \n фото"
+        let title = "Поиск \n фото"
         userPhotoButton.tintColor = .clear
         userPhotoButton.setImage(image, for: .normal)
+        userPhotoTitleLabel.backgroundColor = .ypBlack?.withAlphaComponent(0.6)
         
         userPhotoTitleLabel.text = title
         userPhotoTitleLabel.numberOfLines = 2
@@ -128,8 +136,10 @@ final class RedactingViewController: UIViewController {
             userPhotoButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -602),
             userPhotoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            userPhotoTitleLabel.centerXAnchor.constraint(equalTo: userPhotoButton.centerXAnchor),
-            userPhotoTitleLabel.centerYAnchor.constraint(equalTo: userPhotoButton.centerYAnchor)
+            userPhotoTitleLabel.topAnchor.constraint(equalTo: userPhotoButton.topAnchor),
+            userPhotoTitleLabel.bottomAnchor.constraint(equalTo: userPhotoButton.bottomAnchor),
+            userPhotoTitleLabel.leadingAnchor.constraint(equalTo: userPhotoButton.leadingAnchor),
+            userPhotoTitleLabel.trailingAnchor.constraint(equalTo: userPhotoButton.trailingAnchor)
         ])
     }
     
@@ -142,6 +152,7 @@ final class RedactingViewController: UIViewController {
         nameTitleLabel.font = UIFont.headline3
         
         nameTextField.placeholder = "Введите фамилию и имя"
+        nameTextField.text = "Поиск имени и фамилии"
         nameTextField.delegate = self
         nameTextField.layer.cornerRadius = 16
         nameTextField.layer.masksToBounds = true
@@ -183,6 +194,7 @@ final class RedactingViewController: UIViewController {
         linkTitleLabel.font = UIFont.headline3
         
         linkTextField.placeholder = "Введите ссылку"
+        linkTextField.text = "Поиск ссылки сайта"
         linkTextField.delegate = self
         linkTextField.layer.cornerRadius = 16
         linkTextField.layer.masksToBounds = true
@@ -230,7 +242,7 @@ final class RedactingViewController: UIViewController {
         userDescriptionView.textAlignment = .left
         userDescriptionView.textContainer.maximumNumberOfLines = 5
         
-        let text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."
+        let text = "Поиск описания"
         
         let style = NSMutableParagraphStyle()
         style.lineSpacing =  3
@@ -342,6 +354,65 @@ final class RedactingViewController: UIViewController {
     private func saveUserPhotoLink(_ photoLink: String) {
         let photoLink = photoLink.trimmingCharacters(in: .whitespaces)
         print(photoLink)
+    }
+    
+    func fetchProfile() {
+        
+        let token = "838f0366-1991-4b2c-bd1c-d136072f8080"
+        
+        UIBlockingProgressHUD.show()
+        
+        fetchProfileService.fecthProfile(token) { result in
+            
+            switch result {
+                
+            case .success(let profile):
+                self.updateProfileInfo(profile)
+            case .failure(let error):
+                print(error)
+            }
+            
+            UIBlockingProgressHUD.dismiss()
+        }
+    }
+    
+    func updateProfileInfo(_ profile: ProfileResult) {
+        nameTextField.text = profile.name
+        userDescriptionView.text = profile.description
+        linkTextField.text = profile.website
+        
+        updateUserPhotoWith(url: profile.avatar)
+        updateNftsArray(profile.nfts)
+        updateLikesArray(profile.likes)
+    }
+    
+    private func updateUserPhotoWith(url: String) {
+        guard let avatarUrl = URL(string: url) else {
+            return
+        }
+        let avatarView = UIImageView()
+        avatarView.kf.setImage(with: avatarUrl)
+        userPhotoButton.setImage(avatarView.image, for: .normal)
+        
+        let title = "Сменить \n фото"
+        userPhotoTitleLabel.text = title
+    }
+    
+    private func updateNftsArray(_ nfts: [String?]) {
+        
+        for nft in nfts {
+            if let nft {
+                self.nfts.append(nft)
+            }
+        }
+    }
+    
+    private func updateLikesArray(_ likes: [String?]) {
+        for like in likes {
+            if let like {
+                self.likes.append(like)
+            }
+        }
     }
 }
 
