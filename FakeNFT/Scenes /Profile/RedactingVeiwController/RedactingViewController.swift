@@ -11,7 +11,11 @@ final class RedactingViewController: UIViewController {
     
     private lazy var nameTitleLabel = UILabel()
     private lazy var nameTextField = UITextField()
-    private let clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
+    private let clearNameButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
+    
+    private lazy var linkTitleLabel = UILabel()
+    private lazy var linkTextField = UITextField()
+    private let clearLinkButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
     
     private lazy var descriptionTitleLabel = UILabel()
     private lazy var userDescriptionView = UITextView()
@@ -44,32 +48,55 @@ final class RedactingViewController: UIViewController {
         configureLimitWarningLabel()
         configureNameTitleAndTextField()
         configureUserDescriptionViewAndTitle()
+        configureLinkTitleAndTextField()
     }
     
     @objc func userPhotoButtonTapped() {
         alertPresenter?.textFieldAlertController()
     }
     
-    @objc func clearTextFieldButtonTapped(){
+    @objc func clearNameButtonTapped(){
         nameTextField.text?.removeAll()
+    }
+    
+    @objc func clearLinkButtonTapped(){
+        linkTextField.text?.removeAll()
     }
     
     @objc func didEnterNameInTextField(_ sender: UITextField){
         
         guard
-            let text = sender.text,
-            !text.isEmpty,
-            !text.filter({ $0 != Character(" ") }).isEmpty
+            let name = sender.text,
+            !name.isEmpty,
+            !name.filter({ $0 != Character(" ") }).isEmpty
         else {
         
             let warningText = "Не удалось сохранить имя"
-            clearTextFieldButtonTapped()
+            clearNameButtonTapped()
             showWarningLabel(with: warningText)
             return
         }
         
-        nameTextField.text = text.trimmingCharacters(in: .whitespaces)
-        saveUserInfo(text)
+        nameTextField.text = name.trimmingCharacters(in: .whitespaces)
+        saveUserName(name)
+    }
+    
+    @objc func didEnterLinkInTextField(_ sender: UITextField){
+        
+        guard
+            let link = sender.text,
+            !link.isEmpty,
+            !link.filter({ $0 != Character(" ") }).isEmpty
+        else {
+        
+            let warningText = "Не удалось сохранить имя"
+            clearNameButtonTapped()
+            showWarningLabel(with: warningText)
+            return
+        }
+        
+        nameTextField.text = link.trimmingCharacters(in: .whitespaces)
+        saveUserWebLink(link)
     }
     
     private func configureUserPhoto() {
@@ -109,7 +136,7 @@ final class RedactingViewController: UIViewController {
     private func configureNameTitleAndTextField(){
         nameTitleLabel.textColor = .ypBlack
         nameTextField.backgroundColor = UIColor(named: "YPMediumLightGray")
-        clearTextFieldButton.backgroundColor = UIColor(named: "YPMediumLightGray")
+        clearNameButton.backgroundColor = UIColor(named: "YPMediumLightGray")
         
         nameTitleLabel.text = "Имя"
         nameTitleLabel.font = UIFont.headline3
@@ -122,12 +149,12 @@ final class RedactingViewController: UIViewController {
         
         nameTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
         nameTextField.addTarget(self, action: #selector(didEnterNameInTextField(_:)), for: .editingDidEndOnExit)
-        nameTextField.rightView = clearTextFieldButton
+        nameTextField.rightView = clearNameButton
         nameTextField.rightViewMode = .whileEditing
         
-        clearTextFieldButton.contentHorizontalAlignment = .leading
-        clearTextFieldButton.addTarget(self, action: #selector(clearTextFieldButtonTapped), for: .touchUpInside)
-        clearTextFieldButton.setImage(UIImage(named: "x.mark.circle"), for: .normal)
+        clearNameButton.contentHorizontalAlignment = .leading
+        clearNameButton.addTarget(self, action: #selector(clearNameButtonTapped), for: .touchUpInside)
+        clearNameButton.setImage(UIImage(named: "x.mark.circle"), for: .normal)
         
         nameTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         nameTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -143,7 +170,48 @@ final class RedactingViewController: UIViewController {
             nameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             nameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            clearTextFieldButton.widthAnchor.constraint(equalToConstant: clearTextFieldButton.frame.width + 12)
+            clearNameButton.widthAnchor.constraint(equalToConstant: clearNameButton.frame.width + 12)
+        ])
+    }
+    
+    private func configureLinkTitleAndTextField(){
+        linkTitleLabel.textColor = .ypBlack
+        linkTextField.backgroundColor = UIColor(named: "YPMediumLightGray")
+        clearLinkButton.backgroundColor = UIColor(named: "YPMediumLightGray")
+        
+        linkTitleLabel.text = "Сайт"
+        linkTitleLabel.font = UIFont.headline3
+        
+        linkTextField.placeholder = "Введите ссылку"
+        linkTextField.delegate = self
+        linkTextField.layer.cornerRadius = 16
+        linkTextField.layer.masksToBounds = true
+        linkTextField.leftViewMode = .always
+        
+        linkTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
+        linkTextField.addTarget(self, action: #selector(didEnterLinkInTextField(_:)), for: .editingDidEndOnExit)
+        linkTextField.rightView = clearNameButton
+        linkTextField.rightViewMode = .whileEditing
+        
+        clearLinkButton.contentHorizontalAlignment = .leading
+        clearLinkButton.addTarget(self, action: #selector(clearLinkButtonTapped), for: .touchUpInside)
+        clearLinkButton.setImage(UIImage(named: "x.mark.circle"), for: .normal)
+        
+        linkTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        linkTextField.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(linkTextField)
+        view.addSubview(linkTitleLabel)
+        
+        NSLayoutConstraint.activate([
+            linkTitleLabel.topAnchor.constraint(equalTo: userDescriptionView.bottomAnchor, constant: 24),
+            linkTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            
+            linkTextField.heightAnchor.constraint(equalToConstant: 44),
+            linkTextField.topAnchor.constraint(equalTo: linkTitleLabel.bottomAnchor, constant: 8),
+            linkTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            linkTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            
+            clearLinkButton.widthAnchor.constraint(equalToConstant: clearLinkButton.frame.width + 12)
         ])
     }
     
@@ -250,30 +318,46 @@ final class RedactingViewController: UIViewController {
         userDescriptionView.isEditable = bool
     }
     
-    private func saveUserInfo(_ text: String) {
-        let name = text.trimmingCharacters(in: .whitespaces)
-        print(name)
-    }
-    
     
     private func clearTextView() {
         userDescriptionView.text = "Расскажите о себе"
         userDescriptionView.textColor = UIColor.lightGray
     }
+    
+    private func saveUserName(_ name: String) {
+        let name = name.trimmingCharacters(in: .whitespaces)
+        print(name)
+    }
+    
+    private func saveUserDescription(_ description: String) {
+        let description = description.trimmingCharacters(in: .whitespaces)
+        print(description)
+    }
+    
+    private func saveUserWebLink(_ webLink: String) {
+        let webLink = webLink.trimmingCharacters(in: .whitespaces)
+        print(webLink)
+    }
+    
+    private func saveUserPhotoLink(_ photoLink: String) {
+        let photoLink = photoLink.trimmingCharacters(in: .whitespaces)
+        print(photoLink)
+    }
 }
 
 extension RedactingViewController: AlertDelegateProtocol {
+    
     func alertSaveButtonTappep(text: String?) {
         
         guard
-            let text = text,
-            !text.filter({$0 != Character(" ")}).isEmpty 
+            let link = text,
+            !link.filter({$0 != Character(" ")}).isEmpty
         else {
             alertPresenter?.textFieldAlertController()
             showWarningLabel(with: "Не удалось сохранить фото")
             return
         }
-        print(text)
+        saveUserPhotoLink(link)
     }
 }
 
@@ -320,10 +404,10 @@ extension RedactingViewController: UITextViewDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         
-        let text = textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let description = textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard
-            !text.isEmpty,
-            !text.filter({ $0 != Character(" ") }).isEmpty
+            !description.isEmpty,
+            !description.filter({ $0 != Character(" ") }).isEmpty
         else {
         
             let warningText = "Не удалось сохранить описание"
@@ -332,7 +416,7 @@ extension RedactingViewController: UITextViewDelegate {
             return
         }
         
-        textView.text = text
-        saveUserInfo(text)
+        textView.text = description
+        saveUserDescription(description)
     }
 }
