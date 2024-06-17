@@ -106,14 +106,15 @@ final class ProfileViewController: UIViewController {
         userDescriptionView.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         userDescriptionView.textAlignment = .left
         userDescriptionView.textContainer.maximumNumberOfLines = 4
-        userDescriptionView.font = UIFont.caption2
         
         let text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."
         
         let style = NSMutableParagraphStyle()
         style.lineSpacing =  3
         let attributes = [NSAttributedString.Key.paragraphStyle : style,
-                          .foregroundColor: UIColor.ypBlack]
+                          .foregroundColor: UIColor.ypBlack,
+                          .font: UIFont.caption2
+        ]
         
         userDescriptionView.attributedText = NSAttributedString(string: text, attributes: attributes as [NSAttributedString.Key : Any])
         

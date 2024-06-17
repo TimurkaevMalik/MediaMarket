@@ -13,6 +13,9 @@ final class RedactingViewController: UIViewController {
     private lazy var nameTextField = UITextField()
     private let clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
     
+    private lazy var descriptionTitleLabel = UILabel()
+    private lazy var userDescriptionView = UITextView()
+    
     private lazy var userPhotoButton = UIButton()
     private lazy var userPhotoTitleLabel = UILabel()
     
@@ -40,11 +43,10 @@ final class RedactingViewController: UIViewController {
         configureUserPhoto()
         configureLimitWarningLabel()
         configureNameTitleAndTextField()
+        configureUserDescriptionViewAndTitle()
     }
     
     @objc func userPhotoButtonTapped() {
-        print("user photo button tapped")
-        
         alertPresenter?.textFieldAlertController()
     }
     
@@ -145,6 +147,52 @@ final class RedactingViewController: UIViewController {
         ])
     }
     
+    private func configureUserDescriptionViewAndTitle() {
+        descriptionTitleLabel.textColor = .ypBlack
+        userDescriptionView.backgroundColor = UIColor(named: "YPMediumLightGray")
+        userDescriptionView.delegate = self
+        userDescriptionView.isScrollEnabled = false
+        
+        descriptionTitleLabel.text = "Описание"
+        descriptionTitleLabel.font = .headline3
+        
+        userDescriptionView.textContainerInset = UIEdgeInsets(top: 11, left: 16, bottom: -11, right: -16)
+        userDescriptionView.layer.masksToBounds = true
+        userDescriptionView.layer.cornerRadius = 12
+        userDescriptionView.textAlignment = .left
+        userDescriptionView.textContainer.maximumNumberOfLines = 5
+        
+        let text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."
+        
+        let style = NSMutableParagraphStyle()
+        style.lineSpacing =  3
+        let attributes = [NSAttributedString.Key.paragraphStyle : style,
+                          .foregroundColor: UIColor.ypBlack,
+                          .font: UIFont.bodyRegular
+        ]
+        
+        userDescriptionView.attributedText = NSAttributedString(string: text, attributes: attributes as [NSAttributedString.Key : Any])
+        
+        view.addSubview(userDescriptionView)
+        view.addSubview(descriptionTitleLabel)
+        descriptionTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        userDescriptionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            descriptionTitleLabel.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 24),
+            descriptionTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            
+            userDescriptionView.heightAnchor.constraint(equalToConstant: 132),
+            userDescriptionView.topAnchor.constraint(equalTo: descriptionTitleLabel.bottomAnchor, constant: 8),
+            userDescriptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            userDescriptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
+    }
+    
+    private func configureDescriptionButtons() {
+        
+    }
+    
     private func configureLimitWarningLabel(){
         warningLabelContainer.backgroundColor = UIColor.ypWhite
         warningLabel.textColor = UIColor(named: "YPRed")
@@ -199,11 +247,18 @@ final class RedactingViewController: UIViewController {
     private func isTextFieldAndSaveButtonEnabled(bool: Bool){
         userPhotoButton.isEnabled = bool
         nameTextField.isEnabled = bool
+        userDescriptionView.isEditable = bool
     }
     
     private func saveUserInfo(_ text: String) {
         let name = text.trimmingCharacters(in: .whitespaces)
         print(name)
+    }
+    
+    
+    private func clearTextView() {
+        userDescriptionView.text = "Расскажите о себе"
+        userDescriptionView.textColor = UIColor.lightGray
     }
 }
 
@@ -234,10 +289,7 @@ extension RedactingViewController: UITextFieldDelegate {
         
         guard newString.count <= maxLength else {
             
-            let limititationText = NSLocalizedString("warning.limititation", comment: "Text before the number of the limit")
-            let charatersText = NSLocalizedString("warning.caracters", comment: "Text after the number of the limit")
-            
-            showWarningLabel(with: limititationText + " \(38) " + charatersText)
+            showWarningLabel(with: "Ограничение \(38) слов")
             return false
         }
         
@@ -246,5 +298,41 @@ extension RedactingViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         didEnterNameInTextField(textField)
+    }
+}
+
+extension RedactingViewController: UITextViewDelegate {
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        
+        let maxLength = 140
+        
+        let currentString = (textView.text ?? "") as NSString
+        
+        let newString = currentString.replacingCharacters(in: range, with: text).trimmingCharacters(in: .newlines)
+        
+        guard newString.count <= maxLength else {
+            return false
+        }
+        
+        return true
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        
+        let text = textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard
+            !text.isEmpty,
+            !text.filter({ $0 != Character(" ") }).isEmpty
+        else {
+        
+            let warningText = "Не удалось сохранить описание"
+            clearTextView()
+            showWarningLabel(with: warningText)
+            return
+        }
+        
+        textView.text = text
+        saveUserInfo(text)
     }
 }
