@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
@@ -16,9 +17,14 @@ final class ProfileViewController: UIViewController {
     private lazy var userDescriptionView = UITextView()
     private lazy var userPhotoView = UIImageView(image: UIImage(named: "avatarPlug"))
     
+    private let fetchProfileService = FetchProfileService.shared
     private let servicesAssembly: ServicesAssembly
     private let tableCellIdentifier = "tableCellIdentifier"
     private let tableViewCells = ["Мои NFT", "Избранные NFT", "О разрабротчике"]
+    
+    private var nfts: [String] = []
+    private var likes: [String] = []
+    
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
@@ -37,6 +43,58 @@ final class ProfileViewController: UIViewController {
         configureUserDescription()
         configureLinkButton()
         configureTableView()
+        fetchProfile()
+    }
+    
+    func fetchProfile() {
+        
+        let token = "838f0366-1991-4b2c-bd1c-d136072f8080"
+        fetchProfileService.fecthProfile(token) { result in
+            
+            switch result {
+                
+            case .success(let profile):
+                print(profile)
+                self.updateProfileInfo(profile)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func updateProfileInfo(_ profile: ProfileResult) {
+        userNameLabel.text = profile.name
+        userDescriptionView.text = profile.description
+        
+        updateUserPhotoWith(url: profile.avatar)
+        updateNftsArray(profile.nfts)
+        updateLikesArray(profile.likes)
+        
+        tableView.reloadData()
+    }
+    
+    private func updateUserPhotoWith(url: String) {
+        guard let avatarUrl = URL(string: url) else {
+            return
+        }
+        userPhotoView.kf.setImage(with: avatarUrl)
+    }
+    
+    private func updateNftsArray(_ nfts: [String?]) {
+        
+        for nft in nfts {
+            if let nft {
+                self.nfts.append(nft)
+            }
+        }
+    }
+    
+    private func updateLikesArray(_ likes: [String?]) {
+        for like in likes {
+            if let like {
+                self.likes.append(like)
+            }
+        }
     }
     
     @objc func redactButtonTapped() {
@@ -177,7 +235,14 @@ extension ProfileViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.cellTextLabel.text = tableViewCells[indexPath.row]
+        if indexPath.row == 0 {
+            cell.cellTextLabel.text = tableViewCells[indexPath.row] + " " + "(\(nfts.count))"
+        } else if indexPath.row == 1 {
+            cell.cellTextLabel.text = tableViewCells[indexPath.row] + " " + "(\(likes.count))"
+        } else {
+            cell.cellTextLabel.text = tableViewCells[indexPath.row]
+        }
+        
         cell.accessoryType = .disclosureIndicator
         
         return cell
