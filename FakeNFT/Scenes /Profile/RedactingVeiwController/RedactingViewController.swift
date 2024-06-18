@@ -40,9 +40,8 @@ final class RedactingViewController: UIViewController {
         profileInfo = profile
         self.delegate = delegate
         super.init(nibName: nil, bundle: nil)
-        
-        let alertType = AlertType.textFieldAlert(value: TextFieldAlert(viewController: self, delegate: self))
-        alertPresenter = AlertPresenter(type: alertType)
+
+        alertPresenter = AlertPresenter(viewController: self)
     }
     
     required init?(coder: NSCoder) {
@@ -70,7 +69,7 @@ final class RedactingViewController: UIViewController {
     }
     
     @objc func userPhotoButtonTapped() {
-        alertPresenter?.textFieldAlert()
+        showTextFieldAlert()
     }
     
     @objc func clearNameButtonTapped(){
@@ -90,7 +89,7 @@ final class RedactingViewController: UIViewController {
             !name.isEmpty,
             !name.filter({ $0 != Character(" ") }).isEmpty
         else {
-        
+            
             let warningText = "Введите имя и фамилию"
             clearNameButtonTapped()
             showWarningLabel(with: warningText)
@@ -109,7 +108,7 @@ final class RedactingViewController: UIViewController {
             !link.isEmpty,
             !link.filter({ $0 != Character(" ") }).isEmpty
         else {
-        
+            
             let warningText = "Введите ссылку"
             clearNameButtonTapped()
             showWarningLabel(with: warningText)
@@ -284,10 +283,6 @@ final class RedactingViewController: UIViewController {
         ])
     }
     
-    private func configureDescriptionButtons() {
-        
-    }
-    
     private func configureLimitWarningLabel(){
         warningLabelContainer.backgroundColor = UIColor.ypWhite
         warningLabel.textColor = UIColor(named: "YPRed")
@@ -351,28 +346,8 @@ final class RedactingViewController: UIViewController {
     private func clearTextView() {
         userDescriptionView.text = "Расскажите о себе"
         userDescriptionView.textColor = UIColor.lightGray
-        profileInfo.description = nil
+        profileInfo.description.removeAll()
     }
-    
-//    private func saveUserName(_ name: String) {
-//        let name = name.trimmingCharacters(in: .whitespaces)
-//        print(name)
-//    }
-//    
-//    private func saveUserDescription(_ description: String) {
-//        let description = description.trimmingCharacters(in: .whitespaces)
-//        print(description)
-//    }
-//    
-//    private func saveUserWebLink(_ webLink: String) {
-//        let webLink = webLink.trimmingCharacters(in: .whitespaces)
-//        print(webLink)
-//    }
-//    
-//    private func saveUserPhotoLink(_ photoLink: String) {
-//        let photoLink = photoLink.trimmingCharacters(in: .whitespaces)
-//        print(photoLink)
-//    }
     
     func fetchProfile() {
         
@@ -404,6 +379,11 @@ final class RedactingViewController: UIViewController {
         updateUserDescription(profile.description)
     }
     
+    private func updateUserDescription(_ description: String?) {
+        userDescriptionView.text = description
+        textViewDidEndEditing(userDescriptionView)
+    }
+    
     private func updateUserPhotoWith(url: String) {
         let title = "Сменить \n фото"
         userPhotoTitleLabel.text = title
@@ -414,7 +394,7 @@ final class RedactingViewController: UIViewController {
         
         let avatarView = UIImageView()
         
-        avatarView.kf.setImage(with: avatarUrl){ [weak self] result in
+        avatarView.kf.setImage(with: avatarUrl) { [weak self] result in
             
             guard let self else { return }
             
@@ -424,7 +404,7 @@ final class RedactingViewController: UIViewController {
                 self.profileInfo.avatar = url
                 
             case .failure:
-                self.alertPresenter?.textFieldAlert()
+                self.showTextFieldAlert()
                 self.showWarningLabel(with: "Не удалось определить." + "\n" + "Попробуйте другую ссылку")
                 return
             }
@@ -436,9 +416,14 @@ final class RedactingViewController: UIViewController {
         }
     }
     
-    private func updateUserDescription(_ description: String?) {
-        userDescriptionView.text = description
-        textViewDidEndEditing(userDescriptionView)
+    private func showTextFieldAlert() {
+        let placeHolder = "Введите ссылку"
+        let model = AlertModel(
+            title: "Изменение фото", message: nil,
+            closeAlertTitle: "Отмена",
+            completionTitle: "Сохранить") {}
+        
+        alertPresenter?.textFieldAlert(model: model, placeHolder: placeHolder)
     }
 }
 
@@ -509,15 +494,15 @@ extension RedactingViewController: UITextViewDelegate {
     }
 }
 
-extension RedactingViewController: AlertDelegateProtocol {
+extension RedactingViewController: TextFieldAlertDelegate {
     
-    func alertSaveButtonTappep(text: String?) {
+    func alertSaveTextButtonTappep(text: String?) {
         
         guard
             let link = text,
             !link.filter({$0 != Character(" ")}).isEmpty
         else {
-            alertPresenter?.textFieldAlert()
+            showTextFieldAlert()
             showWarningLabel(with: "Введите ссылку")
             return
         }

@@ -7,21 +7,22 @@
 
 import UIKit
 
+enum ProfileServiceError: Error {
+    case codeError(_ value: String)
+    case responseError(_ value: Int)
+    case invalidRequest
+}
+
 class FetchProfileService {
     
+    private(set) var profileResult: ProfileResult?
     static let shared = FetchProfileService()
     
     private var task: URLSessionTask?
     
     private init() {}
     
-    private enum ProfileServiceError: Error {
-        case codeError
-        case responseError
-        case invalidRequest
-    }
-    
-    func fecthProfile(_ token: String, completion: @escaping (Result<ProfileResult,Error>) -> Void) {
+    func fecthProfile(_ token: String, completion: @escaping (Result<ProfileResult,ProfileServiceError>) -> Void) {
         
         assert(Thread.isMainThread)
         
@@ -30,7 +31,7 @@ class FetchProfileService {
         }
         
         guard let request = makeRequstBody(token: token) else {
-            completion(.failure(ProfileServiceError.codeError))
+            completion(.failure(ProfileServiceError.codeError("Uknown Error")))
             return
         }
         
@@ -41,14 +42,13 @@ class FetchProfileService {
                 guard let self = self else {return}
                 
                 if let error = error {
-                    completion(.failure(error))
+                    completion(.failure(ProfileServiceError.codeError("Unknown error")))
                     return
                 }
                 
                 if let response = response as? HTTPURLResponse, response.statusCode < 200 || response.statusCode  >= 300 {
                     
-                    print(response.statusCode)
-                    completion(.failure(ProfileServiceError.responseError))
+                    completion(.failure(ProfileServiceError.responseError(response.statusCode)))
                     return
                 }
                 
@@ -57,9 +57,10 @@ class FetchProfileService {
                     do {
                         let profileResultInfo = try JSONDecoder().decode(ProfileResult.self, from: data)
                         
+                        self.profileResult = profileResultInfo
                         completion(.success(profileResultInfo))
                     } catch {
-                        completion(.failure(ProfileServiceError.codeError))
+                        completion(.failure(ProfileServiceError.codeError("Unknown error")))
                     }
                 }
                 self.task = nil

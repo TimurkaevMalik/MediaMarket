@@ -31,10 +31,9 @@ final class ProfileViewController: UIViewController {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
         
-        let alertType = AlertType.defaultAlert(viewController: self)
-        alertPresenter = AlertPresenter(type: alertType)
+        alertPresenter = AlertPresenter(viewController: self)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -48,6 +47,10 @@ final class ProfileViewController: UIViewController {
         configureUserDescription()
         configureLinkButton()
         configureTableView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         fetchProfile()
     }
     
@@ -80,7 +83,6 @@ final class ProfileViewController: UIViewController {
     
     private func configureUserName() {
         userNameLabel.textColor = .ypBlack
-        userNameLabel.text = "Поиск имени и фамилии"
         userNameLabel.font = UIFont.headline3
         
         userNameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -143,7 +145,6 @@ final class ProfileViewController: UIViewController {
     
     private func configureLinkButton() {
         linkButton.setTitleColor(.ypBlue, for: .normal)
-        linkButton.setTitle("Поиск ссылки сайта", for: .normal)
         linkButton.titleLabel?.font = UIFont.caption1
         linkButton.contentHorizontalAlignment = .left
         
@@ -180,9 +181,16 @@ final class ProfileViewController: UIViewController {
     
     private func fetchProfile() {
         
+        if let profile = fetchProfileService.profileResult {
+            updateProfileInfo(profile)
+            return
+        }
+        
         let token = MalikToken.token
         
         UIBlockingProgressHUD.show()
+        
+        setFetchigInfoTiltesForViews()
         
         fetchProfileService.fecthProfile(token) {  [weak self] result in
             
@@ -192,8 +200,33 @@ final class ProfileViewController: UIViewController {
                 
             case .success(let profile):
                 self.updateProfileInfo(profile)
+                
             case .failure(let error):
-                print(error)
+                
+                let errorString: String
+                
+                switch error {
+                    
+                case .codeError(let value):
+                    errorString = value
+                case .responseError(let value):
+                    errorString = "\(value)"
+                case .invalidRequest:
+                    errorString = "Unknown error"
+                }
+                
+                let message = "Не удалось обновить профиль"
+                
+                let model = AlertModel(
+                    title: "Ошибка: \(errorString)",
+                    message: message,
+                    closeAlertTitle: "Закрыть",
+                    completionTitle: "Повторить") { 
+                        self.fetchProfile()
+                    }
+                
+                self.alertPresenter?.defaultAlert(model: model)
+                self.setDefaultTitlesForViews()
             }
             
             UIBlockingProgressHUD.dismiss()
@@ -204,7 +237,7 @@ final class ProfileViewController: UIViewController {
         profileResult = profile
         userNameLabel.text = profile.name
         userDescriptionView.text = profile.description
-        linkButton.setTitle(profile.website, for: .normal) 
+        linkButton.setTitle(profile.website, for: .normal)
         
         updateUserPhotoWith(url: profile.avatar)
         updateNftsArray(profile.nfts)
@@ -235,6 +268,18 @@ final class ProfileViewController: UIViewController {
                 self.likes.append(like)
             }
         }
+    }
+    
+    private func setDefaultTitlesForViews() {
+        userNameLabel.text = "Имя не найдено"
+        userDescriptionView.text = "Описание не найдено"
+        linkButton.setTitle("Ссылка не найдена", for: .normal)
+    }
+    
+    private func setFetchigInfoTiltesForViews() {
+        userNameLabel.text = "Поиск имени"
+        userDescriptionView.text = "Поиск описания"
+        linkButton.setTitle("Поиск ссылки сайта", for: .normal)
     }
 }
 
@@ -276,7 +321,8 @@ extension ProfileViewController: UITableViewDelegate {
 
 extension ProfileViewController: ProfileControllerDelegate {
     func didEndRedactingProfile(_ profile: ProfileResult) {
-        print(profile)
+        
+        guard didProfileInfoChanged(profile) else { return }
         
         profileResult = profile
         
@@ -292,10 +338,13 @@ extension ProfileViewController: ProfileControllerDelegate {
             
             let message = messageRequirement + "\n" + "\n" + messageAdvice
             
-            let model = DefaultAlertModel(
+            let model = AlertModel(
+                title: "Ошибка обновления профиля",
                 message: message,
                 closeAlertTitle: "Закрыть",
-                callMethodTitle: "Вернуться")
+                completionTitle: "Вренутся") {
+                    self.redactButtonTapped()
+                }
             
             alertPresenter?.defaultAlert(model: model)
             return
@@ -303,10 +352,17 @@ extension ProfileViewController: ProfileControllerDelegate {
         
         print("profile updating succed")
     }
-}
-
-extension ProfileViewController: DefaultAlertDelegate {
-    func callMethodActionTapped() {
-        redactButtonTapped()
+    
+    private func didProfileInfoChanged(_ profile: ProfileResult) -> Bool {
+        
+        guard
+            let profileResult,
+            profileResult.name == profile.name,
+            profileResult.website == profile.website,
+            profileResult.avatar == profile.avatar,
+            profileResult.description == profile.description
+        else { return true }
+        
+        return false
     }
 }

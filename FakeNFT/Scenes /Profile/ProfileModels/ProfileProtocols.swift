@@ -7,18 +7,21 @@
 
 import UIKit
 
-enum AlertType {
-    case textFieldAlert(value: TextFieldAlert)
-    case defaultAlert(viewController: DefaultAlertDelegate)
-}
+//enum AlertType {
+//    case textFieldAlert(value: TextFieldAlert)
+//    case defaultAlert(viewController: DefaultAlertDelegate)
+//}
+//
+//struct TextFieldAlert {
+//    let viewController: UIViewController
+//    let delegate: AlertDelegateProtocol
+//}
 
-struct TextFieldAlert {
-    let viewController: UIViewController
-    let delegate: AlertDelegateProtocol
-}
-
-struct DefaultAlertModel {
-    let message: String
+struct AlertModel {
+    let title: String
+    let message: String?
     let closeAlertTitle: String
-    let callMethodTitle: String
+    let completionTitle: String
+    
+    let completion: () -> Void
 }
