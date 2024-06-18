@@ -75,7 +75,7 @@ final class RedactingViewController: UIViewController {
     }
     
     @objc func userPhotoButtonTapped() {
-        showTextFieldAlert()
+        showTextFieldAlert(message: nil)
     }
     
     @objc func clearNameButtonTapped(){
@@ -417,34 +417,28 @@ final class RedactingViewController: UIViewController {
             return
         }
         
-        let avatarView = UIImageView()
-        
-        avatarView.kf.setImage(with: avatarUrl) { [weak self] result in
+        userPhotoButton.imageView?.kf.setImage(with: avatarUrl) { [weak self] result in
             
             guard let self else { return }
             
             switch result {
                 
-            case .success:
+            case .success(let value):
                 self.profileInfo.avatar = url
+                userPhotoButton.setImage(value.image, for: .normal)
                 
-            case .failure:
-                self.showTextFieldAlert()
+            case .failure(let error):
+                self.showTextFieldAlert(message: "\n Ошибка: \(error.errorCode)")
                 self.showWarningLabel(with: "Не удалось определить." + "\n" + "Попробуйте другую ссылку")
                 return
             }
-            
-        }
-        
-        if avatarView.image != nil {
-            userPhotoButton.setImage(avatarView.image, for: .normal)
         }
     }
     
-    private func showTextFieldAlert() {
+    private func showTextFieldAlert(message: String?) {
         let placeHolder = "Введите ссылку"
         let model = AlertModel(
-            title: "Изменение фото", message: nil,
+            title: "Изменение фото", message: message,
             closeAlertTitle: "Отмена",
             completionTitle: "Сохранить") {}
         
@@ -524,10 +518,10 @@ extension RedactingViewController: TextFieldAlertDelegate {
     func alertSaveTextButtonTappep(text: String?) {
         
         guard
-            let link = text,
+            let link = text?.trimmingCharacters(in: .whitespaces),
             !link.filter({$0 != Character(" ")}).isEmpty
         else {
-            showTextFieldAlert()
+            showTextFieldAlert(message: nil)
             showWarningLabel(with: "Введите ссылку")
             return
         }

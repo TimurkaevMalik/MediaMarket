@@ -27,11 +27,10 @@ final class AlertPresenter {
         let actionSave = UIAlertAction(title: model.completionTitle, style: .default) { action in
             
             guard
-                let textField = alert.textFields?.first,
-                let text = textField.text 
+                let textField = alert.textFields?.first
             else { return }
             
-            delegate.alertSaveTextButtonTappep(text: text)
+            delegate.alertSaveTextButtonTappep(text: textField.text)
         }
         
         let actionCancel = UIAlertAction(title: model.closeAlertTitle, style: .destructive)
