@@ -302,6 +302,7 @@ extension ProfileViewController: UITableViewDataSource {
             cell.cellTextLabel.text = tableViewCells[indexPath.row]
         }
         
+        cell.backgroundColor = .clear
         cell.accessoryType = .disclosureIndicator
         
         return cell

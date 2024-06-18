@@ -16,7 +16,7 @@ final class AlertPresenter {
         self.viewController = viewController
     }
    
-    func textFieldAlert(model: AlertModel, placeHolder: String) {
+    func textFieldAlert(model: AlertModel, placeHolder: String, delegate: TextFieldAlertDelegate) {
 
         let alert = UIAlertController(title: model.title, message: model.message, preferredStyle: .alert)
 
@@ -24,20 +24,20 @@ final class AlertPresenter {
             textField.placeholder = placeHolder
         }
         
-        let actionComletion = UIAlertAction(title: model.completionTitle, style: .default) { action in
+        let actionSave = UIAlertAction(title: model.completionTitle, style: .default) { action in
             
             guard
                 let textField = alert.textFields?.first,
                 let text = textField.text 
             else { return }
             
-            model.completion()
+            delegate.alertSaveTextButtonTappep(text: text)
         }
         
         let actionCancel = UIAlertAction(title: model.closeAlertTitle, style: .destructive)
         
         alert.addAction(actionCancel)
-        alert.addAction(actionComletion)
+        alert.addAction(actionSave)
         
         viewController.present(alert, animated: true)
     }

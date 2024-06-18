@@ -25,6 +25,7 @@ final class RedactingViewController: UIViewController {
     private lazy var userPhotoButton = UIButton()
     private lazy var userPhotoTitleLabel = UILabel()
     
+    private lazy var closeControllerButton = UIButton()
     private let warningLabel = UILabel()
     private let warningLabelContainer = UIView()
     
@@ -56,6 +57,7 @@ final class RedactingViewController: UIViewController {
         configureNameTitleAndTextField()
         configureUserDescriptionViewAndTitle()
         configureLinkTitleAndTextField()
+        configureCloseControllerButton()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -66,6 +68,10 @@ final class RedactingViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         delegate?.didEndRedactingProfile(profileInfo)
+    }
+    
+    @objc func closeControllerButtonTapper() {
+        dismiss(animated: true)
     }
     
     @objc func userPhotoButtonTapped() {
@@ -120,12 +126,31 @@ final class RedactingViewController: UIViewController {
         profileInfo.website = link
     }
     
+    private func configureCloseControllerButton() {
+        let image = UIImage(named: "close")
+        closeControllerButton.tintColor = .ypBlack
+        
+        closeControllerButton.setImage(image, for: .normal)
+        closeControllerButton.addTarget(self, action: #selector(closeControllerButtonTapper), for: .touchUpInside)
+        
+        closeControllerButton.addTarget(self, action: #selector(userPhotoButtonTapped), for: .touchUpInside)
+        closeControllerButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(closeControllerButton)
+        
+        NSLayoutConstraint.activate([
+            closeControllerButton.widthAnchor.constraint(equalToConstant: 42),
+            closeControllerButton.heightAnchor.constraint(equalToConstant: 42),
+            closeControllerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -694),
+            closeControllerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
+    }
+    
     private func configureUserPhoto() {
         let image = UIImage(named: "avatarPlug")
         let title = "Поиск \n фото"
         userPhotoButton.tintColor = .clear
         userPhotoButton.setImage(image, for: .normal)
-        userPhotoTitleLabel.backgroundColor = .ypBlack?.withAlphaComponent(0.6)
+        userPhotoTitleLabel.backgroundColor = .black.withAlphaComponent(0.6)
         
         userPhotoTitleLabel.text = title
         userPhotoTitleLabel.numberOfLines = 2
@@ -423,7 +448,7 @@ final class RedactingViewController: UIViewController {
             closeAlertTitle: "Отмена",
             completionTitle: "Сохранить") {}
         
-        alertPresenter?.textFieldAlert(model: model, placeHolder: placeHolder)
+        alertPresenter?.textFieldAlert(model: model, placeHolder: placeHolder, delegate: self)
     }
 }
 
