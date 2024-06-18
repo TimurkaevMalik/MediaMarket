@@ -15,14 +15,14 @@ enum ProfileServiceError: Error {
 
 class FetchProfileService {
     
-    private(set) var profileResult: ProfileResult?
+    private(set) var profileResult: Profile?
     static let shared = FetchProfileService()
     
     private var task: URLSessionTask?
     
     private init() {}
     
-    func fecthProfile(_ token: String, completion: @escaping (Result<ProfileResult,ProfileServiceError>) -> Void) {
+    func fecthProfile(_ token: String, completion: @escaping (Result<Profile,ProfileServiceError>) -> Void) {
         
         assert(Thread.isMainThread)
         
@@ -55,7 +55,7 @@ class FetchProfileService {
                 if let data = data {
                     
                     do {
-                        let profileResultInfo = try JSONDecoder().decode(ProfileResult.self, from: data)
+                        let profileResultInfo = try JSONDecoder().decode(Profile.self, from: data)
                         
                         self.profileResult = profileResultInfo
                         completion(.success(profileResultInfo))

@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ProfileControllerDelegate: AnyObject {
-    func didEndRedactingProfile(_ profile: ProfileResult)
+    func didEndRedactingProfile(_ profile: Profile)
 }
 
 protocol TextFieldAlertDelegate: UIViewController {

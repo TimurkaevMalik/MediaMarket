@@ -30,14 +30,14 @@ final class RedactingViewController: UIViewController {
     private let warningLabelContainer = UIView()
     
     private var alertPresenter: AlertPresenter?
-    private var profileInfo: ProfileResult
+    private var profileInfo: Profile
     private let fetchProfileService = FetchProfileService.shared
     
     private var warningLabelBottomConstraint: [NSLayoutConstraint] = []
     private let descriptionViewPlaceholder = "Расскажите о себе"
     
     
-    init(profile: ProfileResult, delegate: ProfileControllerDelegate) {
+    init(profile: Profile, delegate: ProfileControllerDelegate) {
         profileInfo = profile
         self.delegate = delegate
         super.init(nibName: nil, bundle: nil)
@@ -396,7 +396,7 @@ final class RedactingViewController: UIViewController {
         }
     }
     
-    func updateProfileInfo(_ profile: ProfileResult) {
+    func updateProfileInfo(_ profile: Profile) {
         nameTextField.text = profile.name
         linkTextField.text = profile.website
         

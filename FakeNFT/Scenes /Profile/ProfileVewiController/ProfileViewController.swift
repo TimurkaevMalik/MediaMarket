@@ -19,7 +19,7 @@ final class ProfileViewController: UIViewController {
     
     private let fetchProfileService = FetchProfileService.shared
     private let servicesAssembly: ServicesAssembly
-    private var profileResult: ProfileResult?
+    private var profile: Profile?
     private var alertPresenter: AlertPresenter?
     private let tableCellIdentifier = "tableCellIdentifier"
     private let tableViewCells = ["Мои NFT", "Избранные NFT", "О разрабротчике"]
@@ -55,8 +55,8 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc func redactButtonTapped() {
-        guard let profileResult else { return }
-        let viewController = RedactingViewController(profile: profileResult, delegate: self)
+        guard let profile else { return }
+        let viewController = RedactingViewController(profile: profile, delegate: self)
         present(viewController, animated: true)
     }
     
@@ -233,8 +233,8 @@ final class ProfileViewController: UIViewController {
         }
     }
     
-    private func updateProfileInfo(_ profile: ProfileResult) {
-        profileResult = profile
+    private func updateProfileInfo(_ profile: Profile) {
+        self.profile = profile
         userNameLabel.text = profile.name
         userDescriptionView.text = profile.description
         linkButton.setTitle(profile.website, for: .normal)
@@ -321,11 +321,11 @@ extension ProfileViewController: UITableViewDelegate {
 }
 
 extension ProfileViewController: ProfileControllerDelegate {
-    func didEndRedactingProfile(_ profile: ProfileResult) {
+    func didEndRedactingProfile(_ profile: Profile) {
         
         guard didProfileInfoChanged(profile) else { return }
         
-        profileResult = profile
+        self.profile = profile
         
         guard profile.name.count >= 2,
               profile.website.count >= 7
@@ -354,14 +354,14 @@ extension ProfileViewController: ProfileControllerDelegate {
         print("profile updating succed")
     }
     
-    private func didProfileInfoChanged(_ profile: ProfileResult) -> Bool {
+    private func didProfileInfoChanged(_ profile: Profile) -> Bool {
         
         guard
-            let profileResult,
-            profileResult.name == profile.name,
-            profileResult.website == profile.website,
-            profileResult.avatar == profile.avatar,
-            profileResult.description == profile.description
+            let oldProfile = self.profile,
+            oldProfile.name == profile.name,
+            oldProfile.website == profile.website,
+            oldProfile.avatar == profile.avatar,
+            oldProfile.description == profile.description
         else { return true }
         
         return false
