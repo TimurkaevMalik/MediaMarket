@@ -19,6 +19,8 @@ final class ProfileViewController: UIViewController {
     
     private let fetchProfileService = FetchProfileService.shared
     private let servicesAssembly: ServicesAssembly
+    private var profileResult: ProfileResult?
+    private var alertPresenter: AlertPresenter?
     private let tableCellIdentifier = "tableCellIdentifier"
     private let tableViewCells = ["Мои NFT", "Избранные NFT", "О разрабротчике"]
     
@@ -28,6 +30,9 @@ final class ProfileViewController: UIViewController {
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
+        
+        let alertType = AlertType.defaultAlert(viewController: self)
+        alertPresenter = AlertPresenter(type: alertType)
     }
 
     required init?(coder: NSCoder) {
@@ -47,7 +52,8 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc func redactButtonTapped() {
-        let viewController = RedactingViewController()
+        guard let profileResult else { return }
+        let viewController = RedactingViewController(profile: profileResult, delegate: self)
         present(viewController, animated: true)
     }
     
@@ -172,13 +178,15 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    func fetchProfile() {
+    private func fetchProfile() {
         
-        let token = "838f0366-1991-4b2c-bd1c-d136072f8080"
+        let token = MalikToken.token
         
         UIBlockingProgressHUD.show()
         
-        fetchProfileService.fecthProfile(token) { result in
+        fetchProfileService.fecthProfile(token) {  [weak self] result in
+            
+            guard let self else { return }
             
             switch result {
                 
@@ -192,7 +200,8 @@ final class ProfileViewController: UIViewController {
         }
     }
     
-    func updateProfileInfo(_ profile: ProfileResult) {
+    private func updateProfileInfo(_ profile: ProfileResult) {
+        profileResult = profile
         userNameLabel.text = profile.name
         userDescriptionView.text = profile.description
         linkButton.setTitle(profile.website, for: .normal) 
@@ -262,5 +271,42 @@ extension ProfileViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+extension ProfileViewController: ProfileControllerDelegate {
+    func didEndRedactingProfile(_ profile: ProfileResult) {
+        print(profile)
+        
+        profileResult = profile
+        
+        guard profile.name.count >= 2,
+              profile.website.count >= 7
+        else {
+            let requirmentText = "Требования:"
+            let nameRequirement =        "• Имя: 2-38 символов                  •"
+            let websiteLinkRequirement = "• Cсылка сайта: 7-38 символов •"
+            let messageRequirement = requirmentText + "\n" + nameRequirement + "\n" + websiteLinkRequirement
+            
+            let messageAdvice = "Если ссылка сайта не вмещается в заданый дипазон, можете сократить количетсво символов, сделав её гиперссылкой"
+            
+            let message = messageRequirement + "\n" + "\n" + messageAdvice
+            
+            let model = DefaultAlertModel(
+                message: message,
+                closeAlertTitle: "Закрыть",
+                callMethodTitle: "Вернуться")
+            
+            alertPresenter?.defaultAlert(model: model)
+            return
+        }
+        
+        print("profile updating succed")
+    }
+}
+
+extension ProfileViewController: DefaultAlertDelegate {
+    func callMethodActionTapped() {
+        redactButtonTapped()
     }
 }

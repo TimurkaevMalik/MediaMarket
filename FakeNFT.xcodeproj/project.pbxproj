@@ -45,6 +45,9 @@
 		BC6638F32C20863100A5155C /* ProfileResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6638F22C20863100A5155C /* ProfileResult.swift */; };
 		BC6638F72C2089D900A5155C /* ProfileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6638F62C2089D900A5155C /* ProfileRequest.swift */; };
 		BC6638FA2C2094A800A5155C /* UIBlockingProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6638F92C2094A800A5155C /* UIBlockingProgressHUD.swift */; };
+		BC88B81D2C21ADFC0048CDB0 /* Delegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC88B81C2C21ADFC0048CDB0 /* Delegates.swift */; };
+		BC88B81F2C21EAE00048CDB0 /* ProfileProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC88B81E2C21EAE00048CDB0 /* ProfileProtocols.swift */; };
+		BC88B8222C21EB6A0048CDB0 /* MalikToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC88B8212C21EB6A0048CDB0 /* MalikToken.swift */; };
 		BC8AE4AB2C1EA6F800416740 /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8AE4AA2C1EA6F800416740 /* AlertViewController.swift */; };
 		BC8C0B782C1DE4C40014A9CA /* ProfileTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8C0B772C1DE4C40014A9CA /* ProfileTableCell.swift */; };
 		BCB354D82C1D7A10005FA7DD /* RedactingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB354D72C1D7A10005FA7DD /* RedactingViewController.swift */; };
@@ -114,6 +117,9 @@
 		BC6638F22C20863100A5155C /* ProfileResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileResult.swift; sourceTree = "<group>"; };
 		BC6638F62C2089D900A5155C /* ProfileRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRequest.swift; sourceTree = "<group>"; };
 		BC6638F92C2094A800A5155C /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
+		BC88B81C2C21ADFC0048CDB0 /* Delegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Delegates.swift; sourceTree = "<group>"; };
+		BC88B81E2C21EAE00048CDB0 /* ProfileProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileProtocols.swift; sourceTree = "<group>"; };
+		BC88B8212C21EB6A0048CDB0 /* MalikToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MalikToken.swift; sourceTree = "<group>"; };
 		BC8AE4AA2C1EA6F800416740 /* AlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
 		BC8C0B772C1DE4C40014A9CA /* ProfileTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableCell.swift; sourceTree = "<group>"; };
 		BCB354D72C1D7A10005FA7DD /* RedactingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedactingViewController.swift; sourceTree = "<group>"; };
@@ -360,12 +366,22 @@
 			path = ProfileServices;
 			sourceTree = "<group>";
 		};
-		BC6638F12C2085F900A5155C /* ProfileDecoders */ = {
+		BC6638F12C2085F900A5155C /* ProfileModels */ = {
 			isa = PBXGroup;
 			children = (
 				BC6638F22C20863100A5155C /* ProfileResult.swift */,
+				BC88B81E2C21EAE00048CDB0 /* ProfileProtocols.swift */,
+				BC88B81C2C21ADFC0048CDB0 /* Delegates.swift */,
 			);
-			path = ProfileDecoders;
+			path = ProfileModels;
+			sourceTree = "<group>";
+		};
+		BC88B8202C21EB550048CDB0 /* token */ = {
+			isa = PBXGroup;
+			children = (
+				BC88B8212C21EB6A0048CDB0 /* MalikToken.swift */,
+			);
+			path = token;
 			sourceTree = "<group>";
 		};
 		BC8AE4A92C1EA6D600416740 /* AlertViewController */ = {
@@ -396,7 +412,8 @@
 		BCDC91622C1B7A3F008CCAA9 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				BC6638F12C2085F900A5155C /* ProfileDecoders */,
+				BC88B8202C21EB550048CDB0 /* token */,
+				BC6638F12C2085F900A5155C /* ProfileModels */,
 				BC6638EE2C20855C00A5155C /* ProfileServices */,
 				BCB354D92C1D7A1F005FA7DD /* ProfileVewiController */,
 				BCB354DA2C1D7A32005FA7DD /* RedactingVeiwController */,
@@ -617,11 +634,13 @@
 				BCDC916A2C1B8249008CCAA9 /* StatisticViewController.swift in Sources */,
 				E1A1B9DA2AA01CE400C3AFBC /* TabBarController.swift in Sources */,
 				BC8C0B782C1DE4C40014A9CA /* ProfileTableCell.swift in Sources */,
+				BC88B81D2C21ADFC0048CDB0 /* Delegates.swift in Sources */,
 				3F478ED129DB476500F6D39E /* Fonts.swift in Sources */,
 				0C79EE6A2A76DE1000EE90EA /* NftDetailAssembly.swift in Sources */,
 				3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */,
 				0CFCB7422A78013E0009A829 /* Nft.swift in Sources */,
 				0CF2C2DD2A783CE600FDC837 /* ErrorView.swift in Sources */,
+				BC88B81F2C21EAE00048CDB0 /* ProfileProtocols.swift in Sources */,
 				0C79EE682A76DE0900EE90EA /* NftDetailPresenter.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,
 				0CFCB7402A78002A0009A829 /* NftService.swift in Sources */,
@@ -639,6 +658,7 @@
 				0CFCB7462A78064B0009A829 /* NftDetailCellModel.swift in Sources */,
 				0CFCB74B2A780EA80009A829 /* UIView+Constraints.swift in Sources */,
 				3F6806D729CBC50A00B4F915 /* CellsReusingUtils.swift in Sources */,
+				BC88B8222C21EB6A0048CDB0 /* MalikToken.swift in Sources */,
 				0C79EE612A76DCD600EE90EA /* NftByIdRequest.swift in Sources */,
 				E19CD5AB2A98B56600CA39A5 /* NftImageCollectionViewCell.swift in Sources */,
 				BCB354D82C1D7A10005FA7DD /* RedactingViewController.swift in Sources */,

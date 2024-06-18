@@ -7,23 +7,6 @@
 
 import UIKit
 
-protocol AlertDelegateProtocol: AnyObject {
-    func alertSaveButtonTappep(text: String?)
-}
-
-enum AlertType {
-    case textFieldAlert(value: TextFieldAlert)
-    case defaultAlert(value: DefaultAlert)
-}
-
-struct TextFieldAlert {
-    let viewController: UIViewController
-    let delegate: AlertDelegateProtocol
-}
-
-struct DefaultAlert {
-    let viewController: UIViewController
-}
 
 final class AlertPresenter {
     
@@ -33,7 +16,7 @@ final class AlertPresenter {
         alertType = type
     }
    
-    func textFieldAlertController() {
+    func textFieldAlert() {
         
         let textFieldAlert: TextFieldAlert
         
@@ -62,11 +45,41 @@ final class AlertPresenter {
             textFieldAlert.delegate.alertSaveButtonTappep(text: text)
         }
         
-        let actionCancel = UIAlertAction(title: "Отмена", style: .cancel)
+        let actionCancel = UIAlertAction(title: "Отмена", style: .destructive)
         
         alert.addAction(actionCancel)
         alert.addAction(actionSave)
         
         textFieldAlert.viewController.present(alert, animated: true)
+    }
+    
+    func defaultAlert(model: DefaultAlertModel) {
+        
+        let delegate: DefaultAlertDelegate
+        
+        switch alertType {
+        case .textFieldAlert:
+            return
+        case .defaultAlert(let type):
+            delegate = type
+        }
+        
+        let title = "Ошибка обновления профиля"
+        
+        let alert = UIAlertController(title: title, message: model.message, preferredStyle: .alert)
+        
+        let actionCloseAlert = UIAlertAction(title: model.closeAlertTitle, style: .default)
+        
+        let actionCallMethod = UIAlertAction(title: model.callMethodTitle, style: .default) { [weak self] _ in
+            
+            guard let self else { return }
+            
+            delegate.callMethodActionTapped()
+        }
+        
+        alert.addAction(actionCallMethod)
+        alert.addAction(actionCloseAlert)
+        
+        delegate.present(alert, animated: true)
     }
 }
