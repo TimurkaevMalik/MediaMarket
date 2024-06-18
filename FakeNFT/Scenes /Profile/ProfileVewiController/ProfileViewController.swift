@@ -18,6 +18,7 @@ final class ProfileViewController: UIViewController {
     private lazy var userPhotoView = UIImageView(image: UIImage(named: "avatarPlug"))
     
     private let fetchProfileService = FetchProfileService.shared
+    private let updateProfileService = UpdateProfileService.shared
     private let servicesAssembly: ServicesAssembly
     private var profile: Profile?
     private var alertPresenter: AlertPresenter?
@@ -182,7 +183,7 @@ final class ProfileViewController: UIViewController {
     private func fetchProfile() {
         
         if let profile = fetchProfileService.profileResult {
-            updateProfileInfo(profile)
+            updateControllerProfile(profile)
             return
         }
         
@@ -192,48 +193,52 @@ final class ProfileViewController: UIViewController {
         
         setFetchigInfoTiltesForViews()
         
-        fetchProfileService.fecthProfile(token) {  [weak self] result in
+        fetchProfileService.fecthProfile(token) { [weak self] result in
             
             guard let self else { return }
             
             switch result {
                 
             case .success(let profile):
-                self.updateProfileInfo(profile)
+                self.updateControllerProfile(profile)
                 
             case .failure(let error):
-                
-                let errorString: String
-                
-                switch error {
-                    
-                case .codeError(let value):
-                    errorString = value
-                case .responseError(let value):
-                    errorString = "\(value)"
-                case .invalidRequest:
-                    errorString = "Unknown error"
-                }
-                
-                let message = "Не удалось обновить профиль"
-                
-                let model = AlertModel(
-                    title: "Ошибка: \(errorString)",
-                    message: message,
-                    closeAlertTitle: "Закрыть",
-                    completionTitle: "Повторить") { 
-                        self.fetchProfile()
-                    }
-                
-                self.alertPresenter?.defaultAlert(model: model)
                 self.setDefaultTitlesForViews()
+                self.showServiceErrorAlert(error) {
+                    self.fetchProfile()
+                }
             }
             
             UIBlockingProgressHUD.dismiss()
         }
     }
     
-    private func updateProfileInfo(_ profile: Profile) {
+    private func updateProfile(_ profile: Profile) {
+        
+        let token = MalikToken.token
+        
+        UIBlockingProgressHUD.show()
+        
+        updateProfileService.updateProfile(token, profile: profile) { [weak self] result in
+            
+            guard let self else { return }
+            
+            switch result {
+                
+            case .success(let profile):
+                self.updateControllerProfile(profile)
+                
+            case .failure(let error):
+                self.showServiceErrorAlert(error) {
+                    self.updateProfile(profile)
+                }
+            }
+            
+            UIBlockingProgressHUD.dismiss()
+        }
+    }
+    
+    private func updateControllerProfile(_ profile: Profile) {
         self.profile = profile
         userNameLabel.text = profile.name
         userDescriptionView.text = profile.description
@@ -281,6 +286,32 @@ final class ProfileViewController: UIViewController {
         userDescriptionView.text = "Поиск описания"
         linkButton.setTitle("Поиск ссылки сайта", for: .normal)
     }
+    
+    private func showServiceErrorAlert(_ error: ProfileServiceError, completion: @escaping () -> Void) {
+        let errorString: String
+        
+        switch error {
+            
+        case .codeError(let value):
+            errorString = value
+        case .responseError(let value):
+            errorString = "\(value)"
+        case .invalidRequest:
+            errorString = "Unknown error"
+        }
+        
+        let message = "Не удалось обновить профиль"
+        
+        let model = AlertModel(
+            title: "Ошибка: \(errorString)",
+            message: message,
+            closeAlertTitle: "Закрыть",
+            completionTitle: "Повторить") {
+                completion()
+            }
+        
+        self.alertPresenter?.defaultAlert(model: model)
+    }
 }
 
 extension ProfileViewController: UITableViewDataSource {
@@ -327,8 +358,9 @@ extension ProfileViewController: ProfileControllerDelegate {
         
         self.profile = profile
         
-        guard profile.name.count >= 2,
-              profile.website.count >= 7
+        guard 
+            profile.name.count >= 2,
+            profile.website.count >= 7
         else {
             let requirmentText = "Требования:"
             let nameRequirement =        "• Имя: 2-38 символов                  •"
@@ -351,7 +383,7 @@ extension ProfileViewController: ProfileControllerDelegate {
             return
         }
         
-        print("profile updating succed")
+        updateProfile(profile)
     }
     
     private func didProfileInfoChanged(_ profile: Profile) -> Bool {

@@ -7,12 +7,6 @@
 
 import UIKit
 
-enum ProfileServiceError: Error {
-    case codeError(_ value: String)
-    case responseError(_ value: Int)
-    case invalidRequest
-}
-
 class FetchProfileService {
     
     private(set) var profileResult: Profile?
