@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class StarRatingView: UIView {
+final class StarRatingView: UIView {
     
     // MARK: - Public Properties
     

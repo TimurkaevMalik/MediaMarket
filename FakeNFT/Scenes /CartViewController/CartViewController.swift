@@ -14,6 +14,7 @@ final class CartViewController: UIViewController {
     
     let servicesAssembly: ServicesAssembly
     var nfts: [NftInCartModel] = []
+    let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
     
     // MARK: - Private Properties
     
@@ -40,6 +41,7 @@ final class CartViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupViews()
         reloadNfts()
     }
     
@@ -48,40 +50,55 @@ final class CartViewController: UIViewController {
         reloadNfts()
     }
     
+    // MARK: - Public Methods
+    
+    func turnOnBlurEffect() {
+        blurEffectView.isHidden = false
+    }
+    
     // MARK: - Private Methods
     
     private func setupViews() {
         view.backgroundColor = UIColor(named: "YPWhite")
-        if nfts.isEmpty {
             addCartIsEmptyLable()
-        } else {
             addBottomBackground()
             addNftTableView()
             addPaymentButton()
             addNftCountLable()
             addNftPriceLable()
-        }
+            addBlurEffectToWindow()
     }
     
     private func reloadView() {
-        bottomBackground.removeFromSuperview()
-        nftTableView.removeFromSuperview()
-        paymentButton.removeFromSuperview()
-        nftCountLable.removeFromSuperview()
-        nftPriceLable.removeFromSuperview()
-        cartIsEmptyLable.removeFromSuperview()
-        setupViews()
+        if nfts.isEmpty {
+            cartIsEmptyLable.isHidden = false
+            bottomBackground.isHidden = true
+            nftTableView.isHidden = true
+            paymentButton.isHidden = true
+            nftCountLable.isHidden = true
+            nftPriceLable.isHidden = true
+        } else {
+            cartIsEmptyLable.isHidden = true
+            bottomBackground.isHidden = false
+            nftTableView.isHidden = false
+            nftTableView.reloadData()
+            paymentButton.isHidden = false
+            nftCountLable.isHidden = false
+            nftCountLable.text = "\(nfts.count) NFT"
+            nftPriceLable.isHidden = false
+            nftPriceLable.text = "\(returnFullPrice()) ETH"
+        }
     }
     
     private func reloadNfts() {
     var nfts: [NftInCartModel] = []
         ProgressHUD.show()
-        cartNetworkService.fetchOrder() { result in
+        cartNetworkService.fetchOrder() { [weak self] result in
             switch result {
             case .success(let order):
                 var numberOfCicle = 0
                 order.nfts.forEach({ id in
-                    self.cartNetworkService.requestByNftId(id: id) { result in
+                    self?.cartNetworkService.requestByNftId(id: id) { [weak self] result in
                         switch result {
                         case .success(let nft):
                             let nftInCard = NftInCartModel(
@@ -93,9 +110,9 @@ final class CartViewController: UIViewController {
                             numberOfCicle += 1
                             if numberOfCicle == order.nfts.count {
                                 DispatchQueue.main.async {
-                                    self.nfts = nfts
+                                    self?.nfts = nfts
                                     ProgressHUD.dismiss()
-                                    self.reloadView()
+                                    self?.reloadView()
                                 }
                             }
                         case .failure(let error):
@@ -114,6 +131,7 @@ final class CartViewController: UIViewController {
         bottomBackground.layer.masksToBounds = true
         bottomBackground.layer.cornerRadius = 12
         bottomBackground.translatesAutoresizingMaskIntoConstraints = false
+        bottomBackground.isHidden = true
         view.addSubview(bottomBackground)
         NSLayoutConstraint.activate([
             bottomBackground.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -130,6 +148,7 @@ final class CartViewController: UIViewController {
         nftTableView.separatorStyle = .none
         nftTableView.allowsSelection = false
         nftTableView.translatesAutoresizingMaskIntoConstraints = false
+        nftTableView.isHidden = true
         view.addSubview(nftTableView)
         NSLayoutConstraint.activate([
             nftTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 64),
@@ -147,6 +166,7 @@ final class CartViewController: UIViewController {
         paymentButton.layer.masksToBounds = true
         paymentButton.layer.cornerRadius = 16
         paymentButton.addTarget(self, action: #selector(paymentButtonTap), for: .touchUpInside)
+        paymentButton.isHidden = true
         paymentButton.translatesAutoresizingMaskIntoConstraints = false
         bottomBackground.addSubview(paymentButton)
         NSLayoutConstraint.activate([
@@ -158,9 +178,9 @@ final class CartViewController: UIViewController {
     }
     
     private func addNftCountLable() {
-        nftCountLable.text = "\(nfts.count) NFT"
         nftCountLable.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         nftCountLable.textColor = UIColor(named: "YPBlack")
+        nftCountLable.isHidden = true
         nftCountLable.translatesAutoresizingMaskIntoConstraints = false
         bottomBackground.addSubview(nftCountLable)
         NSLayoutConstraint.activate([
@@ -170,18 +190,15 @@ final class CartViewController: UIViewController {
     }
     
     private func addNftPriceLable() {
-        var price: Double = 0
-        nfts.forEach { nft in
-            price += nft.price
-        }
-        nftPriceLable.text = "\(price) ETH"
         nftPriceLable.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         nftPriceLable.textColor = UIColor(named: "YPGreen")
         nftPriceLable.translatesAutoresizingMaskIntoConstraints = false
+        nftPriceLable.isHidden = true
         bottomBackground.addSubview(nftPriceLable)
         NSLayoutConstraint.activate([
             nftPriceLable.leadingAnchor.constraint(equalTo: bottomBackground.leadingAnchor, constant: 16),
-            nftPriceLable.topAnchor.constraint(equalTo: nftCountLable.bottomAnchor, constant: 2)
+            nftPriceLable.topAnchor.constraint(equalTo: nftCountLable.bottomAnchor, constant: 2),
+            nftPriceLable.trailingAnchor.constraint(equalTo: paymentButton.leadingAnchor, constant: 24)
         ])
     }
     
@@ -204,11 +221,34 @@ final class CartViewController: UIViewController {
         cartIsEmptyLable.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         cartIsEmptyLable.textColor = UIColor(named: "YPBlack")
         cartIsEmptyLable.translatesAutoresizingMaskIntoConstraints = false
+        cartIsEmptyLable.isHidden = true
         view.addSubview(cartIsEmptyLable)
         NSLayoutConstraint.activate([
             cartIsEmptyLable.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             cartIsEmptyLable.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
+    }
+    
+    private func addBlurEffectToWindow() {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            blurEffectView.frame = window.bounds
+            blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            blurEffectView.isHidden = true
+            window.addSubview(blurEffectView)
+            UIView.animate(withDuration: 1.0) {
+                self.blurEffectView.effect = UIBlurEffect(style: .light)
+            }
+        }
+    }
+    
+    private func returnFullPrice() -> String {
+        var price: Double = 0
+        nfts.forEach { nft in
+            price += nft.price
+        }
+        let formattedNumber = String(format: "%.2f", price)
+        return formattedNumber
     }
     
     // MARK: - Private Actions

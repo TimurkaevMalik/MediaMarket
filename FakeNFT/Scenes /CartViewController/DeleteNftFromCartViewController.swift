@@ -8,11 +8,16 @@
 import Foundation
 import UIKit
 
+protocol DeleteNftFromCartViewControllerDelegate: AnyObject {
+    func turnOffBlurEffect()
+}
+
 final class DeleteNftFromCartViewController: UIViewController {
     
     // MARK: - Public Properties
     
     var imageStr: String? = nil
+    weak var delegate: DeleteNftFromCartViewControllerDelegate?
     
     // MARK: - Private Properties
     
@@ -93,7 +98,7 @@ final class DeleteNftFromCartViewController: UIViewController {
     
     private func addCancelButton() {
         guard let color = UIColor(named: "YPWhite") else { return }
-        setupButton(name: "Вернутся", color: color, button: cancelButton)
+        setupButton(name: "Вернуться", color: color, button: cancelButton)
         cancelButton.addTarget(self, action: #selector(cancelButtonTap), for: .touchUpInside)
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(cancelButton)
@@ -108,10 +113,7 @@ final class DeleteNftFromCartViewController: UIViewController {
     // MARK: - Private Actions
     
     @objc private func cancelButtonTap() {
-        if let sceneDelegate = UIApplication.shared.connectedScenes
-            .first?.delegate as? SceneDelegate {
-            sceneDelegate.removeBlurEffectToWindow()
-        }
+        delegate?.turnOffBlurEffect()
         self.dismiss(animated: false)
     }
 }

@@ -7,7 +7,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         networkClient: DefaultNetworkClient(),
         nftStorage: NftStorageImpl()
     )
-    let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
@@ -19,22 +18,5 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
-    }
-    
-    func addBlurEffectToWindow() {
-        guard let window = window else { return }
-        blurEffectView.frame = window.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        window.addSubview(blurEffectView)
-        UIView.animate(withDuration: 1.0) {
-            self.blurEffectView.effect = UIBlurEffect(style: .light)
-        }
-    }
-    
-    func removeBlurEffectToWindow() {
-        blurEffectView.removeFromSuperview()
-        UIView.animate(withDuration: 1.0) {
-            self.blurEffectView.effect = UIBlurEffect(style: .light)
-        }
     }
 }

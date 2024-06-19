@@ -36,17 +36,22 @@ extension CartViewController: NftInCartCellDelegate {
     
     func deleteNftFromCart(nftModel: NftInCartModel) {
         let vc = DeleteNftFromCartViewController()
+        vc.delegate = self
         vc.imageStr = nftModel.picture
-        if let sceneDelegate = UIApplication.shared.connectedScenes
-            .first?.delegate as? SceneDelegate {
-            sceneDelegate.addBlurEffectToWindow()
-        }
+        turnOnBlurEffect()
         vc.modalPresentationStyle = .overFullScreen
         self.present(vc, animated: false) {
             vc.view.alpha = 0
-            UIView.animate(withDuration: 0.3) {
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                guard self != nil else { return }
                 vc.view.alpha = 1
             }
         }
+    }
+}
+
+extension CartViewController: DeleteNftFromCartViewControllerDelegate {
+    func turnOffBlurEffect() {
+        blurEffectView.isHidden = true
     }
 }
