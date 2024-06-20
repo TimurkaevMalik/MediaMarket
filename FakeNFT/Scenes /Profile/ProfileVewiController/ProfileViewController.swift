@@ -374,8 +374,7 @@ extension ProfileViewController: ProfileControllerDelegate {
                 message: message,
                 closeAlertTitle: "Закрыть",
                 completionTitle: "Вренутся") {
-                    self.profile = profile
-                    self.redactButtonTapped()
+                    self.backToRedact(profile: profile)
                 }
             
             alertPresenter?.defaultAlert(model: model)
@@ -396,5 +395,10 @@ extension ProfileViewController: ProfileControllerDelegate {
         else { return true }
         
         return false
+    }
+    
+    private func backToRedact(profile: Profile) {
+        let viewController = RedactingViewController(profile: profile, delegate: self)
+        present(viewController, animated: true)
     }
 }

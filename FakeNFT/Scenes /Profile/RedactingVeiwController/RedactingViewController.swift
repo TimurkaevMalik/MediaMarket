@@ -116,13 +116,13 @@ final class RedactingViewController: UIViewController {
         else {
             
             let warningText = "Введите ссылку"
-            clearNameButtonTapped()
+            clearLinkButtonTapped()
             showWarningLabel(with: warningText)
             profileInfo.website.removeAll()
             return
         }
         
-        nameTextField.text = link
+        linkTextField.text = link
         profileInfo.website = link
     }
     
@@ -199,6 +199,7 @@ final class RedactingViewController: UIViewController {
         
         nameTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
         nameTextField.addTarget(self, action: #selector(didEnterNameInTextField(_:)), for: .editingDidEndOnExit)
+        nameTextField.addTarget(self, action: #selector(didEnterNameInTextField(_:)), for: .editingDidEnd)
         nameTextField.rightView = clearNameButton
         nameTextField.rightViewMode = .whileEditing
         
@@ -241,6 +242,7 @@ final class RedactingViewController: UIViewController {
         
         linkTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
         linkTextField.addTarget(self, action: #selector(didEnterLinkInTextField(_:)), for: .editingDidEndOnExit)
+        linkTextField.addTarget(self, action: #selector(didEnterLinkInTextField(_:)), for: .editingDidEnd)
         linkTextField.rightView = clearLinkButton
         linkTextField.rightViewMode = .whileEditing
         
@@ -441,10 +443,6 @@ extension RedactingViewController: UITextFieldDelegate {
         }
         
         return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
-        didEnterNameInTextField(textField)
     }
 }
 

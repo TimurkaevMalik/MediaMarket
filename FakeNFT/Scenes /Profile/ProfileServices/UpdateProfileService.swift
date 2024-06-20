@@ -82,7 +82,7 @@ final class UpdateProfileService {
             URLQueryItem(name: "name", value: "\(profile.name)"),
             URLQueryItem(name: "avatar", value: "\(profile.avatar)"),
             URLQueryItem(name: "description", value: "\(profile.description)"),
-            URLQueryItem(name: "website", value: "\(profile.name)")
+            URLQueryItem(name: "website", value: "\(profile.website)")
         ]
         
         guard let url = urlComponents?.url else {
