@@ -254,6 +254,9 @@ final class CartViewController: UIViewController {
     // MARK: - Private Actions
     
     @objc private func paymentButtonTap() {
-        print("Кнопка оплаты нажата")
+        let paymentVC = PaymentViewController()
+        let navController = UINavigationController(rootViewController: paymentVC)
+        navController.modalPresentationStyle = .fullScreen
+        self.present(navController, animated: true)
     }
 }
