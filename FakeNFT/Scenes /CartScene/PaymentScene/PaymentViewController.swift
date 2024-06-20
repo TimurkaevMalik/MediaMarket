@@ -17,6 +17,7 @@ final class PaymentViewController: UIViewController {
         PaymentMethodModel(name: "Рубль", abbreviation: "RUB", imageURL: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png"),
         PaymentMethodModel(name: "Рубль", abbreviation: "RUB", imageURL: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png"),
         PaymentMethodModel(name: "Рубль", abbreviation: "RUB", imageURL: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png")]
+    var selectedPaymentMethode: PaymentMethodModel?
     
     // MARK: - Private Properties
     
@@ -171,6 +172,8 @@ final class PaymentViewController: UIViewController {
     }
     
     @objc private func paymentButtonTapped() {
-        print("Оплата")
+        let succsesVC = SuccessfulPaymentViewController()
+        succsesVC.modalPresentationStyle = .fullScreen
+        self.present(succsesVC, animated: true)
     }
 }

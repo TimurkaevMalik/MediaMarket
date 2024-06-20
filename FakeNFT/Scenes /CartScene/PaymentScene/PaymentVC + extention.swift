@@ -12,6 +12,18 @@ import UIKit
 
 extension PaymentViewController: UICollectionViewDelegate {
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? PaymentMethodeCell {
+            cell.selectCell()
+            self.selectedPaymentMethode = cell.paymentMethodModel
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? PaymentMethodeCell {
+            cell.deselectCell()
+        }
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -28,6 +40,8 @@ extension PaymentViewController: UICollectionViewDataSource {
         return cell
     }
 }
+
+// MARK: - UICollectionViewDelegateFlowLayout
 
 extension PaymentViewController: UICollectionViewDelegateFlowLayout {
     

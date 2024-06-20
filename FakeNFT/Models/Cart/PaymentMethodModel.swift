@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+struct PaymentMethodModel {
+    let name: String
+    let abbreviation: String
+    let imageURL: String
+}
