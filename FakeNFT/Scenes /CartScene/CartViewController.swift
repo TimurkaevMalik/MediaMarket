@@ -255,6 +255,7 @@ final class CartViewController: UIViewController {
     
     @objc private func paymentButtonTap() {
         let paymentVC = PaymentViewController()
+        paymentVC.cartViewController = self
         let navController = UINavigationController(rootViewController: paymentVC)
         navController.modalPresentationStyle = .fullScreen
         self.present(navController, animated: true)

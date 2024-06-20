@@ -23,8 +23,6 @@ final class PaymentMethodeCell: UICollectionViewCell {
     private let imageView = UIImageView()
     private let backgroundImageView = UIView()
     
-    // MARK: - Initializers
-    // MARK: - Lifecycle
     // MARK: - Public Methods
     
     func setupCell(paymentMethodModel: PaymentMethodModel) {
@@ -119,6 +117,4 @@ final class PaymentMethodeCell: UICollectionViewCell {
             abbreviationLable.bottomAnchor.constraint(equalTo: backgroundCellView.bottomAnchor, constant: -5)
         ])
     }
-    // MARK: - Public Actions
-    // MARK: - Private Actions
 }

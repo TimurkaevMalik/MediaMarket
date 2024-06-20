@@ -15,6 +15,7 @@ final class PaymentViewController: UIViewController {
     
     var paymentMethods: [PaymentMethodModel] = []
     var selectedPaymentMethode: PaymentMethodModel?
+    var cartViewController: CartViewController?
     
     // MARK: - Private Properties
     
@@ -33,7 +34,6 @@ final class PaymentViewController: UIViewController {
     private let paymentButton = UIButton()
     private let cartNetworkService = CartNetworkService()
     
-    // MARK: - Initializers
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -176,12 +176,46 @@ final class PaymentViewController: UIViewController {
                 }
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
+                ProgressHUD.dismiss()
             }
         }
     }
     
+    private func requestPayment() {
+        ProgressHUD.show()
+        cartNetworkService.requestPayment { [weak self] result in
+            switch result {
+            case .success(let paymentModel):
+                if paymentModel.success {
+                    ProgressHUD.dismiss()
+                    let succsesVC = SuccessfulPaymentViewController()
+                    succsesVC.paymentViewController = self
+                    succsesVC.cartViewController = self?.cartViewController
+                    succsesVC.modalPresentationStyle = .fullScreen
+                    self?.present(succsesVC, animated: true)
+                } else {
+                    ProgressHUD.dismiss()
+                    self?.showAlert()
+                }
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+                ProgressHUD.dismiss()
+                self?.showAlert()
+            }
+        }
+    }
     
-    // MARK: - Public Actions
+    private func showAlert() {
+        let alertController = UIAlertController(title: nil, message: "Не удалось произвести оплату", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "Отмена", style: .default, handler: nil)
+        let retryAction = UIAlertAction(title: "Повторить", style: .cancel) { _ in
+            self.requestPayment()
+        }
+        alertController.addAction(cancelAction)
+        alertController.addAction(retryAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
+
     // MARK: - Private Actions
     
     @objc private func backButtonTapped() {
@@ -193,8 +227,6 @@ final class PaymentViewController: UIViewController {
     }
     
     @objc private func paymentButtonTapped() {
-        let succsesVC = SuccessfulPaymentViewController()
-        succsesVC.modalPresentationStyle = .fullScreen
-        self.present(succsesVC, animated: true)
+        requestPayment()
     }
 }

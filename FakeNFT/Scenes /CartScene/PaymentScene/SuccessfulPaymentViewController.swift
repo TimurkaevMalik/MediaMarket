@@ -9,14 +9,18 @@ import Foundation
 import UIKit
 
 final class SuccessfulPaymentViewController: UIViewController {
+    
     // MARK: - Public Properties
+    
+    var paymentViewController: PaymentViewController?
+    var cartViewController: CartViewController?
+    
     // MARK: - Private Properties
     
     private let imageView = UIImageView()
     private let textLabel = UILabel()
     private let backButton = UIButton()
     
-    // MARK: - Initializers
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -24,7 +28,6 @@ final class SuccessfulPaymentViewController: UIViewController {
         setupViews()
     }
     
-    // MARK: - Public Methods
     // MARK: - Private Methods
     
     private func setupViews() {
@@ -78,10 +81,13 @@ final class SuccessfulPaymentViewController: UIViewController {
         ])
     }
     
-    // MARK: - Public Actions
     // MARK: - Private Actions
     
     @objc private func backButtonTapped() {
         self.dismiss(animated: true)
+        self.paymentViewController?.dismiss(animated: true)
+        if let tabBarController = self.cartViewController?.tabBarController {
+            tabBarController.selectedIndex = 1
+        }
     }
 }
