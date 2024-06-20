@@ -36,13 +36,13 @@ final class UpdateProfileService {
                 guard let self = self else {return}
 
                 if error != nil {
-                    print(error)
+                    
                     completion(.failure(ProfileServiceError.codeError("Unknown error")))
                     return
                 }
 
                 if let response = response as? HTTPURLResponse, response.statusCode < 200 || response.statusCode  >= 300 {
-                    print(response)
+                    
                     completion(.failure(ProfileServiceError.responseError(response.statusCode)))
                     return
                 }
@@ -78,17 +78,11 @@ final class UpdateProfileService {
         
         var urlComponents = URLComponents(string: "\(url)")
         
-        let nfts = getUnwrapedNfts(profile.nfts)
-        let likes = getUnwrapedLikes(profile.likes)
-        
         urlComponents?.queryItems = [
             URLQueryItem(name: "name", value: "\(profile.name)"),
             URLQueryItem(name: "avatar", value: "\(profile.avatar)"),
             URLQueryItem(name: "description", value: "\(profile.description)"),
-            URLQueryItem(name: "website", value: "\(profile.name)"),
-            URLQueryItem(name: "nfts", value: "\(nfts)"),
-            URLQueryItem(name: "likes", value: "\(likes)"),
-            URLQueryItem(name: "id", value: "1")
+            URLQueryItem(name: "website", value: "\(profile.name)")
         ]
         
         guard let url = urlComponents?.url else {
@@ -104,31 +98,5 @@ final class UpdateProfileService {
         request.setValue("\(String(describing: token))", forHTTPHeaderField: "X-Practicum-Mobile-Token")
         
         return request
-    }
-    
-    private func getUnwrapedLikes(_ likes: [String?]) -> [String] {
-        
-        var unwrapedLikes: [String] = []
-        
-        for like in likes {
-            if let like {
-                unwrapedLikes.append(like)
-            }
-        }
-        
-        return unwrapedLikes
-    }
-    
-    private func getUnwrapedNfts(_ nfts: [String?]) -> [String]{
-        
-        var unwrapedNfts: [String] = []
-        
-        for nft in nfts {
-            if let nft {
-                unwrapedNfts.append(nft)
-            }
-        }
-        
-        return unwrapedNfts
     }
 }

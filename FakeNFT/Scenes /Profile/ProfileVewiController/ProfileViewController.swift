@@ -356,8 +356,6 @@ extension ProfileViewController: ProfileControllerDelegate {
         
         guard didProfileInfoChanged(profile) else { return }
         
-        self.profile = profile
-        
         guard 
             profile.name.count >= 2,
             profile.website.count >= 7
@@ -376,6 +374,7 @@ extension ProfileViewController: ProfileControllerDelegate {
                 message: message,
                 closeAlertTitle: "Закрыть",
                 completionTitle: "Вренутся") {
+                    self.profile = profile
                     self.redactButtonTapped()
                 }
             

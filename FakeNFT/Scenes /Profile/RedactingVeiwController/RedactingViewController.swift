@@ -374,28 +374,6 @@ final class RedactingViewController: UIViewController {
         profileInfo.description.removeAll()
     }
     
-    func fetchProfile() {
-        
-        let token = MalikToken.token
-        
-        UIBlockingProgressHUD.show()
-        
-        fetchProfileService.fecthProfile(token) { [weak self] result in
-            
-            guard let self else { return }
-            
-            switch result {
-                
-            case .success(let profile):
-                self.updateProfileInfo(profile)
-            case .failure(let error):
-                print(error)
-            }
-            
-            UIBlockingProgressHUD.dismiss()
-        }
-    }
-    
     func updateProfileInfo(_ profile: Profile) {
         nameTextField.text = profile.name
         linkTextField.text = profile.website

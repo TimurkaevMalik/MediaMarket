@@ -35,8 +35,8 @@ final class AlertPresenter {
         
         let actionCancel = UIAlertAction(title: model.closeAlertTitle, style: .destructive)
         
-        alert.addAction(actionCancel)
         alert.addAction(actionSave)
+        alert.addAction(actionCancel)
         
         viewController.present(alert, animated: true)
     }
@@ -45,7 +45,7 @@ final class AlertPresenter {
         
         let alert = UIAlertController(title: model.title, message: model.message, preferredStyle: .alert)
         
-        let actionCloseAlert = UIAlertAction(title: model.closeAlertTitle, style: .default)
+        let actionCancel = UIAlertAction(title: model.closeAlertTitle, style: .default)
         
         let actionCallMethod = UIAlertAction(title: model.completionTitle, style: .default) { _ in
             
@@ -53,7 +53,7 @@ final class AlertPresenter {
         }
         
         alert.addAction(actionCallMethod)
-        alert.addAction(actionCloseAlert)
+        alert.addAction(actionCancel)
         
         viewController.present(alert, animated: true)
     }
