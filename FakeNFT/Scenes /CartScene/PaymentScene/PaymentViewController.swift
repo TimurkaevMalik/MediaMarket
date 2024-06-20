@@ -7,16 +7,13 @@
 
 import Foundation
 import UIKit
+import ProgressHUD
 
 final class PaymentViewController: UIViewController {
     
     // MARK: - Public Properties
     
-    let paymentMethods: [PaymentMethodModel] = [
-        PaymentMethodModel(name: "Рубль", abbreviation: "RUB", imageURL: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png"),
-        PaymentMethodModel(name: "Рубль", abbreviation: "RUB", imageURL: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png"),
-        PaymentMethodModel(name: "Рубль", abbreviation: "RUB", imageURL: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png"),
-        PaymentMethodModel(name: "Рубль", abbreviation: "RUB", imageURL: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png")]
+    var paymentMethods: [PaymentMethodModel] = []
     var selectedPaymentMethode: PaymentMethodModel?
     
     // MARK: - Private Properties
@@ -34,14 +31,14 @@ final class PaymentViewController: UIViewController {
     private let backgroundTextLable = UILabel()
     private let userAgreementButton = UIButton()
     private let paymentButton = UIButton()
+    private let cartNetworkService = CartNetworkService()
     
     // MARK: - Initializers
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupPaymentMethodeColletionView()
-        setupViews()
+        requestCurrencies()
     }
     
     override func viewDidLayoutSubviews() {
@@ -157,6 +154,30 @@ final class PaymentViewController: UIViewController {
             paymentButton.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -16),
             paymentButton.heightAnchor.constraint(equalToConstant: 60)
         ])
+    }
+    
+    private func requestCurrencies() {
+        ProgressHUD.show()
+        cartNetworkService.requestCurrencies { [weak self] result in
+            switch result {
+            case .success(let currencies):
+                var resultArr: [PaymentMethodModel] = []
+                currencies.forEach { currenci in
+                    resultArr.append(PaymentMethodModel(
+                        name: currenci.title,
+                        abbreviation: currenci.name,
+                        imageURL: currenci.image))
+                }
+                DispatchQueue.main.async {
+                    ProgressHUD.dismiss()
+                    self?.paymentMethods = resultArr
+                    self?.setupPaymentMethodeColletionView()
+                    self?.setupViews()
+                }
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        }
     }
     
     
