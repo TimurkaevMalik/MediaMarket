@@ -50,7 +50,7 @@ final class CatalogViewController: UIViewController {
             image: UIImage(named: "sortButtonImage"),
             style: .plain,
             target: self,
-            action: nil
+            action: #selector(didTapButton)
         )
         navigationItem.rightBarButtonItem?.tintColor = .black
     }
@@ -62,6 +62,40 @@ final class CatalogViewController: UIViewController {
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+    }
+
+    @objc
+    private func didTapButton() {
+        let alertController = UIAlertController(
+            title: nil,
+            message: NSLocalizedString("Catalog.alertTitle", comment: ""),
+            preferredStyle: .actionSheet
+        )
+
+        let nameSort = UIAlertAction(
+            title: NSLocalizedString("Catalog.alertFirstButton", comment: ""),
+            style: .default
+        ) { _ in
+            print("1")
+        }
+
+        let countSort = UIAlertAction(
+            title: NSLocalizedString("Catalog.alertSecondButton", comment: ""),
+            style: .default
+        ) { _ in
+            print("2")
+        }
+
+        let cancelAction = UIAlertAction(
+            title: NSLocalizedString("Catalog.alertCancelButton", comment: ""),
+            style: .cancel
+        )
+
+        alertController.addAction(nameSort)
+        alertController.addAction(countSort)
+        alertController.addAction(cancelAction)
+
+        self.present(alertController, animated: true)
     }
 }
 
