@@ -236,13 +236,14 @@ final class ProfileViewController: UIViewController {
     
     private func updateControllerProfile(_ profile: Profile) {
         self.profile = profile
+        nftIdArray = profile.nfts
+        likedNFTIdArray = profile.likes
+        
         userNameLabel.text = profile.name
         userDescriptionView.text = profile.description
         linkButton.setTitle(profile.website, for: .normal)
         
         updateUserPhotoWith(url: profile.avatar)
-        updateNftsArray(profile.nfts)
-        updateLikesArray(profile.likes)
         
         tableView.reloadData()
     }
@@ -252,23 +253,6 @@ final class ProfileViewController: UIViewController {
             return
         }
         userPhotoView.kf.setImage(with: avatarUrl)
-    }
-    
-    private func updateNftsArray(_ nfts: [String?]) {
-        
-        for nftId in nfts {
-            if let nftId {
-                self.nftIdArray.append(nftId)
-            }
-        }
-    }
-    
-    private func updateLikesArray(_ likes: [String?]) {
-        for likedNFTId in likes {
-            if let likedNFTId {
-                self.likedNFTIdArray.append(likedNFTId)
-            }
-        }
     }
     
     private func setDefaultTitlesForViews() {
