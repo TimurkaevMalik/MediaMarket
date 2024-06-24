@@ -169,15 +169,14 @@ final class PaymentViewController: UIViewController {
                         imageURL: currenci.image))
                 }
                 DispatchQueue.main.async {
-                    ProgressHUD.dismiss()
                     self?.paymentMethods = resultArr
                     self?.setupPaymentMethodeColletionView()
                     self?.setupViews()
                 }
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
-                ProgressHUD.dismiss()
             }
+            ProgressHUD.dismiss()
         }
     }
     
@@ -187,7 +186,6 @@ final class PaymentViewController: UIViewController {
             switch result {
             case .success(let paymentModel):
                 if paymentModel.success {
-                    ProgressHUD.dismiss()
                     let succsesVC = SuccessfulPaymentViewController()
                     succsesVC.paymentViewController = self
                     succsesVC.cartViewController = self?.cartViewController
@@ -199,17 +197,17 @@ final class PaymentViewController: UIViewController {
                 }
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
-                ProgressHUD.dismiss()
                 self?.showAlert()
             }
+            ProgressHUD.dismiss()
         }
     }
     
     private func showAlert() {
         let alertController = UIAlertController(title: nil, message: "Не удалось произвести оплату", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "Отмена", style: .default, handler: nil)
-        let retryAction = UIAlertAction(title: "Повторить", style: .cancel) { _ in
-            self.requestPayment()
+        let retryAction = UIAlertAction(title: "Повторить", style: .cancel) { [weak self] _ in
+            self?.requestPayment()
         }
         alertController.addAction(cancelAction)
         alertController.addAction(retryAction)
