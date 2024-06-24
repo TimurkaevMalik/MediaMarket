@@ -33,7 +33,8 @@ final class RedactingViewController: UIViewController {
     private var profileInfo: Profile
     private let fetchProfileService = FetchProfileService.shared
     
-    private var warningLabelBottomConstraint: [NSLayoutConstraint] = []
+    private var warningLabelTopConstraint: [NSLayoutConstraint] = []
+    private var userPhotoButtonBottomConstraint: [NSLayoutConstraint] = []
     private let descriptionViewPlaceholder = "Расскажите о себе"
     
     
@@ -83,6 +84,7 @@ final class RedactingViewController: UIViewController {
         dismiss(animated: true)
     }
     
+    
     @objc func userPhotoButtonTapped() {
         showTextFieldAlert(message: nil)
     }
@@ -95,6 +97,10 @@ final class RedactingViewController: UIViewController {
     @objc func clearLinkButtonTapped(){
         linkTextField.text?.removeAll()
         profileInfo.website.removeAll()
+    }
+    
+    @objc func didStartEditingLinkTextField(){
+        liftLinkTextField()
     }
     
     @objc func didEnterNameInTextField(_ sender: UITextField){
@@ -117,6 +123,7 @@ final class RedactingViewController: UIViewController {
     }
     
     @objc func didEnterLinkInTextField(_ sender: UITextField){
+        setInitialPositionOfViews()
         
         guard
             let link = sender.text?.trimmingCharacters(in: .whitespaces),
@@ -177,10 +184,15 @@ final class RedactingViewController: UIViewController {
         view.addSubview(userPhotoButton)
         userPhotoButton.addSubview(userPhotoTitleLabel)
         
+        
+        let constraint = userPhotoButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -602)
+        
+        userPhotoButtonBottomConstraint.append(constraint)
+        userPhotoButtonBottomConstraint.first?.isActive = true
+        
         NSLayoutConstraint.activate([
             userPhotoButton.widthAnchor.constraint(equalToConstant: 70),
             userPhotoButton.heightAnchor.constraint(equalToConstant: 70),
-            userPhotoButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -602),
             userPhotoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             userPhotoTitleLabel.topAnchor.constraint(equalTo: userPhotoButton.topAnchor),
@@ -248,9 +260,11 @@ final class RedactingViewController: UIViewController {
         linkTextField.layer.masksToBounds = true
         linkTextField.leftViewMode = .always
         
-        linkTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
         linkTextField.addTarget(self, action: #selector(didEnterLinkInTextField(_:)), for: .editingDidEndOnExit)
         linkTextField.addTarget(self, action: #selector(didEnterLinkInTextField(_:)), for: .editingDidEnd)
+        linkTextField.addTarget(self, action: #selector(didStartEditingLinkTextField), for: .editingDidBegin)
+        
+        linkTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
         linkTextField.rightView = clearLinkButton
         linkTextField.rightViewMode = .whileEditing
         
@@ -339,9 +353,9 @@ final class RedactingViewController: UIViewController {
         
         let constraint = warningLabel.topAnchor.constraint(equalTo: warningLabelContainer.topAnchor)
         
-        warningLabelBottomConstraint.append(constraint)
+        warningLabelTopConstraint.append(constraint)
         
-        warningLabelBottomConstraint.first?.isActive = true
+        warningLabelTopConstraint.first?.isActive = true
         warningLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     
@@ -352,15 +366,18 @@ final class RedactingViewController: UIViewController {
         
         DispatchQueue.main.async {
             
-            UIView.animate(withDuration: 0.5, delay: 0.03) {
-                self.warningLabelBottomConstraint.first?.constant = -50
-                self.view.layoutIfNeeded()
+            if let constraint = self.warningLabelTopConstraint.first {
                 
-            } completion: { isCompleted in
-                
-                UIView.animate(withDuration: 0.4, delay: 2) {
-                    self.warningLabelBottomConstraint.first?.constant = 0
+                UIView.animate(withDuration: 0.5, delay: 0.03) {
+                    constraint.constant = -50
                     self.view.layoutIfNeeded()
+                    
+                } completion: { isCompleted in
+                    
+                    UIView.animate(withDuration: 0.4, delay: 2) {
+                        constraint.constant = 0
+                        self.view.layoutIfNeeded()
+                    }
                 }
             }
         }
@@ -432,6 +449,36 @@ final class RedactingViewController: UIViewController {
         
         alertPresenter?.textFieldAlert(model: model, placeHolder: placeHolder, delegate: self)
     }
+    
+    private func liftLinkTextField() {
+        UIView.animate(withDuration: 0.3) {
+            
+            if let constraint = self.userPhotoButtonBottomConstraint.first {
+                constraint.constant = -750
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    private func liftDescriptionTextView() {
+        UIView.animate(withDuration: 0.3) {
+            
+            if let constraint = self.userPhotoButtonBottomConstraint.first {
+                constraint.constant = -647
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    private func setInitialPositionOfViews() {
+        UIView.animate(withDuration: 0.5) {
+            
+            if let constraint = self.userPhotoButtonBottomConstraint.first {
+                constraint.constant = -602
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
 }
 
 extension RedactingViewController: UITextFieldDelegate {
@@ -472,6 +519,7 @@ extension RedactingViewController: UITextViewDelegate {
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
+        setInitialPositionOfViews()
         
         let description = textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard
@@ -488,12 +536,14 @@ extension RedactingViewController: UITextViewDelegate {
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
+        
         if let text = textView.text,
            text == descriptionViewPlaceholder {
             textView.text.removeAll()
         }
         
         textView.textColor = .ypBlack
+        liftDescriptionTextView()
     }
 }
 
