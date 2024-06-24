@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FetchProfileService {
+final class FetchProfileService {
     
     private(set) var profileResult: Profile?
     static let shared = FetchProfileService()

@@ -23,10 +23,10 @@ final class ProfileViewController: UIViewController {
     private var profile: Profile?
     private var alertPresenter: AlertPresenter?
     private let tableCellIdentifier = "tableCellIdentifier"
-    private let tableViewCells = ["Мои NFT", "Избранные NFT", "О разрабротчике"]
+    private let tableViewCells = ["Мои NFT", "Избранные NFT", "О разработчике"]
     
-    private var nfts: [String] = []
-    private var likes: [String] = []
+    private var nftIdArray: [String] = []
+    private var likedNFTIdArray: [String] = []
     
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
@@ -48,10 +48,6 @@ final class ProfileViewController: UIViewController {
         configureUserDescription()
         configureLinkButton()
         configureTableView()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         fetchProfile()
     }
     
@@ -260,17 +256,17 @@ final class ProfileViewController: UIViewController {
     
     private func updateNftsArray(_ nfts: [String?]) {
         
-        for nft in nfts {
-            if let nft {
-                self.nfts.append(nft)
+        for nftId in nfts {
+            if let nftId {
+                self.nftIdArray.append(nftId)
             }
         }
     }
     
     private func updateLikesArray(_ likes: [String?]) {
-        for like in likes {
-            if let like {
-                self.likes.append(like)
+        for likedNFTId in likes {
+            if let likedNFTId {
+                self.likedNFTIdArray.append(likedNFTId)
             }
         }
     }
@@ -326,9 +322,9 @@ extension ProfileViewController: UITableViewDataSource {
         }
         
         if indexPath.row == 0 {
-            cell.cellTextLabel.text = tableViewCells[indexPath.row] + " " + "(\(nfts.count))"
+            cell.cellTextLabel.text = tableViewCells[indexPath.row] + " " + "(\(nftIdArray.count))"
         } else if indexPath.row == 1 {
-            cell.cellTextLabel.text = tableViewCells[indexPath.row] + " " + "(\(likes.count))"
+            cell.cellTextLabel.text = tableViewCells[indexPath.row] + " " + "(\(likedNFTIdArray.count))"
         } else {
             cell.cellTextLabel.text = tableViewCells[indexPath.row]
         }

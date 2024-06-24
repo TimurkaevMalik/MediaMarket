@@ -70,7 +70,7 @@ final class RedactingViewController: UIViewController {
         delegate?.didEndRedactingProfile(profileInfo)
     }
     
-    @objc func closeControllerButtonTapper() {
+    @objc func closeControllerButtonTapped() {
         dismiss(animated: true)
     }
     
@@ -131,9 +131,8 @@ final class RedactingViewController: UIViewController {
         closeControllerButton.tintColor = .ypBlack
         
         closeControllerButton.setImage(image, for: .normal)
-        closeControllerButton.addTarget(self, action: #selector(closeControllerButtonTapper), for: .touchUpInside)
-        
-        closeControllerButton.addTarget(self, action: #selector(userPhotoButtonTapped), for: .touchUpInside)
+        closeControllerButton.addTarget(self, action: #selector(closeControllerButtonTapped), for: .touchUpInside)
+    
         closeControllerButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(closeControllerButton)
         
