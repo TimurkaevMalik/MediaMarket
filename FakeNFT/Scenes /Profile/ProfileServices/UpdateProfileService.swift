@@ -9,7 +9,7 @@ import UIKit
 
 final class UpdateProfileService {
 
-    private(set) var profileResult: Profile?
+    private(set) static var profileResult: Profile?
     static let shared = UpdateProfileService()
 
     private var task: URLSessionTask?
@@ -24,11 +24,13 @@ final class UpdateProfileService {
             task?.cancel()
         }
 
+        UpdateProfileService.profileResult = profile
+        
         guard let request = makeRequestBody(profile: profile, token: token) else {
             completion(.failure(ProfileServiceError.codeError("Uknown Error")))
             return
         }
-
+        
         let session: URLSessionDataTask = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
 
             DispatchQueue.main.async { [weak self] in
@@ -52,7 +54,7 @@ final class UpdateProfileService {
                     do {
                         let profileResultInfo = try JSONDecoder().decode(Profile.self, from: data)
 
-                        self.profileResult = profileResultInfo
+                        UpdateProfileService.profileResult = profileResultInfo
                         completion(.success(profileResultInfo))
                     } catch {
                         completion(.failure(ProfileServiceError.codeError("Unknown error")))

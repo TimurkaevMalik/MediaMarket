@@ -17,9 +17,8 @@ final class ProfileViewController: UIViewController {
     private lazy var userDescriptionView = UITextView()
     private lazy var userPhotoView = UIImageView(image: UIImage(named: "avatarPlug"))
     
-    private let fetchProfileService = FetchProfileService.shared
-    private let updateProfileService = UpdateProfileService.shared
     private let servicesAssembly: ServicesAssembly
+    private var profileFactory: ProfileFactory?
     private var profile: Profile?
     private var alertPresenter: AlertPresenter?
     private let tableCellIdentifier = "tableCellIdentifier"
@@ -32,6 +31,7 @@ final class ProfileViewController: UIViewController {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
         
+        profileFactory = ProfileFactory(delegate: self)
         alertPresenter = AlertPresenter(viewController: self)
     }
     
@@ -117,7 +117,7 @@ final class ProfileViewController: UIViewController {
         userDescriptionView.textContainer.lineFragmentPadding = 0
         userDescriptionView.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         userDescriptionView.textAlignment = .left
-        userDescriptionView.textContainer.maximumNumberOfLines = 4
+        userDescriptionView.textContainer.maximumNumberOfLines = 5
         
         let text = "Поиск описания"
         
@@ -177,61 +177,12 @@ final class ProfileViewController: UIViewController {
     }
     
     private func fetchProfile() {
-        
-        if let profile = fetchProfileService.profileResult {
-            updateControllerProfile(profile)
-            return
-        }
-        
-        let token = MalikToken.token
-        
-        UIBlockingProgressHUD.show()
-        
         setFetchigInfoTiltesForViews()
-        
-        fetchProfileService.fecthProfile(token) { [weak self] result in
-            
-            guard let self else { return }
-            
-            switch result {
-                
-            case .success(let profile):
-                self.updateControllerProfile(profile)
-                
-            case .failure(let error):
-                self.setDefaultTitlesForViews()
-                self.showServiceErrorAlert(error) {
-                    self.fetchProfile()
-                }
-            }
-            
-            UIBlockingProgressHUD.dismiss()
-        }
+        profileFactory?.loadProfile()
     }
     
     private func updateProfile(_ profile: Profile) {
-        
-        let token = MalikToken.token
-        
-        UIBlockingProgressHUD.show()
-        
-        updateProfileService.updateProfile(token, profile: profile) { [weak self] result in
-            
-            guard let self else { return }
-            
-            switch result {
-                
-            case .success(let profile):
-                self.updateControllerProfile(profile)
-                
-            case .failure(let error):
-                self.showServiceErrorAlert(error) {
-                    self.updateProfile(profile)
-                }
-            }
-            
-            UIBlockingProgressHUD.dismiss()
-        }
+        profileFactory?.updateProfileOnServer(profile)
     }
     
     private func updateControllerProfile(_ profile: Profile) {
@@ -380,5 +331,39 @@ extension ProfileViewController: ProfileControllerDelegate {
     private func backToRedact(profile: Profile) {
         let viewController = RedactingViewController(profile: profile, delegate: self)
         present(viewController, animated: true)
+    }
+}
+
+extension ProfileViewController: ProfileFactoryDelegate {
+    func didExecuteRequest(_ profile: Profile) {
+        self.updateControllerProfile(profile)
+    }
+    
+    func didFailToLoadProfile(with error: ProfileServiceError) {
+        setDefaultTitlesForViews()
+        showServiceErrorAlert(error) {
+            self.fetchProfile()
+        }
+    }
+    
+    func didFailToUpdateProfile(with error: ProfileServiceError) {
+        
+        if let profile = UpdateProfileService.profileResult {
+            
+        showServiceErrorAlert(error) {
+                self.updateProfile(profile)
+            }
+        } else if let profile = self.profile {
+            
+            let model = AlertModel(
+                title: "Неизвестная ошбика",
+                message: "Попробуйте отредактировать ещё раз",
+                closeAlertTitle: "Отмена",
+                completionTitle: "Вернуться") {
+                    self.backToRedact(profile: profile)
+                }
+            
+            alertPresenter?.defaultAlert(model: model)
+        }
     }
 }
