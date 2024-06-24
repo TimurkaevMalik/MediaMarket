@@ -221,7 +221,9 @@ final class PaymentViewController: UIViewController {
     }
     
     @objc private func userAgreementButtonTapped() {
-        print("Пользовательское соглашение")
+        let vc = UserAgreementViewController()
+        vc.modalPresentationStyle = .automatic
+        self.present(vc, animated: true)
     }
     
     @objc private func paymentButtonTapped() {
