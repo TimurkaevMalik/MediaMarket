@@ -52,6 +52,10 @@ final class RedactingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+        
         configureUserPhoto()
         configureLimitWarningLabel()
         configureNameTitleAndTextField()
@@ -68,6 +72,11 @@ final class RedactingViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         delegate?.didEndRedactingProfile(profileInfo)
+    }
+    
+    @objc func dismissKeyboard() {
+        
+        view.endEditing(true)
     }
     
     @objc func closeControllerButtonTapped() {
