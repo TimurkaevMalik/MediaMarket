@@ -283,6 +283,7 @@ extension ProfileViewController: UITableViewDelegate {
         if indexPath.row == 0 {
             
             let viewController = NFTCollectionController(nftIdArray: nftIdArray, likedNftIdArray: likedNFTIdArray)
+            viewController.modalPresentationStyle = .fullScreen
             present(viewController, animated: true)
         }
     }

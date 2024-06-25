@@ -13,6 +13,8 @@ final class NFTCollectionController: UIViewController {
     private lazy var titleLabel = UILabel()
     private lazy var topViewsContainer = UIView()
     private lazy var centralPlugLabel = UILabel()
+    private lazy var closeButton = UIButton()
+    
     
     private var nftIdArray: [String]
     private var likedNFTIdArray: [String]
@@ -29,10 +31,16 @@ final class NFTCollectionController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .ypWhite
         
         configureCentralPlugLabel()
         configureTopViewsContainer()
         configureTitleLabel()
+        configureCloseButton()
+    }
+    
+    @objc func closeControllerButtonTapped() {
+        dismiss(animated: true)
     }
     
     private func configureTopViewsContainer() {
@@ -76,6 +84,24 @@ final class NFTCollectionController: UIViewController {
             centralPlugLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant: 16),
             centralPlugLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             centralPlugLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 30)
+        ])
+    }
+    
+    private func configureCloseButton() {
+        let image = UIImage(systemName: "chevron.backward")
+        closeButton.tintColor = .ypBlack
+        
+        closeButton.setImage(image, for: .normal)
+        closeButton.addTarget(self, action: #selector(closeControllerButtonTapped), for: .touchUpInside)
+        
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(closeButton)
+        
+        NSLayoutConstraint.activate([
+            closeButton.widthAnchor.constraint(equalToConstant: 24),
+            closeButton.heightAnchor.constraint(equalToConstant: 24),
+            closeButton.centerYAnchor.constraint(equalTo: topViewsContainer.centerYAnchor),
+            closeButton.leadingAnchor.constraint(equalTo: topViewsContainer.leadingAnchor, constant: 9)
         ])
     }
 }
