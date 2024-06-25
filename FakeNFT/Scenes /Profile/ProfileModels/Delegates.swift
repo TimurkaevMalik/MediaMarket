@@ -20,6 +20,10 @@ protocol SortAlertDelegate: AnyObject {
     func sortByName()
 }
 
+protocol CollectionViewCellDelegate: AnyObject {
+    func cellLikeButtonTapped(_ cell: NFTCollectionCell)
+}
+
 protocol ProfileControllerDelegate: AnyObject {
     func didEndRedactingProfile(_ profile: Profile)
 }

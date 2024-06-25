@@ -15,11 +15,14 @@ final class NFTCollectionController: UIViewController {
     private lazy var centralPlugLabel = UILabel()
     private lazy var closeButton = UIButton()
     private lazy var sortButton = UIButton()
+    private lazy var nftCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     private var alertPresenter: AlertPresenter?
     
     private var nftIdArray: [String]
     private var likedNFTIdArray: [String]
+    private let nftCollectionCellIdentifier = "nftCollectionCellIdentifier"
+    private let params = GeomitricParams(cellCount: 1, leftInset: 16, rightInset: 39, cellSpacing: 0)
     
     init(nftIdArray: [String], likedNftIdArray: [String]){
         self.nftIdArray = nftIdArray
@@ -42,6 +45,7 @@ final class NFTCollectionController: UIViewController {
         configureTitleLabel()
         configureCloseButton()
         configureSortButton()
+        configureNFTCollectionView()
     }
     
     @objc func closeControllerButtonTapped() {
@@ -131,7 +135,62 @@ final class NFTCollectionController: UIViewController {
             sortButton.trailingAnchor.constraint(equalTo: topViewsContainer.trailingAnchor, constant: -9)
         ])
     }
+    
+    private func configureNFTCollectionView() {
+        nftCollectionView.dataSource = self
+        nftCollectionView.delegate = self
+        nftCollectionView.backgroundColor = .clear
+        
+        nftCollectionView.register(NFTCollectionCell.self, forCellWithReuseIdentifier: nftCollectionCellIdentifier)
+        
+        nftCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(nftCollectionView)
+        
+        NSLayoutConstraint.activate([
+            nftCollectionView.topAnchor.constraint(equalTo: topViewsContainer.bottomAnchor, constant: 20),
+            nftCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            nftCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            nftCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
 }
+
+extension NFTCollectionController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        centralPlugLabel.isHidden = true
+        
+        return 5
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: nftCollectionCellIdentifier, for: indexPath) as? NFTCollectionCell else {
+            return UICollectionViewCell()
+        }
+        
+        cell.setParametrs(ratingNumber: 3, authorName: "Малик", price: 240, nftName: "Limbo", nftImageLink: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Outdoors-man-portrait_%28cropped%29.jpg/440px-Outdoors-man-portrait_%28cropped%29.jpg")
+        cell.awakeFromNib()
+        
+        return cell
+    }
+}
+
+extension NFTCollectionController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let availibleSpacing = collectionView.frame.width - params.paddingWidth
+        let cellWidth = availibleSpacing / params.cellCount
+        
+        return CGSize(width: cellWidth, height: cellWidth / 3)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        
+        return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 39)
+    }
+}
+
 
 extension NFTCollectionController: SortAlertDelegate {
     func sortByPrice() {
