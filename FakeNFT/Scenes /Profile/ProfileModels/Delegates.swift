@@ -10,8 +10,13 @@ import UIKit
 
 protocol ProfileFactoryDelegate: AnyObject {
     func didExecuteRequest(_ profile: Profile)
-    func didFailToLoadProfile(with error: ProfileServiceError)
-    func didFailToUpdateProfile(with error: ProfileServiceError)
+    func didFailToLoadProfile(with error: NetworkServiceError)
+    func didFailToUpdateProfile(with error: NetworkServiceError)
+}
+
+protocol NFTFactoryDelegate: AnyObject {
+    func didRecieveNFT(_ nft: NFTResult)
+    func didFailToLoadNFT(with error: NetworkServiceError)
 }
 
 protocol SortAlertDelegate: AnyObject {

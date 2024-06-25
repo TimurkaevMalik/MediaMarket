@@ -18,11 +18,14 @@ final class NFTCollectionController: UIViewController {
     private lazy var nftCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     private var alertPresenter: AlertPresenter?
+    private var nftFactory: NFTFactory?
     
+    private var nftResult: [NFTResult] = []
     private var nftIdArray: [String]
     private var likedNFTIdArray: [String]
     private let nftCollectionCellIdentifier = "nftCollectionCellIdentifier"
-    private let params = GeomitricParams(cellCount: 1, leftInset: 16, rightInset: 39, cellSpacing: 0)
+    private let params = GeomitricParams(cellCount: 1, leftInset: 16, rightInset: 16, cellSpacing: 0)
+    
     
     init(nftIdArray: [String], likedNftIdArray: [String]){
         self.nftIdArray = nftIdArray
@@ -30,6 +33,7 @@ final class NFTCollectionController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         alertPresenter = AlertPresenter(viewController: self)
+        nftFactory = NFTFactory(delegate: self)
     }
     
     required init?(coder: NSCoder) {
@@ -46,6 +50,10 @@ final class NFTCollectionController: UIViewController {
         configureCloseButton()
         configureSortButton()
         configureNFTCollectionView()
+        
+        if !nftIdArray.isEmpty {
+            fetchNextNFT()
+        }
     }
     
     @objc func closeControllerButtonTapped() {
@@ -71,6 +79,7 @@ final class NFTCollectionController: UIViewController {
     
     private func configureTitleLabel(){
         titleLabel.textColor = .ypBlack
+        titleLabel.isHidden = true
         titleLabel.text = "Мои NFT"
         titleLabel.font = UIFont.bodyBold
         
@@ -85,6 +94,7 @@ final class NFTCollectionController: UIViewController {
     
     private func configureCentralPlugLabel(){
         centralPlugLabel.textColor = .ypBlack
+        centralPlugLabel.isHidden = true
         
         centralPlugLabel.text = "У вас ещё нет NFT"
         centralPlugLabel.textAlignment = .center
@@ -121,6 +131,7 @@ final class NFTCollectionController: UIViewController {
     private func configureSortButton() {
         let image = UIImage(named: "sortButtonImage")
         sortButton.tintColor = .ypBlack
+        sortButton.isHidden = true
         
         sortButton.setImage(image, for: .normal)
         sortButton.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
@@ -147,7 +158,7 @@ final class NFTCollectionController: UIViewController {
         view.addSubview(nftCollectionView)
         
         NSLayoutConstraint.activate([
-            nftCollectionView.topAnchor.constraint(equalTo: topViewsContainer.bottomAnchor, constant: 20),
+            nftCollectionView.topAnchor.constraint(equalTo: topViewsContainer.bottomAnchor),
             nftCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             nftCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             nftCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -156,10 +167,22 @@ final class NFTCollectionController: UIViewController {
 }
 
 extension NFTCollectionController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        centralPlugLabel.isHidden = true
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         
-        return 5
+        if nftResult.isEmpty {
+            centralPlugLabel.isHidden = false
+        } else {
+            centralPlugLabel.isHidden = true
+            titleLabel.isHidden = false
+            sortButton.isHidden = false
+        }
+        
+        return nftResult.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -167,8 +190,8 @@ extension NFTCollectionController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: nftCollectionCellIdentifier, for: indexPath) as? NFTCollectionCell else {
             return UICollectionViewCell()
         }
-        
-        cell.setParametrs(ratingNumber: 3, authorName: "Малик", price: 240, nftName: "Limbo", nftImageLink: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Outdoors-man-portrait_%28cropped%29.jpg/440px-Outdoors-man-portrait_%28cropped%29.jpg")
+    
+        cell.nft = nftResult[indexPath.section]
         cell.awakeFromNib()
         
         return cell
@@ -182,26 +205,73 @@ extension NFTCollectionController: UICollectionViewDelegateFlowLayout {
         let availibleSpacing = collectionView.frame.width - params.paddingWidth
         let cellWidth = availibleSpacing / params.cellCount
         
-        return CGSize(width: cellWidth, height: cellWidth / 3)
+        return CGSize(width: cellWidth, height: cellWidth / 3.18)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        
-        return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 39)
+        return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
 }
 
 
 extension NFTCollectionController: SortAlertDelegate {
-    func sortByPrice() {
-        print("sortByPrice")
+    func sortByPrice() {}
+    func sortByRate() {}
+    func sortByName() {}
+}
+
+extension NFTCollectionController: NFTFactoryDelegate {
+    func didRecieveNFT(_ nft: NFTResult) {
+        nftResult.append(nft)
+        fetchNextNFT()
     }
     
-    func sortByRate() {
-        print("sortByRate")
+    func didFailToLoadNFT(with error: NetworkServiceError) {
+        
+        UIBlockingProgressHUD.dismiss()
+        nftCollectionView.reloadData()
+        
+        let errorString: String
+        
+        switch error {
+            
+        case .codeError(let value):
+            errorString = value
+        case .responseError(let value):
+            errorString = "\(value)"
+        case .invalidRequest:
+            errorString = "Unknown error"
+        }
+        
+        alertPresenter?.fetchNFTAlert(title: "Ошибка: \(errorString)", delegate: self)
     }
     
-    func sortByName() {
-        print("sortByName")
+    func fetchNextNFT() {
+        
+        UIBlockingProgressHUD.show()
+        
+        if nftResult.count < nftIdArray.count {
+            let nextNFT = nftIdArray[nftResult.count]
+            nftFactory?.loadNFT(id: nextNFT)
+        } else {
+            nftCollectionView.reloadData()
+            UIBlockingProgressHUD.dismiss()
+        }
+    }
+}
+
+extension NFTCollectionController: FetchNFTAlertDelegate {
+    func tryToReloadNFT() {
+        fetchNextNFT()
+    }
+    
+    func loadRestOfNFT() {
+        let lostNFTIndex = nftResult.count == 0 ? 0 : nftResult.count - 1
+        nftIdArray.remove(at: lostNFTIndex)
+        fetchNextNFT()
+    }
+    
+    func closeActionTapped() {
+        centralPlugLabel.text = "Не удалось получить NFT"
     }
 }

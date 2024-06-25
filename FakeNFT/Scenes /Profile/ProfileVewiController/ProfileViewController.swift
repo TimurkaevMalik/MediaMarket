@@ -218,7 +218,7 @@ final class ProfileViewController: UIViewController {
         linkButton.setTitle("Поиск ссылки сайта", for: .normal)
     }
     
-    private func showServiceErrorAlert(_ error: ProfileServiceError, completion: @escaping () -> Void) {
+    private func showServiceErrorAlert(_ error: NetworkServiceError, completion: @escaping () -> Void) {
         let errorString: String
         
         switch error {
@@ -346,14 +346,14 @@ extension ProfileViewController: ProfileFactoryDelegate {
         self.updateControllerProfile(profile)
     }
     
-    func didFailToLoadProfile(with error: ProfileServiceError) {
+    func didFailToLoadProfile(with error: NetworkServiceError) {
         setDefaultTitlesForViews()
         showServiceErrorAlert(error) {
             self.fetchProfile()
         }
     }
     
-    func didFailToUpdateProfile(with error: ProfileServiceError) {
+    func didFailToUpdateProfile(with error: NetworkServiceError) {
         
         if let profile = UpdateProfileService.profileResult {
             

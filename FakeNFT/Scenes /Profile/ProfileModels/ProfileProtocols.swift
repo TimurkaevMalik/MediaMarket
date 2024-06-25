@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ProfileServiceError: Error {
+enum NetworkServiceError: Error {
     case codeError(_ value: String)
     case responseError(_ value: Int)
     case invalidRequest

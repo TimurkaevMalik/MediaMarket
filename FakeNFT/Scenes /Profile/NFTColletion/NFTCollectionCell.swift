@@ -26,17 +26,12 @@ final class NFTCollectionCell: UICollectionViewCell {
     private lazy var ratingImageView: UIImageView = {
         
         let frame = CGRect(x: 0, y: 0, width: 108, height: 108)
-        let ratingNumber = ratingNunmber ?? 0
+        let ratingNumber = nft?.rating ?? 0
         
         return RatingImageView(frame: frame, ratingNumber: ratingNumber)
     }()
     
-    ////TODO Заемнить переменные на одну модуль NFT
-    private var nftName: String?
-    private var ratingNunmber: Int?
-    private var authorName: String?
-    private var price: Int?
-    private var nftImageLink: String?
+    var nft: NFTResult?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -66,20 +61,6 @@ final class NFTCollectionCell: UICollectionViewCell {
         delegate?.cellLikeButtonTapped(self)
     }
     
-    func setParametrs(ratingNumber: Int, authorName: String, price: Int, nftName: String, nftImageLink: String) {
-        self.nftName = nftName
-        self.ratingNunmber = ratingNumber
-        self.authorName = authorName
-        self.price = price
-        self.nftImageLink = nftImageLink
-    }
-    
-    func updateViews() {
-        nftNameLabel.text = nftName
-        authorLabel.text = authorName
-        
-    }
-    
     private func configureViewsContainer(){
         viewsContainer.backgroundColor = .clear
         
@@ -96,7 +77,7 @@ final class NFTCollectionCell: UICollectionViewCell {
     
     func configureNFTImageView() {
         
-        if let nftImageLink{
+        if let nftImageLink = nft?.images.first {
             nftImageView.kf.setImage(with: URL(string: nftImageLink), placeholder: UIImage(systemName: "photo"))
         }
         
@@ -143,7 +124,7 @@ final class NFTCollectionCell: UICollectionViewCell {
             ratingImageView.widthAnchor.constraint(equalToConstant: 68),
             ratingImageView.heightAnchor.constraint(equalToConstant: 12),
             ratingImageView.centerYAnchor.constraint(equalTo: viewsContainer.centerYAnchor),
-            ratingImageView.leadingAnchor.constraint(equalTo: viewsContainer.leadingAnchor, constant: 130)
+            ratingImageView.leadingAnchor.constraint(equalTo: nftImageView.trailingAnchor, constant: 20)
         ])
     }
     
@@ -155,9 +136,9 @@ final class NFTCollectionCell: UICollectionViewCell {
         nftNameLabel.font = .bodyBold
         authorLabel.font = .caption2
         
-        if let authorName, let nftName {
-            nftNameLabel.text = nftName
-            authorLabel.text = "От \(authorName)"
+        if let author = nft?.author, let nftName = nft?.name {
+            nftNameLabel.text = nftName.cutString(at: " ")
+            authorLabel.text = "От \(author)"
         }
         
         nftNameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -168,7 +149,6 @@ final class NFTCollectionCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             nftNameLabel.heightAnchor.constraint(equalToConstant: 22),
             nftNameLabel.leadingAnchor.constraint(equalTo: ratingImageView.leadingAnchor),
-            nftNameLabel.trailingAnchor.constraint(equalTo: ratingImageView.trailingAnchor),
             nftNameLabel.bottomAnchor.constraint(equalTo: ratingImageView.topAnchor, constant: -4),
             
             authorLabel.heightAnchor.constraint(equalToConstant: 20),
@@ -182,13 +162,13 @@ final class NFTCollectionCell: UICollectionViewCell {
         priceLabel.textColor = .ypBlack
         priceLabel.textAlignment = .left
         priceLabel.numberOfLines = 2
+        priceLabel.font = .caption2
         
-        if let price {
+        if let price = nft?.price {
             let priceString = "\(price) ETH"
+            let attributedString = NSMutableAttributedString(string: "Цена" + "\n" + "\(priceString)")
             
-            let attributedString = NSMutableAttributedString(string: "Цена \n \(priceString)")
             attributedString.setFont(.bodyBold, forText: "\(priceString)")
-            
             priceLabel.attributedText = attributedString
         }
         
@@ -198,7 +178,8 @@ final class NFTCollectionCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             priceLabel.topAnchor.constraint(equalTo: viewsContainer.topAnchor, constant: 33),
             priceLabel.bottomAnchor.constraint(equalTo: viewsContainer.bottomAnchor, constant: -33),
-            priceLabel.trailingAnchor.constraint(equalTo: viewsContainer.trailingAnchor)
+            priceLabel.trailingAnchor.constraint(equalTo: viewsContainer.trailingAnchor),
+            priceLabel.leadingAnchor.constraint(lessThanOrEqualTo: nftImageView.trailingAnchor, constant: 137)
         ])
     }
     

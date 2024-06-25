@@ -16,7 +16,7 @@ final class FetchProfileService {
     
     private init() {}
     
-    func fecthProfile(_ token: String, completion: @escaping (Result<Profile,ProfileServiceError>) -> Void) {
+    func fecthProfile(_ token: String, completion: @escaping (Result<Profile,NetworkServiceError>) -> Void) {
         
         assert(Thread.isMainThread)
         
@@ -25,7 +25,7 @@ final class FetchProfileService {
         }
         
         guard let request = makeRequstBody(token: token) else {
-            completion(.failure(ProfileServiceError.codeError("Uknown Error")))
+            completion(.failure(NetworkServiceError.codeError("Uknown Error")))
             return
         }
         
@@ -35,14 +35,16 @@ final class FetchProfileService {
                 
                 guard let self = self else {return}
                 
+                self.task = nil
+                
                 if let error = error {
-                    completion(.failure(ProfileServiceError.codeError("Unknown error")))
+                    completion(.failure(NetworkServiceError.codeError("Unknown error")))
                     return
                 }
                 
                 if let response = response as? HTTPURLResponse, response.statusCode < 200 || response.statusCode  >= 300 {
                     
-                    completion(.failure(ProfileServiceError.responseError(response.statusCode)))
+                    completion(.failure(NetworkServiceError.responseError(response.statusCode)))
                     return
                 }
                 
@@ -54,10 +56,9 @@ final class FetchProfileService {
                         self.profileResult = profileResultInfo
                         completion(.success(profileResultInfo))
                     } catch {
-                        completion(.failure(ProfileServiceError.codeError("Unknown error")))
+                        completion(.failure(NetworkServiceError.codeError("Unknown error")))
                     }
                 }
-                self.task = nil
             }
         }
         
