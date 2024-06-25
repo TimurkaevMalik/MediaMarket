@@ -14,7 +14,9 @@ final class NFTCollectionController: UIViewController {
     private lazy var topViewsContainer = UIView()
     private lazy var centralPlugLabel = UILabel()
     private lazy var closeButton = UIButton()
+    private lazy var sortButton = UIButton()
     
+    private var alertPresenter: AlertPresenter?
     
     private var nftIdArray: [String]
     private var likedNFTIdArray: [String]
@@ -23,6 +25,8 @@ final class NFTCollectionController: UIViewController {
         self.nftIdArray = nftIdArray
         self.likedNFTIdArray = likedNftIdArray
         super.init(nibName: nil, bundle: nil)
+        
+        alertPresenter = AlertPresenter(viewController: self)
     }
     
     required init?(coder: NSCoder) {
@@ -37,10 +41,15 @@ final class NFTCollectionController: UIViewController {
         configureTopViewsContainer()
         configureTitleLabel()
         configureCloseButton()
+        configureSortButton()
     }
     
     @objc func closeControllerButtonTapped() {
         dismiss(animated: true)
+    }
+    
+    @objc func sortButtonTapped() {
+        alertPresenter?.sortionAlert(delegate: self)
     }
     
     private func configureTopViewsContainer() {
@@ -103,5 +112,37 @@ final class NFTCollectionController: UIViewController {
             closeButton.centerYAnchor.constraint(equalTo: topViewsContainer.centerYAnchor),
             closeButton.leadingAnchor.constraint(equalTo: topViewsContainer.leadingAnchor, constant: 9)
         ])
+    }
+    
+    private func configureSortButton() {
+        let image = UIImage(named: "sortButtonImage")
+        sortButton.tintColor = .ypBlack
+        
+        sortButton.setImage(image, for: .normal)
+        sortButton.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
+        
+        sortButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(sortButton)
+        
+        NSLayoutConstraint.activate([
+            sortButton.widthAnchor.constraint(equalToConstant: 24),
+            sortButton.heightAnchor.constraint(equalToConstant: 24),
+            sortButton.centerYAnchor.constraint(equalTo: topViewsContainer.centerYAnchor),
+            sortButton.trailingAnchor.constraint(equalTo: topViewsContainer.trailingAnchor, constant: -9)
+        ])
+    }
+}
+
+extension NFTCollectionController: SortAlertDelegate {
+    func sortByPrice() {
+        print("sortByPrice")
+    }
+    
+    func sortByRate() {
+        print("sortByRate")
+    }
+    
+    func sortByName() {
+        print("sortByName")
     }
 }
