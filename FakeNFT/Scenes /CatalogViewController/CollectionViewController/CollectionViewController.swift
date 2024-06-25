@@ -2,7 +2,7 @@
 //  CollectionViewController.swift
 //  FakeNFT
 //
-//  Created by Artem Krasnov on 22.06.2024.
+//  Created by Artem Krasnov on 25.06.2024.
 //
 
 import UIKit
