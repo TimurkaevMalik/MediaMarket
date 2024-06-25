@@ -115,8 +115,14 @@ extension CatalogViewController: UITableViewDataSource {
 
         guard let cell = cell else { return UITableViewCell()}
 
-        cell.coverImageView.image = UIImage(named: "White")
-        cell.nameLabel.text = "Peach (\(indexPath.row))"
+        let catalog = CatalogModel(
+            name: "Peach",
+            cover: UIImage(named: "White") ?? UIImage(),
+            count: indexPath.row
+        )
+
+        cell.configure(catalog: catalog)
+
         return cell
     }
 }

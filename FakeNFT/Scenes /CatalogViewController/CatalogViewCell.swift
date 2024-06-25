@@ -9,9 +9,9 @@ import UIKit
 
 final class CatalogViewCell: UITableViewCell {
 
-    // MARK: - Public Properties
+    // MARK: - Private Properties
 
-    lazy var coverImageView: UIImageView = {
+    private lazy var coverImageView: UIImageView = {
         let coverImageView = UIImageView()
         coverImageView.translatesAutoresizingMaskIntoConstraints = false
         coverImageView.layer.cornerRadius = 12
@@ -20,7 +20,7 @@ final class CatalogViewCell: UITableViewCell {
         return coverImageView
     }()
 
-    lazy var nameLabel: UILabel = {
+    private lazy var nameLabel: UILabel = {
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.font = .boldSystemFont(ofSize: 17)
@@ -42,6 +42,11 @@ final class CatalogViewCell: UITableViewCell {
     }
 
     // MARK: - Public Methods
+
+    func configure(catalog: CatalogModel) {
+        coverImageView.image = catalog.cover
+        nameLabel.text = "\(catalog.name) (\(catalog.count))"
+    }
 
     // MARK: - Private Methods
 
