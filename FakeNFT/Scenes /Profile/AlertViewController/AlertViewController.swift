@@ -11,15 +11,15 @@ import UIKit
 final class AlertPresenter {
     
     let viewController: UIViewController
-
+    
     init(viewController: UIViewController) {
         self.viewController = viewController
     }
-   
+    
     func textFieldAlert(model: AlertModel, placeHolder: String, delegate: TextFieldAlertDelegate) {
-
+        
         let alert = UIAlertController(title: model.title, message: model.message, preferredStyle: .alert)
-
+        
         alert.addTextField { textField in
             textField.placeholder = placeHolder
         }
@@ -54,6 +54,33 @@ final class AlertPresenter {
         
         alert.addAction(actionCallMethod)
         alert.addAction(actionCancel)
+        
+        viewController.present(alert, animated: true)
+    }
+    
+    func sortionAlert(delegate: SortAlertDelegate) {
+        
+        let alert = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
+        alert.view.tintColor = .ypBlue
+        
+        let sortByPrice = UIAlertAction(title: "По цене", style: .default) { _ in
+            delegate.sortByPrice()
+        }
+        
+        let sortByRate = UIAlertAction(title: "По рейтингу", style: .default) { _ in
+            delegate.sortByRate()
+        }
+        
+        let sortByName = UIAlertAction(title: "По названию", style: .default) { _ in
+            delegate.sortByName()
+        }
+        
+        let closeAction = UIAlertAction(title: "Закрыть", style: .cancel)
+        
+        alert.addAction(sortByPrice)
+        alert.addAction(sortByRate)
+        alert.addAction(sortByName)
+        alert.addAction(closeAction)
         
         viewController.present(alert, animated: true)
     }

@@ -14,6 +14,12 @@ protocol ProfileFactoryDelegate: AnyObject {
     func didFailToUpdateProfile(with error: ProfileServiceError)
 }
 
+protocol SortAlertDelegate: AnyObject {
+    func sortByPrice()
+    func sortByRate()
+    func sortByName()
+}
+
 protocol ProfileControllerDelegate: AnyObject {
     func didEndRedactingProfile(_ profile: Profile)
 }
