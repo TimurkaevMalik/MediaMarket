@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 struct NftInCartModel {
+    let id: String
     let name: String
     let rating: Int
     let price: Double

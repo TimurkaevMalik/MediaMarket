@@ -15,6 +15,7 @@ final class CartViewController: UIViewController {
     let servicesAssembly: ServicesAssembly
     var nfts: [NftInCartModel] = []
     let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+    let cartNetworkService = CartNetworkService()
     
     // MARK: - Private Properties
     
@@ -24,7 +25,6 @@ final class CartViewController: UIViewController {
     private let nftCountLable = UILabel()
     private let nftPriceLable = UILabel()
     private let cartIsEmptyLable = UILabel()
-    private let cartNetworkService = CartNetworkService()
     private let sortButton = UIButton()
     private var sortMethod: Int? = nil
     
@@ -57,6 +57,53 @@ final class CartViewController: UIViewController {
     func turnOnBlurEffect() {
         blurEffectView.isHidden = false
     }
+    
+    func reloadNfts() {
+         var nfts: [NftInCartModel] = []
+         ProgressHUD.show()
+         cartNetworkService.fetchOrder() { [weak self] result in
+             switch result {
+             case .success(let order):
+                 var numberOfCicle = 0
+                 if order.nfts.isEmpty {
+                     DispatchQueue.main.async {
+                         self?.nfts = nfts
+                         ProgressHUD.dismiss()
+                         self?.reloadView()
+                     }
+                 } else {
+                     order.nfts.forEach({ id in
+                         self?.cartNetworkService.requestByNftId(id: id) { [weak self] result in
+                             switch result {
+                             case .success(let nft):
+                                 let nftInCard = NftInCartModel(
+                                    id: nft.id,
+                                    name: nft.name,
+                                    rating: nft.rating,
+                                    price: nft.price,
+                                    picture: nft.images[0])
+                                 nfts.append(nftInCard)
+                                 numberOfCicle += 1
+                                 if numberOfCicle == order.nfts.count {
+                                     DispatchQueue.main.async {
+                                         self?.nfts = nfts
+                                         ProgressHUD.dismiss()
+                                         self?.sortNft()
+                                         self?.reloadView()
+                                     }
+                                 }
+                             case .failure(let error):
+                                 print("Error: \(error.localizedDescription)")
+                             }
+                         }
+                     })
+                 }
+             case .failure(let error):
+                 print("Error: \(error.localizedDescription)")
+             }
+         }
+     }
+     
     
     // MARK: - Private Methods
     
@@ -92,43 +139,6 @@ final class CartViewController: UIViewController {
             nftPriceLable.isHidden = false
             nftPriceLable.text = "\(returnFullPrice()) ETH"
             sortButton.isHidden = false
-        }
-    }
-    
-    private func reloadNfts() {
-        var nfts: [NftInCartModel] = []
-        ProgressHUD.show()
-        cartNetworkService.fetchOrder() { [weak self] result in
-            switch result {
-            case .success(let order):
-                var numberOfCicle = 0
-                order.nfts.forEach({ id in
-                    self?.cartNetworkService.requestByNftId(id: id) { [weak self] result in
-                        switch result {
-                        case .success(let nft):
-                            let nftInCard = NftInCartModel(
-                                name: nft.name,
-                                rating: nft.rating,
-                                price: nft.price,
-                                picture: nft.images[0])
-                            nfts.append(nftInCard)
-                            numberOfCicle += 1
-                            if numberOfCicle == order.nfts.count {
-                                DispatchQueue.main.async {
-                                    self?.nfts = nfts
-                                    ProgressHUD.dismiss()
-                                    self?.sortNft()
-                                    self?.reloadView()
-                                }
-                            }
-                        case .failure(let error):
-                            print("Error: \(error.localizedDescription)")
-                        }
-                    }
-                })
-            case .failure(let error):
-                print("Error: \(error.localizedDescription)")
-            }
         }
     }
     
