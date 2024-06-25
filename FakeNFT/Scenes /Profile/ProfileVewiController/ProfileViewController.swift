@@ -279,6 +279,12 @@ extension ProfileViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        if indexPath.row == 0 {
+            
+            let viewController = NFTCollectionController(nftIdArray: nftIdArray, likedNftIdArray: likedNFTIdArray)
+            present(viewController, animated: true)
+        }
     }
 }
 
