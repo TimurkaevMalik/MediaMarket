@@ -215,9 +215,47 @@ extension NFTCollectionController: UICollectionViewDelegateFlowLayout {
 
 
 extension NFTCollectionController: SortAlertDelegate {
-    func sortByPrice() {}
-    func sortByRate() {}
-    func sortByName() {}
+    func sortByPrice() {
+        nftResult.sort(by: { $0.price < $1.price })
+        
+        nftCollectionView.performBatchUpdates {
+            var indesPaths: [IndexPath] = []
+            
+            for index in 0..<nftResult.count {
+                indesPaths.append(IndexPath(item: 0, section: index))
+            }
+            
+            nftCollectionView.reloadItems(at: indesPaths)
+        }
+    }
+    
+    func sortByRate() {
+        nftResult.sort(by: { $0.rating > $1.rating })
+        
+        nftCollectionView.performBatchUpdates {
+            var indesPaths: [IndexPath] = []
+            
+            for index in 0..<nftResult.count {
+                indesPaths.append(IndexPath(item: 0, section: index))
+            }
+            
+            nftCollectionView.reloadItems(at: indesPaths)
+        }
+    }
+    
+    func sortByName() {
+        nftResult.sort(by: { $0.name < $1.name })
+        
+        nftCollectionView.performBatchUpdates {
+            var indesPaths: [IndexPath] = []
+            
+            for index in 0..<nftResult.count {
+                indesPaths.append(IndexPath(item: 0, section: index))
+            }
+            
+            nftCollectionView.reloadItems(at: indesPaths)
+        }
+    }
 }
 
 extension NFTCollectionController: NFTFactoryDelegate {

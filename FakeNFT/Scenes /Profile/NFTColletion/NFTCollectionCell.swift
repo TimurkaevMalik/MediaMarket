@@ -23,12 +23,11 @@ final class NFTCollectionCell: UICollectionViewCell {
     private lazy var priceLabel = UILabel()
     private lazy var likeButton = UIButton()
     
-    private lazy var ratingImageView: UIImageView = {
+    private lazy var ratingImageView: RatingImageView = {
         
-        let frame = CGRect(x: 0, y: 0, width: 108, height: 108)
-        let ratingNumber = nft?.rating ?? 0
+        let frame = CGRect(x: 0, y: 0, width: 0, height: 0)
         
-        return RatingImageView(frame: frame, ratingNumber: ratingNumber)
+        return RatingImageView(frame: frame)
     }()
     
     var nft: NFTResult?
@@ -116,6 +115,8 @@ final class NFTCollectionCell: UICollectionViewCell {
     
     private func configureRatingImageView() {
         ratingImageView.backgroundColor = .clear
+
+        ratingImageView.updateRatingImagesBy(nft?.rating ?? 0)
         
         ratingImageView.translatesAutoresizingMaskIntoConstraints = false
         viewsContainer.addSubview(ratingImageView)

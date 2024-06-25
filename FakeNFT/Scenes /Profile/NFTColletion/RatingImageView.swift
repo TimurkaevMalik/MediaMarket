@@ -17,12 +17,11 @@ final class RatingImageView: UIImageView {
     private let fifthImageView = UIImageView(image: UIImage(named: "emptyGoldStar"))
     
     private var ratingImageViews: [UIImageView] = []
-    private let ratingNumber: Int
     
-    init(frame: CGRect, ratingNumber: Int) {
-        self.ratingNumber = ratingNumber
+    override init(frame: CGRect) {
         super.init(frame: frame)
         
+        ratingImageViews.removeAll()
         ratingImageViews.append(firstImageView)
         ratingImageViews.append(secondImageView)
         ratingImageViews.append(thirdImageView)
@@ -32,17 +31,10 @@ final class RatingImageView: UIImageView {
         viewAddImageViews()
         configureImageVeiwsConstraints()
         setImageViewsContentMode()
-        updateImageViewsImages()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        
     }
     
     private func viewAddImageViews() {
@@ -54,7 +46,6 @@ final class RatingImageView: UIImageView {
     }
     
     private func configureImageVeiwsConstraints() {
-        
         NSLayoutConstraint.activate([
             firstImageView.topAnchor.constraint(equalTo: self.topAnchor),
             firstImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
@@ -92,12 +83,16 @@ final class RatingImageView: UIImageView {
         }
     }
     
-    private func updateImageViewsImages() {
+    func updateRatingImagesBy(_ rating: Int) {
         
-        for number in 0..<ratingNumber {
-            if ratingImageViews.count - 1 >= number {
-                ratingImageViews[number].image = UIImage(named: "goldStar")
+        for index in 0..<rating {
+            if ratingImageViews.count - 1 >= index {
+                ratingImageViews[index].image = UIImage(named: "goldStar")
             }
+        }
+        
+        for index in rating..<ratingImageViews.count {
+            ratingImageViews[index].image = UIImage(named: "emptyGoldStar")
         }
     }
 }
