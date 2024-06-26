@@ -40,14 +40,15 @@ final class TabBarController: UITabBarController {
         tabBar.backgroundColor = UIColor(named: "YPWhite")
         tabBar.unselectedItemTintColor = UIColor(named: "YPBlack")
         tabBar.tintColor = UIColor(named: "YPBlue")
+        tabBar.isTranslucent = false
+        tabBar.clipsToBounds = true
         addTabBarItems()
     }
     
     private func addTabBarItems(){
         
         let profileViewController = ProfileViewController(servicesAssembly: servicesAssembly)
-        let catalogController = CatalogViewController(
-            servicesAssembly: servicesAssembly)
+        let catalogController = CatalogViewController(servicesAssembly: servicesAssembly)
         let cartViewController = CartViewController(servicesAssembly: servicesAssembly)
         let statisticVeiwController = StatisticViewController(servicesAssembly: servicesAssembly)
         
