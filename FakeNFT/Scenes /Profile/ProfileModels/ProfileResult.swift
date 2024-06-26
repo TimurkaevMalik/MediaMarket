@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 struct Profile: Codable {
     var name: String
     var avatar: String

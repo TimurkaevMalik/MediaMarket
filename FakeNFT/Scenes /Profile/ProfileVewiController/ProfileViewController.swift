@@ -25,7 +25,7 @@ final class ProfileViewController: UIViewController {
     private let tableViewCells = ["Мои NFT", "Избранные NFT", "О разработчике"]
     
     private var nftIdArray: [String] = []
-    private var likedNFTIdArray: [String] = []
+    private var favoriteNFTsId: [String] = []
     
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
@@ -188,7 +188,7 @@ final class ProfileViewController: UIViewController {
     private func updateControllerProfile(_ profile: Profile) {
         self.profile = profile
         nftIdArray = profile.nfts
-        likedNFTIdArray = profile.likes
+        favoriteNFTsId = profile.likes
         
         userNameLabel.text = profile.name
         userDescriptionView.text = profile.description
@@ -259,7 +259,7 @@ extension ProfileViewController: UITableViewDataSource {
         if indexPath.row == 0 {
             cell.cellTextLabel.text = tableViewCells[indexPath.row] + " " + "(\(nftIdArray.count))"
         } else if indexPath.row == 1 {
-            cell.cellTextLabel.text = tableViewCells[indexPath.row] + " " + "(\(likedNFTIdArray.count))"
+            cell.cellTextLabel.text = tableViewCells[indexPath.row] + " " + "(\(favoriteNFTsId.count))"
         } else {
             cell.cellTextLabel.text = tableViewCells[indexPath.row]
         }
@@ -282,7 +282,7 @@ extension ProfileViewController: UITableViewDelegate {
         
         if indexPath.row == 0 {
             
-            let viewController = NFTCollectionController(nftIdArray: nftIdArray, likedNftIdArray: likedNFTIdArray)
+            let viewController = NFTCollectionController(nftIdArray: nftIdArray, favoriteNFTsId: favoriteNFTsId)
             viewController.modalPresentationStyle = .fullScreen
             present(viewController, animated: true)
         }

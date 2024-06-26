@@ -22,14 +22,14 @@ final class NFTCollectionController: UIViewController {
     
     private var nftResult: [NFTResult] = []
     private var nftIdArray: [String]
-    private var likedNFTIdArray: [String]
+    private var favoriteNFTsId: [String]
     private let nftCollectionCellIdentifier = "nftCollectionCellIdentifier"
     private let params = GeomitricParams(cellCount: 1, leftInset: 16, rightInset: 16, cellSpacing: 0)
     
     
-    init(nftIdArray: [String], likedNftIdArray: [String]){
+    init(nftIdArray: [String], favoriteNFTsId: [String]){
         self.nftIdArray = nftIdArray
-        self.likedNFTIdArray = likedNftIdArray
+        self.favoriteNFTsId = favoriteNFTsId
         super.init(nibName: nil, bundle: nil)
         
         alertPresenter = AlertPresenter(viewController: self)
