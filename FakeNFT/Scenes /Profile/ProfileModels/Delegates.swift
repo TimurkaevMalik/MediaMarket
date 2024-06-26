@@ -17,7 +17,8 @@ protocol ProfileFactoryDelegate: AnyObject {
 protocol NFTFactoryDelegate: AnyObject {
     func didRecieveNFT(_ nft: NFTResult)
     func didUpdateFavoriteNFT(_ favoriteNFTs: FavoriteNFTResult)
-    func didFailToExecuteRequest(with error: NetworkServiceError)
+    func didFailToLoadNFT(with error: NetworkServiceError)
+    func didFailToUpdateFavoriteNFT(with error: NetworkServiceError)
 }
 
 protocol SortAlertDelegate: AnyObject {

@@ -191,6 +191,7 @@ extension NFTCollectionController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
     
+        cell.delegate = self
         cell.nft = nftResult[indexPath.section]
         cell.awakeFromNib()
         
@@ -259,6 +260,14 @@ extension NFTCollectionController: SortAlertDelegate {
 }
 
 extension NFTCollectionController: NFTFactoryDelegate {
+    func didUpdateFavoriteNFT(_ favoriteNFTs: FavoriteNFTResult) {
+        print(favoriteNFTs.likes)
+    }
+    
+    func didFailToUpdateFavoriteNFT(with error: NetworkServiceError) {
+        print(error)
+    }
+    
     func didRecieveNFT(_ nft: NFTResult) {
         nftResult.append(nft)
         fetchNextNFT()
@@ -284,7 +293,7 @@ extension NFTCollectionController: NFTFactoryDelegate {
         alertPresenter?.fetchNFTAlert(title: "Ошибка: \(errorString)", delegate: self)
     }
     
-    func fetchNextNFT() {
+    private func fetchNextNFT() {
         
         UIBlockingProgressHUD.show()
         
@@ -311,5 +320,11 @@ extension NFTCollectionController: FetchNFTAlertDelegate {
     
     func closeActionTapped() {
         centralPlugLabel.text = "Не удалось получить NFT"
+    }
+}
+
+extension NFTCollectionController: CollectionViewCellDelegate {
+    func cellLikeButtonTapped(_ cell: NFTCollectionCell) {
+        print("cell")
     }
 }

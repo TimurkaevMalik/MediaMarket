@@ -31,7 +31,7 @@ final class NFTFactory {
                 self.delegate?.didRecieveNFT(nft)
                 
             case .failure(let error):
-                self.delegate?.didFailToExecuteRequest(with: error)
+                self.delegate?.didFailToLoadNFT(with: error)
             }
         }
     }
@@ -47,7 +47,7 @@ final class NFTFactory {
                 self.delegate?.didUpdateFavoriteNFT(favoriteNFTs)
                 
             case .failure(let error):
-                self.delegate?.didFailToExecuteRequest(with: error)
+                self.delegate?.didFailToUpdateFavoriteNFT(with: error)
             }
         }
     }
