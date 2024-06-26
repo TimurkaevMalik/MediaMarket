@@ -19,7 +19,7 @@ final class UpdateNFTService {
 
     private init() {}
 
-    func updateProfile(_ token: String, nftIdArray: [String], completion: @escaping (Result<FavoriteNFTResult,NetworkServiceError>) -> Void) {
+    func updateFavoriteNFT(_ token: String, nftIdArray: [String], completion: @escaping (Result<FavoriteNFTResult,NetworkServiceError>) -> Void) {
 
         assert(Thread.isMainThread)
 

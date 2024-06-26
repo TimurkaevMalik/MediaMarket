@@ -14,6 +14,8 @@ final class ProfileFactory {
     private let fetchProfileService = FetchProfileService.shared
     private let updateProfileService = UpdateProfileService.shared
     
+    private let token = MalikToken.token
+    
     init(delegate: ProfileFactoryDelegate) {
         self.delegate = delegate
     }
@@ -24,8 +26,6 @@ final class ProfileFactory {
             delegate?.didExecuteRequest(profile)
             return
         }
-        
-        let token = MalikToken.token
         
         UIBlockingProgressHUD.show()
         
@@ -47,7 +47,6 @@ final class ProfileFactory {
     }
     
     func updateProfileOnServer(_ profile: Profile) {
-        let token = MalikToken.token
         
         UIBlockingProgressHUD.show()
         
