@@ -6,9 +6,9 @@ import Kingfisher
 final class StatisticCollectionViewCell: UICollectionViewCell {
     // MARK: - Private Properties
     private let backgroundContainer = UIView()
-    private let indexLabel = UILabel()
-    private let nameLabel = UILabel()
     private let ratingLabel = UILabel()
+    private let nameLabel = UILabel()
+    private let numberNftLabel = UILabel()
     private let profileImage = UIImageView()
     
     // MARK: - Initializers
@@ -32,12 +32,12 @@ final class StatisticCollectionViewCell: UICollectionViewCell {
         nameLabel.text = name
     }
     
-    func updateIndexLabel(index: String){
-        indexLabel.text = index
-    }
-    
     func updateRatingLabel(rating: String){
         ratingLabel.text = rating
+    }
+    
+    func updateNumberNftLabel(numberNft: String){
+        numberNftLabel.text = numberNft
     }
     
     func updateProfileImage(avatar: URL){
@@ -58,9 +58,9 @@ final class StatisticCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupIndexLabel(){
-        contentView.addSubview(indexLabel)
-        indexLabel.font = UIFont.systemFont(ofSize: 15)
-        indexLabel.textAlignment = .center
+        contentView.addSubview(ratingLabel)
+        ratingLabel.font = UIFont.systemFont(ofSize: 15)
+        ratingLabel.textAlignment = .center
     }
     
     private func setupNameLabel(){
@@ -69,9 +69,9 @@ final class StatisticCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupRatingLabel(){
-        backgroundContainer.addSubview(ratingLabel)
-        ratingLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-        ratingLabel.textAlignment = .center
+        backgroundContainer.addSubview(numberNftLabel)
+        numberNftLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        numberNftLabel.textAlignment = .center
     }
     
     private func setupProfileImage(){
@@ -81,7 +81,7 @@ final class StatisticCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupConstraint(){
-        [backgroundContainer, indexLabel, nameLabel, ratingLabel, profileImage].forEach {
+        [backgroundContainer, ratingLabel, nameLabel, numberNftLabel, profileImage].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         NSLayoutConstraint.activate([
@@ -89,15 +89,15 @@ final class StatisticCollectionViewCell: UICollectionViewCell {
             backgroundContainer.bottomAnchor.constraint(equalTo: bottomAnchor),
             backgroundContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 35),
             backgroundContainer.trailingAnchor.constraint(equalTo: trailingAnchor),
-            indexLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            indexLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            indexLabel.trailingAnchor.constraint(equalTo: backgroundContainer.leadingAnchor, constant: -8),
+            ratingLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            ratingLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            ratingLabel.trailingAnchor.constraint(equalTo: backgroundContainer.leadingAnchor, constant: -8),
             nameLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             nameLabel.leadingAnchor.constraint(equalTo: backgroundContainer.leadingAnchor, constant: 52),
             nameLabel.trailingAnchor.constraint(equalTo: backgroundContainer.trailingAnchor, constant: -70),
-            ratingLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            ratingLabel.leadingAnchor.constraint(equalTo: backgroundContainer.leadingAnchor, constant: 254),
-            ratingLabel.trailingAnchor.constraint(equalTo: backgroundContainer.trailingAnchor, constant: -16),
+            numberNftLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            numberNftLabel.leadingAnchor.constraint(equalTo: backgroundContainer.leadingAnchor, constant: 254),
+            numberNftLabel.trailingAnchor.constraint(equalTo: backgroundContainer.trailingAnchor, constant: -16),
             profileImage.topAnchor.constraint(equalTo: topAnchor, constant: 26),
             profileImage.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -26),
             profileImage.leadingAnchor.constraint(equalTo: backgroundContainer.leadingAnchor, constant: 16),

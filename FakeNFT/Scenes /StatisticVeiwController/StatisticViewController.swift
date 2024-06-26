@@ -126,7 +126,7 @@ extension StatisticViewController: UICollectionViewDataSource, UICollectionViewD
         }
         cell.updateNameLabel(name: users[indexPath.item].name)
         cell.updateRatingLabel(rating: users[indexPath.item].rating)
-        cell.updateIndexLabel(index: String(indexPath.item + 1))
+        cell.updateNumberNftLabel(numberNft: String(users[indexPath.item].nfts.count))
         if let avatarURL = URL(string: users[indexPath.item].avatar) {
             cell.updateProfileImage(avatar: avatarURL)
         } else {
