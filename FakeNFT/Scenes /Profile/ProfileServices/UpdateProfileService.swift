@@ -74,21 +74,21 @@ final class UpdateProfileService {
 
         let profileRequest = ProfileRequest(id: "1")
         
-        guard let url = profileRequest.endpoint else {
+        guard let url = profileRequest.endpoint,
+              var urlComponents = URLComponents(string: "\(url)")
+        else {
             assertionFailure("Failed to create URL")
             return nil
         }
         
-        var urlComponents = URLComponents(string: "\(url)")
-        
-        urlComponents?.queryItems = [
+        urlComponents.queryItems = [
             URLQueryItem(name: "name", value: "\(profile.name)"),
             URLQueryItem(name: "avatar", value: "\(profile.avatar)"),
             URLQueryItem(name: "description", value: "\(profile.description)"),
             URLQueryItem(name: "website", value: "\(profile.website)")
         ]
         
-        guard let url = urlComponents?.url else {
+        guard let url = urlComponents.url else {
             assertionFailure("Failed to create URL")
             return nil
         }

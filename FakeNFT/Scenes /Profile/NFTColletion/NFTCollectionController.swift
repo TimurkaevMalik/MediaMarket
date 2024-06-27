@@ -7,9 +7,16 @@
 
 import UIKit
 
+protocol NFTCollectionControllerDelegate: AnyObject {
+    func didUpdateFavoriteNFT(_ nftIdArray: [String])
+}
 
 final class NFTCollectionController: UIViewController {
     
+    private weak var delegate: NFTCollectionControllerDelegate?
+    
+    private let warningLabel = UILabel()
+    private let warningLabelContainer = UIView()
     private lazy var titleLabel = UILabel()
     private lazy var topViewsContainer = UIView()
     private lazy var centralPlugLabel = UILabel()
@@ -20,6 +27,7 @@ final class NFTCollectionController: UIViewController {
     private var alertPresenter: AlertPresenter?
     private var nftFactory: NFTFactory?
     
+    private var warningLabelTopConstraint: [NSLayoutConstraint] = []
     private var nftResult: [NFTResult] = []
     private var nftIdArray: [String]
     private var favoriteNFTsId: [String]
@@ -27,7 +35,11 @@ final class NFTCollectionController: UIViewController {
     private let params = GeomitricParams(cellCount: 1, leftInset: 16, rightInset: 16, cellSpacing: 0)
     
     
-    init(nftIdArray: [String], favoriteNFTsId: [String]){
+    init(delegate: NFTCollectionControllerDelegate,
+         nftIdArray: [String],
+         favoriteNFTsId: [String]) {
+        
+        self.delegate = delegate
         self.nftIdArray = nftIdArray
         self.favoriteNFTsId = favoriteNFTsId
         super.init(nibName: nil, bundle: nil)
@@ -50,6 +62,7 @@ final class NFTCollectionController: UIViewController {
         configureCloseButton()
         configureSortButton()
         configureNFTCollectionView()
+        configureLimitWarningLabel()
         
         if !nftIdArray.isEmpty {
             fetchNextNFT()
@@ -164,6 +177,63 @@ final class NFTCollectionController: UIViewController {
             nftCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
+    
+    private func configureLimitWarningLabel(){
+        warningLabelContainer.backgroundColor = UIColor.ypWhite
+        warningLabel.textColor = .ypBlue
+        warningLabel.backgroundColor = .ypBlack?.withAlphaComponent(0.7)
+        warningLabel.font = UIFont.systemFont(ofSize: 17)
+        warningLabel.numberOfLines = 2
+        warningLabel.textAlignment = .center
+        
+        warningLabel.layer.masksToBounds = true
+        warningLabel.layer.cornerRadius = 16
+        
+        view.addSubview(warningLabel)
+        view.addSubview(warningLabelContainer)
+        warningLabel.translatesAutoresizingMaskIntoConstraints = false
+        warningLabelContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            warningLabelContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            warningLabelContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            warningLabelContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            warningLabelContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            warningLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            warningLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            warningLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
+        
+        let constraint = warningLabel.topAnchor.constraint(equalTo: warningLabelContainer.topAnchor)
+        
+        warningLabelTopConstraint.append(constraint)
+        
+        warningLabelTopConstraint.first?.isActive = true
+    }
+    
+    private func showWarningLabel(with text: String){
+        
+        warningLabel.text = text
+        
+        DispatchQueue.main.async {
+            
+            if let constraint = self.warningLabelTopConstraint.first {
+                
+                UIView.animate(withDuration: 0.5) {
+                    constraint.constant = -50
+                    self.view.layoutIfNeeded()
+                    
+                } completion: { isCompleted in
+                    
+                    UIView.animate(withDuration: 0.4, delay: 2) {
+                        constraint.constant = 0
+                        self.view.layoutIfNeeded()
+                    }
+                }
+            }
+        }
+    }
 }
 
 extension NFTCollectionController: UICollectionViewDataSource {
@@ -190,7 +260,13 @@ extension NFTCollectionController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: nftCollectionCellIdentifier, for: indexPath) as? NFTCollectionCell else {
             return UICollectionViewCell()
         }
-    
+        
+        if favoriteNFTsId.contains(nftResult[indexPath.section].id) {
+            cell.setLikeImageForLikeButton()
+        } else {
+            cell.removeLikeImageForLikeButton()
+        }
+        
         cell.delegate = self
         cell.nft = nftResult[indexPath.section]
         cell.awakeFromNib()
@@ -260,12 +336,51 @@ extension NFTCollectionController: SortAlertDelegate {
 }
 
 extension NFTCollectionController: NFTFactoryDelegate {
+    
     func didUpdateFavoriteNFT(_ favoriteNFTs: FavoriteNFTResult) {
-        print(favoriteNFTs.likes)
+        
+        delegate?.didUpdateFavoriteNFT(favoriteNFTs.likes)
+        
+        if favoriteNFTs.likes.count > favoriteNFTsId.count {
+            
+            if let appendedNFT = favoriteNFTs.likes.first(where:{ !favoriteNFTsId.contains($0)}),
+               let cellSection = nftResult.firstIndex(where: { $0.id == appendedNFT }) {
+                
+                favoriteNFTsId = favoriteNFTs.likes
+                
+                nftCollectionView.performBatchUpdates {
+                    nftCollectionView.reloadSections([cellSection])
+                }
+            }
+        } else {
+            
+            if let removedNFT = favoriteNFTsId.first(where: { !favoriteNFTs.likes.contains($0) }),
+               let cellSection = nftResult.firstIndex(where: { $0.id == removedNFT }) {
+                
+                favoriteNFTsId = favoriteNFTs.likes
+                
+                nftCollectionView.performBatchUpdates {
+                    nftCollectionView.reloadSections([cellSection])
+                }
+            }
+        }
     }
     
     func didFailToUpdateFavoriteNFT(with error: NetworkServiceError) {
-        print(error)
+        let errorString: String
+        
+        switch error {
+            
+        case .codeError(let value):
+            errorString = value
+        case .responseError(let value):
+            errorString = "\(value)"
+        case .invalidRequest:
+            errorString = "Unknown error"
+        }
+
+        let warningText = "Ошбика: \(errorString)" + "\n" + "Не удалось добавить в избранное"
+        showWarningLabel(with: warningText)
     }
     
     func didRecieveNFT(_ nft: NFTResult) {
@@ -305,6 +420,10 @@ extension NFTCollectionController: NFTFactoryDelegate {
             UIBlockingProgressHUD.dismiss()
         }
     }
+    
+    private func changeFavoriteNFTRequest(nftIdArray: [String]) {
+        nftFactory?.updateFavoriteNFTOnServer(nftIdArray)
+    }
 }
 
 extension NFTCollectionController: FetchNFTAlertDelegate {
@@ -325,6 +444,20 @@ extension NFTCollectionController: FetchNFTAlertDelegate {
 
 extension NFTCollectionController: CollectionViewCellDelegate {
     func cellLikeButtonTapped(_ cell: NFTCollectionCell) {
-        print("cell")
+        guard let indexPath = nftCollectionView.indexPath(for: cell) else {
+            return
+        }
+        
+        let likedNftId = nftResult[indexPath.section].id
+        var newNFTArray: [String] = []
+        
+        if let nftId = favoriteNFTsId.first(where: { $0 == likedNftId }) {
+            newNFTArray = favoriteNFTsId.filter({ $0 != nftId })
+        } else {
+            newNFTArray = favoriteNFTsId
+            newNFTArray.append(likedNftId)
+        }
+        
+        changeFavoriteNFTRequest(nftIdArray: newNFTArray)
     }
 }

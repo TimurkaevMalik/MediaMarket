@@ -95,12 +95,10 @@ final class NFTCollectionCell: UICollectionViewCell {
     }
     
     private func configureLikeButton(){
-        
-        likeButton.setImage(UIImage(named: "whiteHeart"), for: .normal)
         likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
         
         likeButton.translatesAutoresizingMaskIntoConstraints = false
-        nftImageView.addSubview(likeButton)
+        contentView.addSubview(likeButton)
         
         NSLayoutConstraint.activate([
             likeButton.widthAnchor.constraint(equalToConstant: 40),
@@ -184,26 +182,11 @@ final class NFTCollectionCell: UICollectionViewCell {
         ])
     }
     
-    private func setLikeButtonImage() {
-        ////TODO прописать логику изменения лайка по информации профиля
+    func setLikeImageForLikeButton() {
+        likeButton.setImage(UIImage(named: "redHeart"), for: .normal)
     }
     
-    private func highLightButton(){
-        
-        UIView.animate(withDuration: 0.2) {
-            
-            self.likeButton.backgroundColor = .red
-            
-        } completion: { isCompleted in
-            if isCompleted {
-                resetButtonColor()
-            }
-        }
-        
-        func resetButtonColor(){
-            UIView.animate(withDuration: 0.2) {
-                self.likeButton.backgroundColor = .clear
-            }
-        }
+    func removeLikeImageForLikeButton() {
+        likeButton.setImage(UIImage(named: "whiteHeart"), for: .normal)
     }
 }

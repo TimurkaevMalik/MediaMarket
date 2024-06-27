@@ -11,18 +11,18 @@ import Foundation
 import UIKit
 
 final class UpdateNFTService {
-
+    
     private(set) static var nftResult: FavoriteNFTResult?
     static let shared = UpdateNFTService()
-
+    
     private var task: URLSessionTask?
-
+    
     private init() {}
-
+    
     func updateFavoriteNFT(_ token: String, nftIdArray: [String], completion: @escaping (Result<FavoriteNFTResult,NetworkServiceError>) -> Void) {
-
+        
         assert(Thread.isMainThread)
-
+        
         if task != nil {
             task?.cancel()
         }
@@ -33,11 +33,11 @@ final class UpdateNFTService {
         }
         
         let session: URLSessionDataTask = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-
+            
             DispatchQueue.main.async { [weak self] in
-
+                
                 guard let self = self else {return}
-
+                
                 self.task = nil
                 
                 if error != nil {
@@ -45,18 +45,18 @@ final class UpdateNFTService {
                     completion(.failure(NetworkServiceError.codeError("Unknown error")))
                     return
                 }
-
+                
                 if let response = response as? HTTPURLResponse, response.statusCode < 200 || response.statusCode  >= 300 {
                     
                     completion(.failure(NetworkServiceError.responseError(response.statusCode)))
                     return
                 }
-
+                
                 if let data = data {
-
+                    
                     do {
                         let nftResultInfo = try JSONDecoder().decode(FavoriteNFTResult.self, from: data)
-
+                        
                         UpdateNFTService.nftResult = nftResultInfo
                         completion(.success(nftResultInfo))
                     } catch {
@@ -65,28 +65,34 @@ final class UpdateNFTService {
                 }
             }
         }
-
+        
         task = session
         session.resume()
     }
-
-
+    
+    
     private func makeRequestBody(nftIdArray: [String], token: String) -> URLRequest? {
-
+        
         let profileRequest = ProfileRequest(id: "1")
         
-        guard let url = profileRequest.endpoint else {
+        guard let url = profileRequest.endpoint,
+              var urlComponents = URLComponents(string: "\(url)")
+        else {
             assertionFailure("Failed to create URL")
             return nil
         }
         
-        var urlComponents = URLComponents(string: "\(url)")
+        var encodedLikes = nftIdArray.joined(separator: ",")
         
-        urlComponents?.queryItems = [
-            URLQueryItem(name: "likes", value: "\(nftIdArray)")
+        if encodedLikes.isEmpty {
+            encodedLikes = "null"
+        }
+        
+        urlComponents.queryItems = [
+            URLQueryItem(name: "likes", value: encodedLikes)
         ]
         
-        guard let url = urlComponents?.url else {
+        guard let url = urlComponents.url else {
             assertionFailure("Failed to create URL")
             return nil
         }

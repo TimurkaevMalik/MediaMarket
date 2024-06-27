@@ -282,7 +282,7 @@ extension ProfileViewController: UITableViewDelegate {
         
         if indexPath.row == 0 {
             
-            let viewController = NFTCollectionController(nftIdArray: nftIdArray, favoriteNFTsId: favoriteNFTsId)
+            let viewController = NFTCollectionController(delegate: self, nftIdArray: nftIdArray, favoriteNFTsId: favoriteNFTsId)
             viewController.modalPresentationStyle = .fullScreen
             present(viewController, animated: true)
         }
@@ -372,5 +372,12 @@ extension ProfileViewController: ProfileFactoryDelegate {
             
             alertPresenter?.defaultAlert(model: model)
         }
+    }
+}
+
+extension ProfileViewController: NFTCollectionControllerDelegate {
+    func didUpdateFavoriteNFT(_ nftIdArray: [String]) {
+        favoriteNFTsId = nftIdArray
+        tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
     }
 }

@@ -20,7 +20,7 @@ final class FetchNFTService {
     func fecthNFT(_ token: String, NFTId: String, completion: @escaping (Result<NFTResult,NetworkServiceError>) -> Void) {
         
         assert(Thread.isMainThread)
-        print(NFTId)
+        
         if task != nil {
             task?.cancel()
         }
@@ -39,13 +39,13 @@ final class FetchNFTService {
                 self.task = nil
                 
                 if let error = error {
-                    print(error)
+                    
                     completion(.failure(NetworkServiceError.codeError("Unknown error")))
                     return
                 }
                 
                 if let response = response as? HTTPURLResponse, response.statusCode < 200 || response.statusCode  >= 300 {
-                    print(response)
+                    
                     completion(.failure(NetworkServiceError.responseError(response.statusCode)))
                     return
                 }
@@ -72,18 +72,18 @@ final class FetchNFTService {
         
         let NFTRequest = NFTRequest(id: NFTId)
         
-        guard let url = NFTRequest.endpoint else {
+        guard let url = NFTRequest.endpoint,
+              var urlComponents = URLComponents(string: "\(url)")
+        else {
             assertionFailure("Failed to create URL")
             return nil
         }
         
-        var urlComponents = URLComponents(string: "\(url)")
-        
-        urlComponents?.queryItems = [
+        urlComponents.queryItems = [
             URLQueryItem(name: "nft_id", value: NFTId)
         ]
         
-        guard let url = urlComponents?.url else {
+        guard let url = urlComponents.url else {
             assertionFailure("Failed to create URL")
             return nil
         }

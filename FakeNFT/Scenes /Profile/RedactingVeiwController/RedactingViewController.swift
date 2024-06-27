@@ -394,7 +394,6 @@ final class RedactingViewController: UIViewController {
         userDescriptionView.isEditable = bool
     }
     
-    
     private func clearTextView() {
         userDescriptionView.text = "Расскажите о себе"
         userDescriptionView.textColor = UIColor.lightGray

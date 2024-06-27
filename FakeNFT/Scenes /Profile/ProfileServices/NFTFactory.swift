@@ -38,7 +38,11 @@ final class NFTFactory {
     
     func updateFavoriteNFTOnServer(_ nftIdArray: [String]) {
         
+        UIBlockingProgressHUD.show()
+        
         updateNFTService.updateFavoriteNFT(token, nftIdArray: nftIdArray) { [weak self] result in
+            
+            UIBlockingProgressHUD.dismiss()
             
             guard let self else { return }
             
