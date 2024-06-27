@@ -25,7 +25,7 @@ final class ProfileViewController: UIViewController {
     private let tableViewCells = ["Мои NFT", "Избранные NFT", "О разработчике"]
     
     private var nftIdArray: [String] = []
-    private var likedNFTIdArray: [String] = []
+    private var favoriteNFTsId: [String] = []
     
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
@@ -188,7 +188,7 @@ final class ProfileViewController: UIViewController {
     private func updateControllerProfile(_ profile: Profile) {
         self.profile = profile
         nftIdArray = profile.nfts
-        likedNFTIdArray = profile.likes
+        favoriteNFTsId = profile.likes
         
         userNameLabel.text = profile.name
         userDescriptionView.text = profile.description
@@ -218,7 +218,7 @@ final class ProfileViewController: UIViewController {
         linkButton.setTitle("Поиск ссылки сайта", for: .normal)
     }
     
-    private func showServiceErrorAlert(_ error: ProfileServiceError, completion: @escaping () -> Void) {
+    private func showServiceErrorAlert(_ error: NetworkServiceError, completion: @escaping () -> Void) {
         let errorString: String
         
         switch error {
@@ -259,7 +259,7 @@ extension ProfileViewController: UITableViewDataSource {
         if indexPath.row == 0 {
             cell.cellTextLabel.text = tableViewCells[indexPath.row] + " " + "(\(nftIdArray.count))"
         } else if indexPath.row == 1 {
-            cell.cellTextLabel.text = tableViewCells[indexPath.row] + " " + "(\(likedNFTIdArray.count))"
+            cell.cellTextLabel.text = tableViewCells[indexPath.row] + " " + "(\(favoriteNFTsId.count))"
         } else {
             cell.cellTextLabel.text = tableViewCells[indexPath.row]
         }
@@ -279,6 +279,13 @@ extension ProfileViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        if indexPath.row == 0 {
+            
+            let viewController = NFTCollectionController(delegate: self, nftIdArray: nftIdArray, favoriteNFTsId: favoriteNFTsId)
+            viewController.modalPresentationStyle = .fullScreen
+            present(viewController, animated: true)
+        }
     }
 }
 
@@ -339,14 +346,14 @@ extension ProfileViewController: ProfileFactoryDelegate {
         self.updateControllerProfile(profile)
     }
     
-    func didFailToLoadProfile(with error: ProfileServiceError) {
+    func didFailToLoadProfile(with error: NetworkServiceError) {
         setDefaultTitlesForViews()
         showServiceErrorAlert(error) {
             self.fetchProfile()
         }
     }
     
-    func didFailToUpdateProfile(with error: ProfileServiceError) {
+    func didFailToUpdateProfile(with error: NetworkServiceError) {
         
         if let profile = UpdateProfileService.profileResult {
             
@@ -365,5 +372,12 @@ extension ProfileViewController: ProfileFactoryDelegate {
             
             alertPresenter?.defaultAlert(model: model)
         }
+    }
+}
+
+extension ProfileViewController: NFTCollectionControllerDelegate {
+    func didUpdateFavoriteNFT(_ nftIdArray: [String]) {
+        favoriteNFTsId = nftIdArray
+        tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
     }
 }

@@ -84,4 +84,29 @@ final class AlertPresenter {
         
         viewController.present(alert, animated: true)
     }
+    
+    func fetchNFTAlert(title: String, delegate: FetchNFTAlertDelegate) {
+        
+        let message = "Не удалось получить" + "\n" + "следующий NFT"
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        let actionCancel = UIAlertAction(title: "Закрыть", style: .cancel) { _ in
+            delegate.closeActionTapped()
+        }
+        
+        let actionTryAgain = UIAlertAction(title: "повторить", style: .default) { _ in
+            delegate.tryToReloadNFT()
+        }
+        
+        let actionLoadRest = UIAlertAction(title: "пропустить", style: .default) { _ in
+            delegate.loadRestOfNFT()
+        }
+        
+        alert.addAction(actionCancel)
+        alert.addAction(actionTryAgain)
+        alert.addAction(actionLoadRest)
+        
+        viewController.present(alert, animated: true)
+    }
 }

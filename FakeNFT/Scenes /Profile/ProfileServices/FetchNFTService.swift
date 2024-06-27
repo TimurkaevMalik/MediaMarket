@@ -1,80 +1,78 @@
 //
-//  UpdateProfileService.swift
+//  FetchNFTService.swift
 //  FakeNFT
 //
-//  Created by Malik Timurkaev on 19.06.2024.
+//  Created by Malik Timurkaev on 25.06.2024.
 //
 
-import UIKit
+import Foundation
 
-final class UpdateProfileService {
 
-    private(set) static var profileResult: Profile?
-    static let shared = UpdateProfileService()
-
+final class FetchNFTService {
+    
+    private(set) var nftResult: NFTResult?
+    static let shared = FetchNFTService()
+    
     private var task: URLSessionTask?
-
+    
     private init() {}
-
-    func updateProfile(_ token: String, profile: Profile, completion: @escaping (Result<Profile,NetworkServiceError>) -> Void) {
-
+    
+    func fecthNFT(_ token: String, NFTId: String, completion: @escaping (Result<NFTResult,NetworkServiceError>) -> Void) {
+        
         assert(Thread.isMainThread)
-
+        
         if task != nil {
             task?.cancel()
         }
-
-        UpdateProfileService.profileResult = profile
         
-        guard let request = makeRequestBody(profile: profile, token: token) else {
+        guard let request = makeRequstBody(token: token, NFTId: NFTId) else {
             completion(.failure(NetworkServiceError.codeError("Uknown Error")))
             return
         }
         
         let session: URLSessionDataTask = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-
+            
             DispatchQueue.main.async { [weak self] in
-
+                
                 guard let self = self else {return}
-
+                
                 self.task = nil
                 
-                if error != nil {
+                if let error = error {
                     
                     completion(.failure(NetworkServiceError.codeError("Unknown error")))
                     return
                 }
-
+                
                 if let response = response as? HTTPURLResponse, response.statusCode < 200 || response.statusCode  >= 300 {
                     
                     completion(.failure(NetworkServiceError.responseError(response.statusCode)))
                     return
                 }
-
+                
                 if let data = data {
-
+                    
                     do {
-                        let profileResultInfo = try JSONDecoder().decode(Profile.self, from: data)
-
-                        UpdateProfileService.profileResult = profileResultInfo
-                        completion(.success(profileResultInfo))
+                        let nftResultInfo = try JSONDecoder().decode(NFTResult.self, from: data)
+                        
+                        self.nftResult = nftResultInfo
+                        completion(.success(nftResultInfo))
                     } catch {
                         completion(.failure(NetworkServiceError.codeError("Unknown error")))
                     }
                 }
             }
         }
-
+        
         task = session
         session.resume()
     }
-
-
-    private func makeRequestBody(profile: Profile, token: String) -> URLRequest? {
-
-        let profileRequest = ProfileRequest(id: "1")
+    
+    func makeRequstBody(token: String, NFTId: String) -> URLRequest? {
         
-        guard let url = profileRequest.endpoint,
+        let NFTRequest = NFTRequest(id: NFTId)
+        
+        guard let url = NFTRequest.endpoint,
               var urlComponents = URLComponents(string: "\(url)")
         else {
             assertionFailure("Failed to create URL")
@@ -82,10 +80,7 @@ final class UpdateProfileService {
         }
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "name", value: "\(profile.name)"),
-            URLQueryItem(name: "avatar", value: "\(profile.avatar)"),
-            URLQueryItem(name: "description", value: "\(profile.description)"),
-            URLQueryItem(name: "website", value: "\(profile.website)")
+            URLQueryItem(name: "nft_id", value: NFTId)
         ]
         
         guard let url = urlComponents.url else {
@@ -94,10 +89,8 @@ final class UpdateProfileService {
         }
         
         var request: URLRequest = URLRequest(url: url)
-        
-        request.httpMethod = "PUT"
+        request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.setValue("\(String(describing: token))", forHTTPHeaderField: "X-Practicum-Mobile-Token")
         
         return request

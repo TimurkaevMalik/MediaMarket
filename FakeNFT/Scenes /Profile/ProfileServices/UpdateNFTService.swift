@@ -1,42 +1,43 @@
 //
-//  UpdateProfileService.swift
+//  UpdateFavoriteNFT.swift
 //  FakeNFT
 //
-//  Created by Malik Timurkaev on 19.06.2024.
+//  Created by Malik Timurkaev on 26.06.2024.
 //
+
+import Foundation
+
 
 import UIKit
 
-final class UpdateProfileService {
-
-    private(set) static var profileResult: Profile?
-    static let shared = UpdateProfileService()
-
+final class UpdateNFTService {
+    
+    private(set) static var nftResult: FavoriteNFTResult?
+    static let shared = UpdateNFTService()
+    
     private var task: URLSessionTask?
-
+    
     private init() {}
-
-    func updateProfile(_ token: String, profile: Profile, completion: @escaping (Result<Profile,NetworkServiceError>) -> Void) {
-
+    
+    func updateFavoriteNFT(_ token: String, nftIdArray: [String], completion: @escaping (Result<FavoriteNFTResult,NetworkServiceError>) -> Void) {
+        
         assert(Thread.isMainThread)
-
+        
         if task != nil {
             task?.cancel()
         }
-
-        UpdateProfileService.profileResult = profile
         
-        guard let request = makeRequestBody(profile: profile, token: token) else {
+        guard let request = makeRequestBody(nftIdArray: nftIdArray, token: token) else {
             completion(.failure(NetworkServiceError.codeError("Uknown Error")))
             return
         }
         
         let session: URLSessionDataTask = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-
+            
             DispatchQueue.main.async { [weak self] in
-
+                
                 guard let self = self else {return}
-
+                
                 self.task = nil
                 
                 if error != nil {
@@ -44,34 +45,34 @@ final class UpdateProfileService {
                     completion(.failure(NetworkServiceError.codeError("Unknown error")))
                     return
                 }
-
+                
                 if let response = response as? HTTPURLResponse, response.statusCode < 200 || response.statusCode  >= 300 {
                     
                     completion(.failure(NetworkServiceError.responseError(response.statusCode)))
                     return
                 }
-
+                
                 if let data = data {
-
+                    
                     do {
-                        let profileResultInfo = try JSONDecoder().decode(Profile.self, from: data)
-
-                        UpdateProfileService.profileResult = profileResultInfo
-                        completion(.success(profileResultInfo))
+                        let nftResultInfo = try JSONDecoder().decode(FavoriteNFTResult.self, from: data)
+                        
+                        UpdateNFTService.nftResult = nftResultInfo
+                        completion(.success(nftResultInfo))
                     } catch {
                         completion(.failure(NetworkServiceError.codeError("Unknown error")))
                     }
                 }
             }
         }
-
+        
         task = session
         session.resume()
     }
-
-
-    private func makeRequestBody(profile: Profile, token: String) -> URLRequest? {
-
+    
+    
+    private func makeRequestBody(nftIdArray: [String], token: String) -> URLRequest? {
+        
         let profileRequest = ProfileRequest(id: "1")
         
         guard let url = profileRequest.endpoint,
@@ -81,11 +82,14 @@ final class UpdateProfileService {
             return nil
         }
         
+        var encodedLikes = nftIdArray.joined(separator: ",")
+        
+        if encodedLikes.isEmpty {
+            encodedLikes = "null"
+        }
+        
         urlComponents.queryItems = [
-            URLQueryItem(name: "name", value: "\(profile.name)"),
-            URLQueryItem(name: "avatar", value: "\(profile.avatar)"),
-            URLQueryItem(name: "description", value: "\(profile.description)"),
-            URLQueryItem(name: "website", value: "\(profile.website)")
+            URLQueryItem(name: "likes", value: encodedLikes)
         ]
         
         guard let url = urlComponents.url else {

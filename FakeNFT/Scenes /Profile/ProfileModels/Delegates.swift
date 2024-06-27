@@ -10,8 +10,15 @@ import UIKit
 
 protocol ProfileFactoryDelegate: AnyObject {
     func didExecuteRequest(_ profile: Profile)
-    func didFailToLoadProfile(with error: ProfileServiceError)
-    func didFailToUpdateProfile(with error: ProfileServiceError)
+    func didFailToLoadProfile(with error: NetworkServiceError)
+    func didFailToUpdateProfile(with error: NetworkServiceError)
+}
+
+protocol NFTFactoryDelegate: AnyObject {
+    func didRecieveNFT(_ nft: NFTResult)
+    func didUpdateFavoriteNFT(_ favoriteNFTs: FavoriteNFTResult)
+    func didFailToLoadNFT(with error: NetworkServiceError)
+    func didFailToUpdateFavoriteNFT(with error: NetworkServiceError)
 }
 
 protocol SortAlertDelegate: AnyObject {
@@ -20,10 +27,24 @@ protocol SortAlertDelegate: AnyObject {
     func sortByName()
 }
 
-protocol ProfileControllerDelegate: AnyObject {
-    func didEndRedactingProfile(_ profile: Profile)
+protocol FetchNFTAlertDelegate {
+    func tryToReloadNFT()
+    func loadRestOfNFT()
+    func closeActionTapped()
 }
 
 protocol TextFieldAlertDelegate: UIViewController {
     func alertSaveTextButtonTappep(text: String?)
+}
+
+protocol CollectionViewCellDelegate: AnyObject {
+    func cellLikeButtonTapped(_ cell: NFTCollectionCell)
+}
+
+protocol ProfileControllerDelegate: AnyObject {
+    func didEndRedactingProfile(_ profile: Profile)
+}
+
+protocol NFTCollectionControllerDelegate: AnyObject {
+    func didUpdateFavoriteNFT(_ nftIdArray: [String])
 }
