@@ -110,10 +110,3 @@ final class AlertPresenter {
         viewController.present(alert, animated: true)
     }
 }
-
-
-protocol FetchNFTAlertDelegate {
-    func tryToReloadNFT()
-    func loadRestOfNFT()
-    func closeActionTapped()
-}

@@ -7,9 +7,6 @@
 
 import UIKit
 
-protocol NFTCollectionControllerDelegate: AnyObject {
-    func didUpdateFavoriteNFT(_ nftIdArray: [String])
-}
 
 final class NFTCollectionController: UIViewController {
     

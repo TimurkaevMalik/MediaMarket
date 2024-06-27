@@ -27,6 +27,16 @@ protocol SortAlertDelegate: AnyObject {
     func sortByName()
 }
 
+protocol FetchNFTAlertDelegate {
+    func tryToReloadNFT()
+    func loadRestOfNFT()
+    func closeActionTapped()
+}
+
+protocol TextFieldAlertDelegate: UIViewController {
+    func alertSaveTextButtonTappep(text: String?)
+}
+
 protocol CollectionViewCellDelegate: AnyObject {
     func cellLikeButtonTapped(_ cell: NFTCollectionCell)
 }
@@ -35,6 +45,6 @@ protocol ProfileControllerDelegate: AnyObject {
     func didEndRedactingProfile(_ profile: Profile)
 }
 
-protocol TextFieldAlertDelegate: UIViewController {
-    func alertSaveTextButtonTappep(text: String?)
+protocol NFTCollectionControllerDelegate: AnyObject {
+    func didUpdateFavoriteNFT(_ nftIdArray: [String])
 }
