@@ -10,9 +10,9 @@ import WebKit
 
 final class CollectionViewController: UIViewController {
 
-    // MARK: - Public Properties
+    // MARK: - Private Properties
 
-    lazy var coverCollectionImageView: UIImageView = {
+    private lazy var coverCollectionImageView: UIImageView = {
         let coverCollectionImageView = UIImageView()
         coverCollectionImageView.translatesAutoresizingMaskIntoConstraints = false
         coverCollectionImageView.layer.cornerRadius = 12
@@ -21,7 +21,7 @@ final class CollectionViewController: UIViewController {
         return coverCollectionImageView
     }()
 
-    lazy var nameCollectionLabel: UILabel = {
+    private lazy var nameCollectionLabel: UILabel = {
         let nameCollectionLabel = UILabel()
         nameCollectionLabel.translatesAutoresizingMaskIntoConstraints = false
         nameCollectionLabel.font = .boldSystemFont(ofSize: 22)
@@ -29,7 +29,7 @@ final class CollectionViewController: UIViewController {
         return nameCollectionLabel
     }()
 
-    lazy var authorCollectionLabel: UILabel = {
+    private lazy var authorCollectionLabel: UILabel = {
         let nameCollectionLabel = UILabel()
         nameCollectionLabel.translatesAutoresizingMaskIntoConstraints = false
         nameCollectionLabel.font = .systemFont(ofSize: 13)
@@ -40,7 +40,7 @@ final class CollectionViewController: UIViewController {
         return nameCollectionLabel
     }()
 
-    lazy var descriptionCollectionLabel: UILabel = {
+    private lazy var descriptionCollectionLabel: UILabel = {
         let descriptionCollectionLabel = UILabel()
         descriptionCollectionLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionCollectionLabel.font = .systemFont(ofSize: 13)
@@ -49,13 +49,9 @@ final class CollectionViewController: UIViewController {
         return descriptionCollectionLabel
     }()
 
-    // MARK: - Private Properties
-
     private var dataSource: UICollectionViewDiffableDataSource<Int, NftItem>?
     private var nftCollectionView: UICollectionView?
     private var link: String?
-
-    // MARK: - Initializers
 
     // MARK: - Overrides Methods
 
@@ -70,8 +66,6 @@ final class CollectionViewController: UIViewController {
         setupDescriptionLabel()
         setupNftCollectionView()
     }
-
-    // MARK: - Public Methods
 
     // MARK: - Private Methods
 
@@ -176,10 +170,16 @@ extension CollectionViewController {
                 fatalError("Cannot create new cell")
             }
 
-            cell.nameLabel.text = item.name
-            cell.coverImageView.image = UIImage(named: "MockCell")
-            cell.ratingStackView.setRating(item.rating)
-            cell.priceLabel.text = "\(item.price) ETH"
+            let nft = NftItem(
+                id: item.id,
+                name: item.name,
+                rating: item.rating,
+                price: item.price,
+                images: item.images,
+                isFavorite: item.isFavorite
+            )
+
+            cell.configCell(with: nft)
 
             return cell
         }

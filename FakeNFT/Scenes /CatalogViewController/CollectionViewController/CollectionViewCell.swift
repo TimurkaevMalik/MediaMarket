@@ -13,7 +13,9 @@ final class CollectionViewCell: UICollectionViewCell {
 
     static let reuseIdent: String = "CollectionViewCell"
 
-    lazy var coverImageView: UIImageView = {
+    // MARK: - Private Properties
+
+   private lazy var coverImageView: UIImageView = {
         let coverImageView = UIImageView()
         coverImageView.translatesAutoresizingMaskIntoConstraints = false
         coverImageView.layer.cornerRadius = 12
@@ -23,7 +25,7 @@ final class CollectionViewCell: UICollectionViewCell {
         return coverImageView
     }()
 
-    lazy var favoriteButton: UIButton = {
+    private lazy var favoriteButton: UIButton = {
         let favoriteButton = UIButton()
         favoriteButton.translatesAutoresizingMaskIntoConstraints = false
         favoriteButton.setImage(UIImage(named: "whiteHeart"), for: .normal)
@@ -31,13 +33,13 @@ final class CollectionViewCell: UICollectionViewCell {
         return favoriteButton
     }()
 
-    lazy var ratingStackView: RatingView = {
+    private lazy var ratingStackView: RatingView = {
         let ratingStackView = RatingView()
         ratingStackView.translatesAutoresizingMaskIntoConstraints = false
         return ratingStackView
     }()
 
-    lazy var nameLabel: UILabel = {
+    private lazy var nameLabel: UILabel = {
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.font = .boldSystemFont(ofSize: 17)
@@ -45,7 +47,7 @@ final class CollectionViewCell: UICollectionViewCell {
         return nameLabel
     }()
 
-    lazy var priceLabel: UILabel = {
+    private lazy var priceLabel: UILabel = {
         let priceLabel = UILabel()
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
         priceLabel.font = .systemFont(ofSize: 10)
@@ -53,15 +55,13 @@ final class CollectionViewCell: UICollectionViewCell {
         return priceLabel
     }()
 
-    lazy var cardButton: UIButton = {
+    private lazy var cardButton: UIButton = {
         let cardButton = UIButton()
         cardButton.translatesAutoresizingMaskIntoConstraints = false
         cardButton.setImage(UIImage(named: "emptyCart"), for: .normal)
         cardButton.addTarget(self, action: #selector(didTapCardButon), for: .touchUpInside)
         return cardButton
     }()
-
-    // MARK: - Private Properties
 
     private var isFavorite = false
     private var isCard = false
@@ -81,6 +81,15 @@ final class CollectionViewCell: UICollectionViewCell {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Public Methods
+
+    func configCell(with nft: NftItem) {
+        nameLabel.text = nft.name
+        coverImageView.image = UIImage(named: "MockCell")
+        ratingStackView.setRating(nft.rating)
+        priceLabel.text = "\(nft.price) ETH"
     }
 
     // MARK: - Private Methods

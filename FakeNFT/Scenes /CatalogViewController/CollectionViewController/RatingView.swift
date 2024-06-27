@@ -46,7 +46,7 @@ final class RatingView: UIStackView {
 
         for _ in 0..<starCount {
             let starImageView = UIImageView()
-            starImageView.image = UIImage(named: "emptyGoldStar")
+            starImageView.image = UIImage(named: "emptyGoldStar")?.withRenderingMode(.alwaysTemplate)
             starImageView.contentMode = .scaleAspectFit
             starImageView.translatesAutoresizingMaskIntoConstraints = false
             addArrangedSubview(starImageView)
@@ -62,11 +62,11 @@ final class RatingView: UIStackView {
         for count in 0..<starCount {
             if count < rating {
                 if let starImageView = arrangedSubviews[count] as? UIImageView {
-                    starImageView.image = UIImage(named: "goldStar")
+                    starImageView.tintColor = .yellowUniversal
                 }
             } else {
                 if let starImageView = arrangedSubviews[count] as? UIImageView {
-                    starImageView.image = UIImage(named: "emptyGoldStar")
+                    starImageView.tintColor = .yaLightGrayLight
                 }
             }
         }
