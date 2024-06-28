@@ -291,6 +291,13 @@ extension ProfileViewController: UITableViewDelegate {
             let viewController = FavoriteNFTController(delegate: self, favoriteNFTsId: favoriteNFTsId)
             viewController.modalPresentationStyle = .fullScreen
             present(viewController, animated: true)
+            
+        } else if indexPath.row == 2,
+                  let website = profile?.website,
+                  let url = URL(string: website) {
+            
+            let viewController = WebViewController(webViewURL: url)
+            present(viewController, animated: true)
         }
     }
 }
