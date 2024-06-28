@@ -58,7 +58,7 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc func linkButtonTapped() {
-        print("Link button tapped")
+        openWebView()
     }
     
     private func configureUserPhoto() {
@@ -243,6 +243,15 @@ final class ProfileViewController: UIViewController {
         
         self.alertPresenter?.defaultAlert(model: model)
     }
+    
+    private func openWebView() {
+        
+        if let website = profile?.website,
+           let url = URL(string: website) {
+            let viewController = WebViewController(webViewURL: url)
+            present(viewController, animated: true)
+        }
+    }
 }
 
 extension ProfileViewController: UITableViewDataSource {
@@ -292,12 +301,8 @@ extension ProfileViewController: UITableViewDelegate {
             viewController.modalPresentationStyle = .fullScreen
             present(viewController, animated: true)
             
-        } else if indexPath.row == 2,
-                  let website = profile?.website,
-                  let url = URL(string: website) {
-            
-            let viewController = WebViewController(webViewURL: url)
-            present(viewController, animated: true)
+        } else if indexPath.row == 2 {
+            openWebView()
         }
     }
 }
@@ -307,7 +312,7 @@ extension ProfileViewController: ProfileControllerDelegate {
         
         guard didProfileInfoChanged(profile) else { return }
         
-        guard 
+        guard
             profile.name.count >= 2,
             profile.website.count >= 7
         else {
@@ -370,7 +375,7 @@ extension ProfileViewController: ProfileFactoryDelegate {
         
         if let profile = UpdateProfileService.profileResult {
             
-        showServiceErrorAlert(error) {
+            showServiceErrorAlert(error) {
                 self.updateProfile(profile)
             }
         } else if let profile = self.profile {
