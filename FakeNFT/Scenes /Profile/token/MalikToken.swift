@@ -9,5 +9,4 @@ import Foundation
 
 final class MalikToken {
     static let token = ""
-    
 }
