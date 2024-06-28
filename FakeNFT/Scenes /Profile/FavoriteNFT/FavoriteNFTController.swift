@@ -53,6 +53,11 @@ final class FavoriteNFTController: UIViewController {
         configureTitleLabel()
         configureCloseButton()
         configureNFTCollectionView()
+        configureLimitWarningLabel()
+        
+        if !favoriteNFTsId.isEmpty {
+            fetchNextNFT()
+        }
     }
     
     @objc func closeControllerButtonTapped() {
@@ -126,7 +131,8 @@ final class FavoriteNFTController: UIViewController {
         nftCollectionView.delegate = self
         nftCollectionView.backgroundColor = .clear
         
-        nftCollectionView.register(FavoriteNFTController.self, forCellWithReuseIdentifier: nftCollectionCellIdentifier)
+        nftCollectionView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        nftCollectionView.register(FavoriteNFTCollectionCell.self, forCellWithReuseIdentifier: nftCollectionCellIdentifier)
         
         nftCollectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nftCollectionView)
@@ -148,7 +154,7 @@ final class FavoriteNFTController: UIViewController {
         warningLabel.textAlignment = .center
         
         warningLabel.layer.masksToBounds = true
-        warningLabel.layer.cornerRadius = 16
+        warningLabel.layer.cornerRadius = 10
         
         view.addSubview(warningLabel)
         view.addSubview(warningLabelContainer)
@@ -203,6 +209,7 @@ extension FavoriteNFTController: UICollectionViewDataSource {
         
         if nftResult.isEmpty {
             centralPlugLabel.isHidden = false
+            titleLabel.isHidden = true
         } else {
             centralPlugLabel.isHidden = true
             titleLabel.isHidden = false
@@ -217,14 +224,10 @@ extension FavoriteNFTController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        if favoriteNFTsId.contains(nftResult[indexPath.section].id) {
-            cell.setLikeImageForLikeButton()
-        } else {
-            cell.removeLikeImageForLikeButton()
-        }
+        cell.setLikeImageForLikeButton()
         
         cell.delegate = self
-        cell.nft = nftResult[indexPath.section]
+        cell.nft = nftResult[indexPath.row]
         cell.awakeFromNib()
         
         return cell
@@ -241,18 +244,125 @@ extension FavoriteNFTController: UICollectionViewDelegateFlowLayout {
         return CGSize(width: cellWidth, height: cellWidth / 2.1)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        
+        return 0
     }
 }
 
 extension FavoriteNFTController: NFTFactoryDelegate {
-    func didRecieveNFT(_ nft: NFTResult) {}
-    func didUpdateFavoriteNFT(_ favoriteNFTs: FavoriteNFTResult) {}
-    func didFailToLoadNFT(with error: NetworkServiceError) {}
-    func didFailToUpdateFavoriteNFT(with error: NetworkServiceError) {}
+    
+    func didUpdateFavoriteNFT(_ favoriteNFTs: FavoriteNFTResult) {
+        
+        delegate?.didUpdateFavoriteNFT(favoriteNFTs.likes)
+        
+        if let removedNFT = favoriteNFTsId.first(where: { !favoriteNFTs.likes.contains($0) }),
+           let cellRow = nftResult.firstIndex(where: { $0.id == removedNFT }) {
+
+            favoriteNFTsId = favoriteNFTs.likes
+            nftResult.remove(at: cellRow)
+            
+            nftCollectionView.performBatchUpdates {
+                nftCollectionView.deleteItems(at: [IndexPath(item: cellRow, section: 0)])
+            }
+        } else {
+            let warningText = "NFT удален из избранного" + "\n" + "Не удалось обновить экран"
+            showWarningLabel(with: warningText)
+        }
+    }
+    
+    func didFailToUpdateFavoriteNFT(with error: NetworkServiceError) {
+        let errorString: String
+        
+        switch error {
+            
+        case .codeError(let value):
+            errorString = value
+        case .responseError(let value):
+            errorString = "\(value)"
+        case .invalidRequest:
+            errorString = "Unknown error"
+        }
+
+        let warningText = "Ошбика: \(errorString)" + "\n" + "Не удалось удалить из избранных"
+        showWarningLabel(with: warningText)
+    }
+    
+    func didRecieveNFT(_ nft: NFTResult) {
+        nftResult.append(nft)
+        fetchNextNFT()
+    }
+    
+    func didFailToLoadNFT(with error: NetworkServiceError) {
+        
+        UIBlockingProgressHUD.dismiss()
+        nftCollectionView.reloadData()
+        
+        let errorString: String
+        
+        switch error {
+            
+        case .codeError(let value):
+            errorString = value
+        case .responseError(let value):
+            errorString = "\(value)"
+        case .invalidRequest:
+            errorString = "Unknown error"
+        }
+        
+        alertPresenter?.fetchNFTAlert(title: "Ошибка: \(errorString)", delegate: self)
+    }
+    
+    private func fetchNextNFT() {
+        
+        UIBlockingProgressHUD.show()
+        
+        if nftResult.count < favoriteNFTsId.count {
+            let nextNFT = favoriteNFTsId[nftResult.count]
+            nftFactory?.loadNFT(id: nextNFT)
+        } else {
+            nftCollectionView.reloadData()
+            UIBlockingProgressHUD.dismiss()
+        }
+    }
+    
+    private func changeFavoriteNFTRequest(nftIdArray: [String]) {
+        nftFactory?.updateFavoriteNFTOnServer(nftIdArray)
+    }
+}
+
+extension FavoriteNFTController: FetchNFTAlertDelegate {
+    func tryToReloadNFT() {
+        fetchNextNFT()
+    }
+    
+    func loadRestOfNFT() {
+        let lostNFTIndex = nftResult.count == 0 ? 0 : nftResult.count - 1
+        favoriteNFTsId.remove(at: lostNFTIndex)
+        fetchNextNFT()
+    }
+    
+    func closeActionTapped() {
+        centralPlugLabel.text = "Не удалось получить NFT"
+    }
 }
 
 extension FavoriteNFTController: CollectionViewCellDelegate {
-    func cellLikeButtonTapped(_ cell: UICollectionViewCell) {}
+    
+    func cellLikeButtonTapped(_ cell: UICollectionViewCell) {
+        guard let indexPath = nftCollectionView.indexPath(for: cell) else { return }
+        
+        let likedNftId = nftResult[indexPath.row].id
+        var newNFTArray: [String] = []
+        
+        if let nftId = favoriteNFTsId.first(where: { $0 == likedNftId }) {
+            newNFTArray = favoriteNFTsId.filter({ $0 != nftId })
+        } else {
+            let warningText = "Ошбика: Unknown error" + "\n" + "Не удалось удалить из избранных"
+            showWarningLabel(with: warningText)
+            return
+        }
+        
+        changeFavoriteNFTRequest(nftIdArray: newNFTArray)
+    }
 }

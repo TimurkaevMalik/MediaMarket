@@ -121,7 +121,7 @@ final class FavoriteNFTCollectionCell: UICollectionViewCell {
             ratingImageView.widthAnchor.constraint(equalToConstant: 68),
             ratingImageView.heightAnchor.constraint(equalToConstant: 12),
             ratingImageView.centerYAnchor.constraint(equalTo: viewsContainer.centerYAnchor),
-            ratingImageView.leadingAnchor.constraint(equalTo: nftImageView.trailingAnchor, constant: 20)
+            ratingImageView.leadingAnchor.constraint(equalTo: nftImageView.trailingAnchor, constant: 12)
         ])
     }
     
@@ -149,14 +149,10 @@ final class FavoriteNFTCollectionCell: UICollectionViewCell {
         priceLabel.textColor = .ypBlack
         priceLabel.textAlignment = .left
         priceLabel.numberOfLines = 2
-        priceLabel.font = .caption2
+        priceLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         
         if let price = nft?.price {
-            let priceString = "\(price) ETH"
-            let attributedString = NSMutableAttributedString(string: priceString)
-            
-            attributedString.setFont(.bodyBold, forText: "\(priceString)")
-            priceLabel.attributedText = attributedString
+            priceLabel.text = "\(price) ETH"
         }
         
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -164,17 +160,12 @@ final class FavoriteNFTCollectionCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
             priceLabel.heightAnchor.constraint(equalToConstant: 20),
-            priceLabel.topAnchor.constraint(equalTo: ratingImageView.bottomAnchor, constant: 4),
-            priceLabel.trailingAnchor.constraint(equalTo: ratingImageView.trailingAnchor),
+            priceLabel.topAnchor.constraint(equalTo: ratingImageView.bottomAnchor, constant: 8),
             priceLabel.leadingAnchor.constraint(equalTo: ratingImageView.leadingAnchor)
         ])
     }
     
     func setLikeImageForLikeButton() {
         likeButton.setImage(UIImage(named: "redHeart"), for: .normal)
-    }
-    
-    func removeLikeImageForLikeButton() {
-        likeButton.setImage(UIImage(named: "whiteHeart"), for: .normal)
     }
 }

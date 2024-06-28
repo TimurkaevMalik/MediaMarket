@@ -89,7 +89,6 @@ final class NFTCollectionController: UIViewController {
     
     private func configureTitleLabel(){
         titleLabel.textColor = .ypBlack
-        titleLabel.isHidden = true
         titleLabel.text = "Мои NFT"
         titleLabel.font = UIFont.bodyBold
         
@@ -141,7 +140,6 @@ final class NFTCollectionController: UIViewController {
     private func configureSortButton() {
         let image = UIImage(named: "sortButtonImage")
         sortButton.tintColor = .ypBlack
-        sortButton.isHidden = true
         
         sortButton.setImage(image, for: .normal)
         sortButton.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
@@ -184,7 +182,7 @@ final class NFTCollectionController: UIViewController {
         warningLabel.textAlignment = .center
         
         warningLabel.layer.masksToBounds = true
-        warningLabel.layer.cornerRadius = 16
+        warningLabel.layer.cornerRadius = 10
         
         view.addSubview(warningLabel)
         view.addSubview(warningLabelContainer)
@@ -239,6 +237,8 @@ extension NFTCollectionController: UICollectionViewDataSource {
         
         if nftResult.isEmpty {
             centralPlugLabel.isHidden = false
+            sortButton.isHidden = true
+            titleLabel.isHidden = true
         } else {
             centralPlugLabel.isHidden = true
             titleLabel.isHidden = false
@@ -375,7 +375,7 @@ extension NFTCollectionController: NFTFactoryDelegate {
             errorString = "Unknown error"
         }
 
-        let warningText = "Ошбика: \(errorString)" + "\n" + "Не удалось добавить в избранное"
+        let warningText = "Ошбика: \(errorString)" + "\n" + "Не удалось обновить избранные"
         showWarningLabel(with: warningText)
     }
     
