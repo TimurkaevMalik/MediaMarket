@@ -285,6 +285,12 @@ extension ProfileViewController: UITableViewDelegate {
             let viewController = NFTCollectionController(delegate: self, nftIdArray: nftIdArray, favoriteNFTsId: favoriteNFTsId)
             viewController.modalPresentationStyle = .fullScreen
             present(viewController, animated: true)
+            
+        } else if indexPath.row == 1 {
+            
+            let viewController = FavoriteNFTController(delegate: self, favoriteNFTsId: favoriteNFTsId)
+            viewController.modalPresentationStyle = .fullScreen
+            present(viewController, animated: true)
         }
     }
 }
