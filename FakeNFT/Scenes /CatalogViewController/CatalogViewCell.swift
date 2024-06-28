@@ -1,10 +1,3 @@
-//
-//  CatalogViewCell.swift
-//  FakeNFT
-//
-//  Created by Artem Krasnov on 21.06.2024.
-//
-
 import UIKit
 
 final class CatalogViewCell: UITableViewCell {

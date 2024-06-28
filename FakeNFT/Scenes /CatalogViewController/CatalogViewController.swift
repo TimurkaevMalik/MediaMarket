@@ -40,8 +40,6 @@ final class CatalogViewController: UIViewController {
         setupTableView()
     }
 
-    // MARK: - Public Methods
-
     // MARK: - Private Methods
 
     private func setupNavBar() {
@@ -52,6 +50,11 @@ final class CatalogViewController: UIViewController {
             target: self,
             action: #selector(didTapButton)
         )
+
+        let backButton = UIBarButtonItem(title: nil, style: .plain, target: nil, action: nil)
+        backButton.tintColor = .black
+
+        navigationItem.backBarButtonItem = backButton
         navigationItem.rightBarButtonItem?.tintColor = .black
     }
 
@@ -101,7 +104,14 @@ final class CatalogViewController: UIViewController {
 
 // MARK: - UITableViewDelegate
 
-extension CatalogViewController: UITableViewDelegate {}
+extension CatalogViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedCell = tableView.cellForRow(at: indexPath)
+        navigationController?.pushViewController(CollectionViewController(), animated: true)
+    }
+
+}
 
 // MARK: - UITableViewDataSource
 
