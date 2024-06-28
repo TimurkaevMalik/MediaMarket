@@ -1,10 +1,3 @@
-//
-//  RatingView.swift
-//  FakeNFT
-//
-//  Created by Artem Krasnov on 22.06.2024.
-//
-
 import UIKit
 
 final class RatingView: UIStackView {

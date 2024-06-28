@@ -1,10 +1,3 @@
-//
-//  CollectionViewController.swift
-//  FakeNFT
-//
-//  Created by Artem Krasnov on 25.06.2024.
-//
-
 import UIKit
 import WebKit
 
@@ -35,7 +28,7 @@ final class CollectionViewController: UIViewController {
         nameCollectionLabel.font = .systemFont(ofSize: 13)
         nameCollectionLabel.textColor = .black
         nameCollectionLabel.isUserInteractionEnabled = true
-        nameCollectionLabel.text = "Автор коллекции: "
+        nameCollectionLabel.text = NSLocalizedString("Collection.nameCollectionLabelText", comment: "")
         nameCollectionLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapLink)))
         return nameCollectionLabel
     }()
@@ -136,11 +129,30 @@ final class CollectionViewController: UIViewController {
 extension CollectionViewController {
 
     private func configureCollectionView() {
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 108, height: 192)
-        layout.sectionInset = UIEdgeInsets(top: 8, left: 9, bottom: 8, right: 9)
 
-        nftCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .fractionalHeight(1)
+            )
+        )
+
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .fractionalHeight(0.5)
+        )
+
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitem: item,
+            count: 3
+        )
+
+        let section = NSCollectionLayoutSection(group: group)
+
+        let layout = UICollectionViewCompositionalLayout(section: section)
+
+        nftCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
 
         guard let nftCollectionView = nftCollectionView else { return }
 
@@ -152,7 +164,7 @@ extension CollectionViewController {
 
         nftCollectionView.topAnchor.constraint(equalTo: descriptionCollectionLabel.bottomAnchor).isActive = true
         nftCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        nftCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        nftCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
         nftCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
     }
 

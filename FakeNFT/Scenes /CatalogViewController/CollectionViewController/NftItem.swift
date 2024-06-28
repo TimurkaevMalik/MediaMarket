@@ -1,10 +1,3 @@
-//
-//  NftItem.swift
-//  FakeNFT
-//
-//  Created by Artem Krasnov on 22.06.2024.
-//
-
 import Foundation
 
 struct NftItem: Hashable, Codable {

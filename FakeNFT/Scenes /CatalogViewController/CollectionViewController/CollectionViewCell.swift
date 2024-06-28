@@ -1,17 +1,10 @@
-//
-//  CollectionViewCell.swift
-//  FakeNFT
-//
-//  Created by Artem Krasnov on 22.06.2024.
-//
-
 import UIKit
 
 final class CollectionViewCell: UICollectionViewCell {
 
     // MARK: - Public Properties
 
-    static let reuseIdent: String = "CollectionViewCell"
+    static let reuseIdent = "CollectionViewCell"
 
     // MARK: - Private Properties
 
@@ -139,7 +132,7 @@ final class CollectionViewCell: UICollectionViewCell {
         cardButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         cardButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
         cardButton.topAnchor.constraint(equalTo: coverImageView.bottomAnchor, constant: 24).isActive = true
-        cardButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        cardButton.trailingAnchor.constraint(equalTo: coverImageView.trailingAnchor).isActive = true
     }
 
     @objc
