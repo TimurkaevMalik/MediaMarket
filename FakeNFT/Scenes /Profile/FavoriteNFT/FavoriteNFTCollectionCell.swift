@@ -1,8 +1,8 @@
 //
-//  NFTCollectionCell.swift
+//  FavoriteNFTCollectionCell.swift
 //  FakeNFT
 //
-//  Created by Malik Timurkaev on 25.06.2024.
+//  Created by Malik Timurkaev on 28.06.2024.
 //
 
 import Foundation
@@ -12,14 +12,13 @@ import UIKit
 import Kingfisher
 
 
-final class NFTCollectionCell: UICollectionViewCell {
+final class FavoriteNFTCollectionCell: UICollectionViewCell {
     
     weak var delegate: CollectionViewCellDelegate?
     
     private lazy var viewsContainer = UIView()
     private lazy var nftImageView = UIImageView()
     private lazy var nftNameLabel = UILabel()
-    private lazy var authorLabel = UILabel()
     private lazy var priceLabel = UILabel()
     private lazy var likeButton = UIButton()
     
@@ -128,31 +127,21 @@ final class NFTCollectionCell: UICollectionViewCell {
     
     private func configureNameAndAuthorLabels(){
         nftNameLabel.textColor = .ypBlack
-        authorLabel.textColor = .ypBlack
         
         nftNameLabel.textAlignment = .left
         nftNameLabel.font = .bodyBold
-        authorLabel.font = .caption2
         
         if let author = nft?.author, let nftName = nft?.name {
             nftNameLabel.text = nftName.cutString(at: " ")
-            authorLabel.text = "От \(author)"
         }
         
         nftNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        authorLabel.translatesAutoresizingMaskIntoConstraints = false
         viewsContainer.addSubview(nftNameLabel)
-        viewsContainer.addSubview(authorLabel)
         
         NSLayoutConstraint.activate([
             nftNameLabel.heightAnchor.constraint(equalToConstant: 22),
             nftNameLabel.leadingAnchor.constraint(equalTo: ratingImageView.leadingAnchor),
-            nftNameLabel.bottomAnchor.constraint(equalTo: ratingImageView.topAnchor, constant: -4),
-            
-            authorLabel.heightAnchor.constraint(equalToConstant: 20),
-            authorLabel.leadingAnchor.constraint(equalTo: ratingImageView.leadingAnchor),
-            authorLabel.trailingAnchor.constraint(equalTo: ratingImageView.trailingAnchor),
-            authorLabel.topAnchor.constraint(equalTo: ratingImageView.bottomAnchor, constant: 4)
+            nftNameLabel.bottomAnchor.constraint(equalTo: ratingImageView.topAnchor, constant: -4)
         ])
     }
     
@@ -164,7 +153,7 @@ final class NFTCollectionCell: UICollectionViewCell {
         
         if let price = nft?.price {
             let priceString = "\(price) ETH"
-            let attributedString = NSMutableAttributedString(string: "Цена" + "\n" + "\(priceString)")
+            let attributedString = NSMutableAttributedString(string: priceString)
             
             attributedString.setFont(.bodyBold, forText: "\(priceString)")
             priceLabel.attributedText = attributedString
@@ -174,10 +163,10 @@ final class NFTCollectionCell: UICollectionViewCell {
         viewsContainer.addSubview(priceLabel)
         
         NSLayoutConstraint.activate([
-            priceLabel.topAnchor.constraint(equalTo: viewsContainer.topAnchor, constant: 33),
-            priceLabel.bottomAnchor.constraint(equalTo: viewsContainer.bottomAnchor, constant: -33),
-            priceLabel.trailingAnchor.constraint(equalTo: viewsContainer.trailingAnchor),
-            priceLabel.leadingAnchor.constraint(lessThanOrEqualTo: nftImageView.trailingAnchor, constant: 137)
+            priceLabel.heightAnchor.constraint(equalToConstant: 20),
+            priceLabel.topAnchor.constraint(equalTo: ratingImageView.bottomAnchor, constant: 4),
+            priceLabel.trailingAnchor.constraint(equalTo: ratingImageView.trailingAnchor),
+            priceLabel.leadingAnchor.constraint(equalTo: ratingImageView.leadingAnchor)
         ])
     }
     

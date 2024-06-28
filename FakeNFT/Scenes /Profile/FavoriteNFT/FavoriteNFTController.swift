@@ -15,13 +15,15 @@ final class FavoriteNFTController: UIViewController {
     private lazy var titleLabel = UILabel()
     private lazy var topViewsContainer = UIView()
     private lazy var centralPlugLabel = UILabel()
+    private lazy var nftCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     private var alertPresenter: AlertPresenter?
     private var nftFactory: NFTFactory?
     
     private var nftResult: [NFTResult] = []
     private var favoriteNFTsId: [String]
-    
+    private let nftCollectionCellIdentifier = "nftCollectionCellIdentifier"
+    private let params = GeomitricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 7)
     
     init(delegate: NFTCollectionControllerDelegate,
          favoriteNFTsId: [String]) {
@@ -45,6 +47,7 @@ final class FavoriteNFTController: UIViewController {
         configureCentralPlugLabel()
         configureTopViewsContainer()
         configureTitleLabel()
+        configureNFTCollectionView()
     }
     
     private func configureTopViewsContainer() {
@@ -90,6 +93,73 @@ final class FavoriteNFTController: UIViewController {
             centralPlugLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 30)
         ])
     }
+    
+    private func configureNFTCollectionView() {
+        nftCollectionView.dataSource = self
+        nftCollectionView.delegate = self
+        nftCollectionView.backgroundColor = .clear
+        
+        nftCollectionView.register(FavoriteNFTController.self, forCellWithReuseIdentifier: nftCollectionCellIdentifier)
+        
+        nftCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(nftCollectionView)
+        
+        NSLayoutConstraint.activate([
+            nftCollectionView.topAnchor.constraint(equalTo: topViewsContainer.bottomAnchor),
+            nftCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            nftCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            nftCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+}
+
+extension FavoriteNFTController: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        if nftResult.isEmpty {
+            centralPlugLabel.isHidden = false
+        } else {
+            centralPlugLabel.isHidden = true
+            titleLabel.isHidden = false
+        }
+        
+        return nftResult.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: nftCollectionCellIdentifier, for: indexPath) as? FavoriteNFTCollectionCell else {
+            return UICollectionViewCell()
+        }
+        
+        if favoriteNFTsId.contains(nftResult[indexPath.section].id) {
+            cell.setLikeImageForLikeButton()
+        } else {
+            cell.removeLikeImageForLikeButton()
+        }
+        
+        cell.delegate = self
+        cell.nft = nftResult[indexPath.section]
+        cell.awakeFromNib()
+        
+        return cell
+    }
+}
+
+extension FavoriteNFTController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let availibleSpacing = collectionView.frame.width - params.paddingWidth
+        let cellWidth = availibleSpacing / params.cellCount
+        
+        return CGSize(width: cellWidth, height: cellWidth / 2.1)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+    }
 }
 
 extension FavoriteNFTController: NFTFactoryDelegate {
@@ -97,4 +167,8 @@ extension FavoriteNFTController: NFTFactoryDelegate {
     func didUpdateFavoriteNFT(_ favoriteNFTs: FavoriteNFTResult) {}
     func didFailToLoadNFT(with error: NetworkServiceError) {}
     func didFailToUpdateFavoriteNFT(with error: NetworkServiceError) {}
+}
+
+extension FavoriteNFTController: CollectionViewCellDelegate {
+    func cellLikeButtonTapped(_ cell: UICollectionViewCell) {}
 }

@@ -38,7 +38,7 @@ protocol TextFieldAlertDelegate: UIViewController {
 }
 
 protocol CollectionViewCellDelegate: AnyObject {
-    func cellLikeButtonTapped(_ cell: NFTCollectionCell)
+    func cellLikeButtonTapped(_ cell: UICollectionViewCell)
 }
 
 protocol ProfileControllerDelegate: AnyObject {

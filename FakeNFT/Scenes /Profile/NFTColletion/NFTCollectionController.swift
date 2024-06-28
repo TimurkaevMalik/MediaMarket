@@ -287,7 +287,6 @@ extension NFTCollectionController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-
 extension NFTCollectionController: SortAlertDelegate {
     func sortByPrice() {
         nftResult.sort(by: { $0.price < $1.price })
@@ -440,7 +439,7 @@ extension NFTCollectionController: FetchNFTAlertDelegate {
 }
 
 extension NFTCollectionController: CollectionViewCellDelegate {
-    func cellLikeButtonTapped(_ cell: NFTCollectionCell) {
+    func cellLikeButtonTapped(_ cell: UICollectionViewCell) {
         guard let indexPath = nftCollectionView.indexPath(for: cell) else {
             return
         }
