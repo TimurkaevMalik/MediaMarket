@@ -14,6 +14,7 @@ final class FavoriteNFTController: UIViewController {
     
     private lazy var titleLabel = UILabel()
     private lazy var topViewsContainer = UIView()
+    private lazy var centralPlugLabel = UILabel()
     
     private var alertPresenter: AlertPresenter?
     private var nftFactory: NFTFactory?
@@ -41,6 +42,7 @@ final class FavoriteNFTController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
         
+        configureCentralPlugLabel()
         configureTopViewsContainer()
         configureTitleLabel()
     }
@@ -69,6 +71,23 @@ final class FavoriteNFTController: UIViewController {
         NSLayoutConstraint.activate([
             titleLabel.centerYAnchor.constraint(equalTo: topViewsContainer.centerYAnchor),
             titleLabel.centerXAnchor.constraint(equalTo: topViewsContainer.centerXAnchor)
+        ])
+    }
+    
+    private func configureCentralPlugLabel(){
+        centralPlugLabel.textColor = .ypBlack
+        
+        centralPlugLabel.text = "У Вас ещё нет избранных NFT"
+        centralPlugLabel.textAlignment = .center
+        centralPlugLabel.font = .bodyBold
+        centralPlugLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(centralPlugLabel)
+        
+        NSLayoutConstraint.activate([
+            centralPlugLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            centralPlugLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant: 16),
+            centralPlugLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            centralPlugLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 30)
         ])
     }
 }
