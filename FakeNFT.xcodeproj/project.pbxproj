@@ -396,6 +396,14 @@
 			path = FavoriteNFT;
 			sourceTree = "<group>";
 		};
+		BC09442E2C2EACD9005E25B3 /* UICustomElements */ = {
+			isa = PBXGroup;
+			children = (
+				BCD8FFB42C2ACB4300198C30 /* RatingImageView.swift */,
+			);
+			path = UICustomElements;
+			sourceTree = "<group>";
+		};
 		BC4890592C29602D004FCBDC /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -470,7 +478,6 @@
 			children = (
 				BCD8FFAE2C2AAB5400198C30 /* NFTCollectionController.swift */,
 				BCD8FFB22C2ACAD300198C30 /* NFTCollectionCell.swift */,
-				BCD8FFB42C2ACB4300198C30 /* RatingImageView.swift */,
 			);
 			path = NFTColletion;
 			sourceTree = "<group>";
@@ -480,6 +487,7 @@
 			children = (
 				BC88B8202C21EB550048CDB0 /* token */,
 				BC4890592C29602D004FCBDC /* Helpers */,
+				BC09442E2C2EACD9005E25B3 /* UICustomElements */,
 				BC6638F12C2085F900A5155C /* ProfileModels */,
 				BC6638EE2C20855C00A5155C /* ProfileServices */,
 				BCB354D92C1D7A1F005FA7DD /* ProfileViewController */,

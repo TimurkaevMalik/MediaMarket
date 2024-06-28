@@ -13,6 +13,7 @@ final class FavoriteNFTController: UIViewController {
     weak var delegate: NFTCollectionControllerDelegate?
     
     private lazy var titleLabel = UILabel()
+    private lazy var closeButton = UIButton()
     private lazy var topViewsContainer = UIView()
     private lazy var centralPlugLabel = UILabel()
     private lazy var nftCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -47,7 +48,12 @@ final class FavoriteNFTController: UIViewController {
         configureCentralPlugLabel()
         configureTopViewsContainer()
         configureTitleLabel()
+        configureCloseButton()
         configureNFTCollectionView()
+    }
+    
+    @objc func closeControllerButtonTapped() {
+        dismiss(animated: true)
     }
     
     private func configureTopViewsContainer() {
@@ -74,6 +80,24 @@ final class FavoriteNFTController: UIViewController {
         NSLayoutConstraint.activate([
             titleLabel.centerYAnchor.constraint(equalTo: topViewsContainer.centerYAnchor),
             titleLabel.centerXAnchor.constraint(equalTo: topViewsContainer.centerXAnchor)
+        ])
+    }
+    
+    private func configureCloseButton() {
+        let image = UIImage(systemName: "chevron.backward")
+        closeButton.tintColor = .ypBlack
+        
+        closeButton.setImage(image, for: .normal)
+        closeButton.addTarget(self, action: #selector(closeControllerButtonTapped), for: .touchUpInside)
+        
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(closeButton)
+        
+        NSLayoutConstraint.activate([
+            closeButton.widthAnchor.constraint(equalToConstant: 24),
+            closeButton.heightAnchor.constraint(equalToConstant: 24),
+            closeButton.centerYAnchor.constraint(equalTo: topViewsContainer.centerYAnchor),
+            closeButton.leadingAnchor.constraint(equalTo: topViewsContainer.leadingAnchor, constant: 9)
         ])
     }
     
