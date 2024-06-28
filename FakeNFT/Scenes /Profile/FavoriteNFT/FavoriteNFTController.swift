@@ -12,6 +12,8 @@ final class FavoriteNFTController: UIViewController {
     
     weak var delegate: NFTCollectionControllerDelegate?
     
+    private let warningLabel = UILabel()
+    private let warningLabelContainer = UIView()
     private lazy var titleLabel = UILabel()
     private lazy var closeButton = UIButton()
     private lazy var topViewsContainer = UIView()
@@ -21,6 +23,7 @@ final class FavoriteNFTController: UIViewController {
     private var alertPresenter: AlertPresenter?
     private var nftFactory: NFTFactory?
     
+    private var warningLabelTopConstraint: [NSLayoutConstraint] = []
     private var nftResult: [NFTResult] = []
     private var favoriteNFTsId: [String]
     private let nftCollectionCellIdentifier = "nftCollectionCellIdentifier"
@@ -134,6 +137,63 @@ final class FavoriteNFTController: UIViewController {
             nftCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             nftCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
+    }
+    
+    private func configureLimitWarningLabel(){
+        warningLabelContainer.backgroundColor = UIColor.ypWhite
+        warningLabel.textColor = .ypBlue
+        warningLabel.backgroundColor = .ypBlack?.withAlphaComponent(0.7)
+        warningLabel.font = UIFont.systemFont(ofSize: 17)
+        warningLabel.numberOfLines = 2
+        warningLabel.textAlignment = .center
+        
+        warningLabel.layer.masksToBounds = true
+        warningLabel.layer.cornerRadius = 16
+        
+        view.addSubview(warningLabel)
+        view.addSubview(warningLabelContainer)
+        warningLabel.translatesAutoresizingMaskIntoConstraints = false
+        warningLabelContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            warningLabelContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            warningLabelContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            warningLabelContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            warningLabelContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            warningLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            warningLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            warningLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
+        
+        let constraint = warningLabel.topAnchor.constraint(equalTo: warningLabelContainer.topAnchor)
+        
+        warningLabelTopConstraint.append(constraint)
+        
+        warningLabelTopConstraint.first?.isActive = true
+    }
+    
+    private func showWarningLabel(with text: String){
+        
+        warningLabel.text = text
+        
+        DispatchQueue.main.async {
+            
+            if let constraint = self.warningLabelTopConstraint.first {
+                
+                UIView.animate(withDuration: 0.5) {
+                    constraint.constant = -50
+                    self.view.layoutIfNeeded()
+                    
+                } completion: { isCompleted in
+                    
+                    UIView.animate(withDuration: 0.4, delay: 2) {
+                        constraint.constant = 0
+                        self.view.layoutIfNeeded()
+                    }
+                }
+            }
+        }
     }
 }
 
