@@ -2,11 +2,13 @@ import UIKit
 
 final class CatalogViewController: UIViewController {
 
-    // MARK: - Public Properties
-
-    let servicesAssembly: ServicesAssembly
-
     // MARK: - Private Properties
+
+    private let servicesAssembly: ServicesAssembly
+
+    internal let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView()
+
+    private var nftsCollection: [CollectionNftModel] = []
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -37,7 +39,8 @@ final class CatalogViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setupNavBar()
-        setupTableView()
+        setupActivityIndicator()
+        loadCollection()
     }
 
     // MARK: - Private Methods
@@ -100,6 +103,21 @@ final class CatalogViewController: UIViewController {
 
         self.present(alertController, animated: true)
     }
+
+    private func loadCollection() {
+        activityIndicator.startAnimating()
+        activityIndicator.hidesWhenStopped = true
+        servicesAssembly.collectionService.loadCollection { result in
+
+            switch result {
+            case .success(let collectionNft):
+                self.nftsCollection = collectionNft
+                self.setupTableView()
+            case .failure(let error):
+                print("Error loading collection: \(error)")
+            }
+        }
+    }
 }
 
 // MARK: - UITableViewDelegate
@@ -108,6 +126,7 @@ extension CatalogViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCell = tableView.cellForRow(at: indexPath)
+        selectedCell?.isSelected = false
         navigationController?.pushViewController(CollectionViewController(), animated: true)
     }
 
@@ -117,22 +136,35 @@ extension CatalogViewController: UITableViewDelegate {
 
 extension CatalogViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        nftsCollection.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CatalogViewCell") as? CatalogViewCell
 
-        guard let cell = cell else { return UITableViewCell()}
+        guard let cell = cell,
+              !nftsCollection.isEmpty else { return UITableViewCell()}
+
+        var currentCollection = nftsCollection[indexPath.row]
 
         let catalog = CatalogModel(
-            name: "Peach",
-            cover: UIImage(named: "White") ?? UIImage(),
-            count: indexPath.row
+            name: currentCollection.name,
+            imageUrl: currentCollection.cover,
+            count: currentCollection.nfts.count
         )
 
         cell.configure(catalog: catalog)
 
         return cell
+    }
+}
+
+// MARK: - LoadingView
+
+extension CatalogViewController: LoadingView {
+
+    private func setupActivityIndicator() {
+        view.addSubview(activityIndicator)
+        activityIndicator.constraintCenters(to: view)
     }
 }

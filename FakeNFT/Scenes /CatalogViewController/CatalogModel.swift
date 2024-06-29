@@ -1,7 +1,7 @@
-import UIKit
+import Foundation
 
 struct CatalogModel {
     let name: String
-    let cover: UIImage
+    let imageUrl: URL
     let count: Int
 }

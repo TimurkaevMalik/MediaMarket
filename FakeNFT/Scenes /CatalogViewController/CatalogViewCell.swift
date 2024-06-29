@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class CatalogViewCell: UITableViewCell {
 
@@ -37,7 +38,7 @@ final class CatalogViewCell: UITableViewCell {
     // MARK: - Public Methods
 
     func configure(catalog: CatalogModel) {
-        coverImageView.image = catalog.cover
+        coverImageView.kf.setImage(with: catalog.imageUrl)
         nameLabel.text = "\(catalog.name) (\(catalog.count))"
     }
 
