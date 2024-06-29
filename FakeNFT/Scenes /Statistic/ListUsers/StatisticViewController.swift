@@ -2,7 +2,7 @@ import UIKit
 import ProgressHUD
 
 
-class StatisticViewController: UIViewController {
+final class StatisticViewController: UIViewController {
     
     // MARK: - Public Properties
     let servicesAssembly: ServicesAssembly
@@ -37,7 +37,7 @@ class StatisticViewController: UIViewController {
         reloadUsers()
     }
     
-    // MARK: - IB Actions
+    // MARK: - Actions
     @objc private func onClick() {
         let actionSheet = UIAlertController(title: nil, message: titleAlert, preferredStyle: .actionSheet)
         let sortByNameAction = UIAlertAction(title: sortByName, style: .default) { [weak self] _ in
@@ -133,6 +133,17 @@ extension StatisticViewController: UICollectionViewDataSource, UICollectionViewD
             cell.putPlugProfileImage()
         }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath){
+        let viewController = UserCardViewController(avatar: users[indexPath.item].avatar,
+                                                    name: users[indexPath.item].name,
+                                                    descriptionUser: users[indexPath.item].description,
+                                                    website: users[indexPath.item].website,
+                                                    nfts: users[indexPath.item].nfts)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.modalPresentationStyle = .fullScreen
+        self.present(navigationController, animated: true)
     }
 }
 

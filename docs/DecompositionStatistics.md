@@ -26,17 +26,17 @@
 
 ## Module 2:
 #### Верстка
-- UIImageView фото пользователя (est: 30 min; fact: x min).
-- UILabel имя пользователя (est: 30 min; fact: x min).
-- UILabel описание пользователя (est: 30 min; fact: x min).
-- Кнопка перехода на сайт пользователя (est: 30 min; fact: x min).
-- Кнопка перехода на экран коллекции пользователя (est: 30 min; fact: x min).
+- UIImageView фото пользователя (est: 30 min; fact: 10 min).
+- UILabel имя пользователя (est: 30 min; fact: 5 min).
+- UILabel описание пользователя (est: 30 min; fact: 5 min).
+- Кнопка перехода на сайт пользователя (est: 30 min; fact: 10 min).
+- Кнопка перехода на экран коллекции пользователя (est: 30 min; fact: 15 min).
 
 #### Логика
-- Переход на экран коллекции пользователя (est: 40 min; fact: x min).
-- Открытие сайта пользователя (est: 100 min; fact: x min).
+- Переход на экран коллекции пользователя (est: 40 min; fact: 10 min).
+- Открытие сайта пользователя (est: 100 min; fact: 30 min).
 
-`Total:` est: 290 min; fact: x min.
+`Total:` est: 290 min; fact: 85 min.
 
 ## Module 3:
 

@@ -49,7 +49,7 @@ final class StatisticCollectionViewCell: UICollectionViewCell {
         profileImage.image = UIImage(named: "ProfileImage")
     }
     
-    // MARK: - Public Methods
+    // MARK: - Private Methods
     private func setupBackgroundContainer(){
         contentView.addSubview(backgroundContainer)
         backgroundContainer.layer.cornerRadius = 12
