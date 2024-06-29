@@ -82,14 +82,16 @@ final class CatalogViewController: UIViewController {
             title: NSLocalizedString("Catalog.alertFirstButton", comment: ""),
             style: .default
         ) { _ in
-            print("1")
+            self.nftsCollection.sort { $0.name < $1.name }
+            self.tableView.reloadData()
         }
 
         let countSort = UIAlertAction(
             title: NSLocalizedString("Catalog.alertSecondButton", comment: ""),
             style: .default
         ) { _ in
-            print("2")
+            self.nftsCollection.sort { $0.nfts.count < $1.nfts.count }
+            self.tableView.reloadData()
         }
 
         let cancelAction = UIAlertAction(
