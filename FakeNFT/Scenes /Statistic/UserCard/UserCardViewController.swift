@@ -6,15 +6,11 @@ import Kingfisher
 final class UserCardViewController: UIViewController {
     
     // MARK: - Private Properties
-    private var avatar = String()
-    private var name = String()
-    private var website = String()
-    private var descriptionUser = String()
-    private var nfts = [String]()
     private let avatarImage = UIImageView()
     private let nameLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let websiteButton = UIButton()
+    private var user = [User]()
     private let titleWebsiteButton = NSLocalizedString("Statistic.userCard.website", comment: "")
     private lazy var nftsTableView: UITableView = {
         let table = UITableView()
@@ -26,13 +22,9 @@ final class UserCardViewController: UIViewController {
     }()
     
     // MARK: - Initializers
-    init(avatar: String, name: String, descriptionUser: String, website: String, nfts: [String]) {
+    init(user: User) {
         super.init(nibName: nil, bundle: nil)
-        self.avatar = avatar
-        self.name = name
-        self.descriptionUser = descriptionUser
-        self.website = website
-        self.nfts = nfts
+        self.user.append(user)
     }
     
     required init?(coder: NSCoder) {
@@ -58,7 +50,7 @@ final class UserCardViewController: UIViewController {
     }
     
     @objc private func onClickWebsiteButton() {
-        let viewController = WebViewViewController(website: website)
+        let viewController = WebViewViewController(website: user[0].website)
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true)
@@ -80,7 +72,7 @@ final class UserCardViewController: UIViewController {
         avatarImage.backgroundColor = .clear
         avatarImage.layer.cornerRadius = 35
         avatarImage.layer.masksToBounds = true
-        if let avatarURL = URL(string: avatar) {
+        if let avatarURL = URL(string: user[0].avatar) {
             avatarImage.kf.indicatorType = .activity
             avatarImage.kf.setImage(with: avatarURL, placeholder: UIImage(named: "ProfileImage"))
         } else {
@@ -92,14 +84,14 @@ final class UserCardViewController: UIViewController {
         view.addSubview(nameLabel)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-        nameLabel.text = name
+        nameLabel.text = user[0].name
     }
     
     private func setupDescriptionLabel() {
         view.addSubview(descriptionLabel)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.font = UIFont.systemFont(ofSize: 13)
-        descriptionLabel.text = descriptionUser
+        descriptionLabel.text = user[0].description
     }
     
     private func setupWebsiteButton() {
@@ -161,7 +153,7 @@ extension UserCardViewController: UITableViewDelegate, UITableViewDataSource{
         guard let cell = cell as? UserCardTableViewCell else {
             return UserCardTableViewCell()
         }
-        cell.updateNumberNftLabel(text: String(nfts.count))
+        cell.updateNumberNftLabel(text: String(user[0].nfts.count))
         return cell
     }
     
@@ -170,7 +162,7 @@ extension UserCardViewController: UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let viewController = NftCollectionViewController(nfts: nfts)
+        let viewController = NftCollectionViewController(nfts: user[0].nfts)
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true)

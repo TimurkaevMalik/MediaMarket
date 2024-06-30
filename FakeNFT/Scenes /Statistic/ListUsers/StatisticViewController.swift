@@ -136,11 +136,7 @@ extension StatisticViewController: UICollectionViewDataSource, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath){
-        let viewController = UserCardViewController(avatar: users[indexPath.item].avatar,
-                                                    name: users[indexPath.item].name,
-                                                    descriptionUser: users[indexPath.item].description,
-                                                    website: users[indexPath.item].website,
-                                                    nfts: users[indexPath.item].nfts)
+        let viewController = UserCardViewController(user: users[indexPath.item])
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true)
