@@ -37,7 +37,7 @@ extension CartViewController: NftInCartCellDelegate {
     func deleteNftFromCart(nftModel: NftInCartModel) {
         let vc = DeleteNftFromCartViewController()
         vc.delegate = self
-        vc.imageStr = nftModel.picture
+        vc.nftModel = nftModel
         turnOnBlurEffect()
         vc.modalPresentationStyle = .overFullScreen
         self.present(vc, animated: false) {
@@ -51,6 +51,24 @@ extension CartViewController: NftInCartCellDelegate {
 }
 
 extension CartViewController: DeleteNftFromCartViewControllerDelegate {
+    
+    func deleteNft(nftModel: NftInCartModel) {
+        var newArrayNftId: [String] = []
+        nfts.forEach { nft in
+            if nft.id != nftModel.id {
+                newArrayNftId.append(nft.id)
+            }
+        }
+        cartNetworkService.deleteNFTFromBasket(nftID: newArrayNftId) { [weak self] result in
+            switch result {
+            case .success():
+                self?.reloadNfts()
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     func turnOffBlurEffect() {
         blurEffectView.isHidden = true
     }

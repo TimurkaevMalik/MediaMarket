@@ -15,6 +15,7 @@ final class CartViewController: UIViewController {
     let servicesAssembly: ServicesAssembly
     var nfts: [NftInCartModel] = []
     let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+    let cartNetworkService = CartNetworkService()
     
     // MARK: - Private Properties
     
@@ -24,7 +25,8 @@ final class CartViewController: UIViewController {
     private let nftCountLable = UILabel()
     private let nftPriceLable = UILabel()
     private let cartIsEmptyLable = UILabel()
-    private let cartNetworkService = CartNetworkService()
+    private let sortButton = UIButton()
+    private var sortMethod: Int? = nil
     
     // MARK: - Initializers
     
@@ -56,17 +58,65 @@ final class CartViewController: UIViewController {
         blurEffectView.isHidden = false
     }
     
+    func reloadNfts() {
+         var nfts: [NftInCartModel] = []
+         ProgressHUD.show()
+         cartNetworkService.fetchOrder() { [weak self] result in
+             switch result {
+             case .success(let order):
+                 var numberOfCicle = 0
+                 if order.nfts.isEmpty {
+                     DispatchQueue.main.async {
+                         self?.nfts = nfts
+                         ProgressHUD.dismiss()
+                         self?.reloadView()
+                     }
+                 } else {
+                     order.nfts.forEach({ id in
+                         self?.cartNetworkService.requestByNftId(id: id) { [weak self] result in
+                             switch result {
+                             case .success(let nft):
+                                 let nftInCard = NftInCartModel(
+                                    id: nft.id,
+                                    name: nft.name,
+                                    rating: nft.rating,
+                                    price: nft.price,
+                                    picture: nft.images[0])
+                                 nfts.append(nftInCard)
+                                 numberOfCicle += 1
+                                 if numberOfCicle == order.nfts.count {
+                                     DispatchQueue.main.async {
+                                         self?.nfts = nfts
+                                         ProgressHUD.dismiss()
+                                         self?.sortNft()
+                                         self?.reloadView()
+                                     }
+                                 }
+                             case .failure(let error):
+                                 print("Error: \(error.localizedDescription)")
+                             }
+                         }
+                     })
+                 }
+             case .failure(let error):
+                 print("Error: \(error.localizedDescription)")
+             }
+         }
+     }
+     
+    
     // MARK: - Private Methods
     
     private func setupViews() {
         view.backgroundColor = UIColor(named: "YPWhite")
-            addCartIsEmptyLable()
-            addBottomBackground()
-            addNftTableView()
-            addPaymentButton()
-            addNftCountLable()
-            addNftPriceLable()
-            addBlurEffectToWindow()
+        addCartIsEmptyLable()
+        addBottomBackground()
+        addNftTableView()
+        addPaymentButton()
+        addNftCountLable()
+        addNftPriceLable()
+        addBlurEffectToWindow()
+        addSortButton()
     }
     
     private func reloadView() {
@@ -77,6 +127,7 @@ final class CartViewController: UIViewController {
             paymentButton.isHidden = true
             nftCountLable.isHidden = true
             nftPriceLable.isHidden = true
+            sortButton.isHidden = true
         } else {
             cartIsEmptyLable.isHidden = true
             bottomBackground.isHidden = false
@@ -87,42 +138,7 @@ final class CartViewController: UIViewController {
             nftCountLable.text = "\(nfts.count) NFT"
             nftPriceLable.isHidden = false
             nftPriceLable.text = "\(returnFullPrice()) ETH"
-        }
-    }
-    
-    private func reloadNfts() {
-    var nfts: [NftInCartModel] = []
-        ProgressHUD.show()
-        cartNetworkService.fetchOrder() { [weak self] result in
-            switch result {
-            case .success(let order):
-                var numberOfCicle = 0
-                order.nfts.forEach({ id in
-                    self?.cartNetworkService.requestByNftId(id: id) { [weak self] result in
-                        switch result {
-                        case .success(let nft):
-                            let nftInCard = NftInCartModel(
-                                name: nft.name,
-                                rating: nft.rating,
-                                price: nft.price,
-                                picture: nft.images[0])
-                            nfts.append(nftInCard)
-                            numberOfCicle += 1
-                            if numberOfCicle == order.nfts.count {
-                                DispatchQueue.main.async {
-                                    self?.nfts = nfts
-                                    ProgressHUD.dismiss()
-                                    self?.reloadView()
-                                }
-                            }
-                        case .failure(let error):
-                            print("Error: \(error.localizedDescription)")
-                        }
-                    }
-                })
-            case .failure(let error):
-                print("Error: \(error.localizedDescription)")
-            }
+            sortButton.isHidden = false
         }
     }
     
@@ -251,6 +267,60 @@ final class CartViewController: UIViewController {
         return formattedNumber
     }
     
+    private func addSortButton() {
+        sortButton.setImage(UIImage(named: "SortButton"), for: .normal)
+        sortButton.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
+        sortButton.isHidden = true
+        sortButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(sortButton)
+        NSLayoutConstraint.activate([
+            sortButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 2),
+            sortButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9),
+            sortButton.widthAnchor.constraint(equalToConstant: 42),
+            sortButton.heightAnchor.constraint(equalToConstant: 42)
+        ])
+    }
+    
+    private func showSortAlert() {
+            let alert = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
+            let sortByPriceAction = UIAlertAction(title: "По цене", style: .default) { [weak self] _ in
+                self?.sortMethod = 1
+                self?.sortNft()
+                self?.nftTableView.reloadData()
+            }
+            let sortByRatingAction = UIAlertAction(title: "По рейтингу", style: .default) { [weak self] _ in
+                self?.sortMethod = 2
+                self?.sortNft()
+                self?.nftTableView.reloadData()
+            }
+            let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
+                self?.sortMethod = 3
+                self?.sortNft()
+                self?.nftTableView.reloadData()
+            }
+            alert.addAction(sortByPriceAction)
+            alert.addAction(sortByRatingAction)
+            alert.addAction(sortByNameAction)
+            let cancelAction = UIAlertAction(title: "Закрыть", style: .cancel, handler: nil)
+            alert.addAction(cancelAction)
+            present(alert, animated: true, completion: nil)
+        }
+    
+    private func sortNft() {
+        if self.sortMethod != nil {
+            switch sortMethod {
+            case 1:
+                nfts = nfts.sortedByPrice()
+            case 2:
+                nfts = nfts.sortedByRating()
+            case 3:
+                nfts = nfts.sortedByName()
+            default:
+                break
+            }
+        }
+    }
+    
     // MARK: - Private Actions
     
     @objc private func paymentButtonTap() {
@@ -259,5 +329,9 @@ final class CartViewController: UIViewController {
         let navController = UINavigationController(rootViewController: paymentVC)
         navController.modalPresentationStyle = .fullScreen
         self.present(navController, animated: true)
+    }
+    
+    @objc private func sortButtonTapped() {
+        showSortAlert()
     }
 }

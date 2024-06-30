@@ -10,13 +10,14 @@ import UIKit
 
 protocol DeleteNftFromCartViewControllerDelegate: AnyObject {
     func turnOffBlurEffect()
+    func deleteNft(nftModel: NftInCartModel)
 }
 
 final class DeleteNftFromCartViewController: UIViewController {
     
     // MARK: - Public Properties
     
-    var imageStr: String? = nil
+    var nftModel: NftInCartModel? = nil
     weak var delegate: DeleteNftFromCartViewControllerDelegate?
     
     // MARK: - Private Properties
@@ -39,7 +40,7 @@ final class DeleteNftFromCartViewController: UIViewController {
         addTextLable()
         addDeleteButton()
         addCancelButton()
-        if let imageStr {
+        if let imageStr = nftModel?.picture {
             addNftImageView(imageStr: imageStr)
         }
     }
@@ -86,6 +87,7 @@ final class DeleteNftFromCartViewController: UIViewController {
     private func addDeleteButton() {
         guard let color = UIColor(named: "YPRed") else { return }
         setupButton(name: "Удалить", color: color, button: deleteButton)
+        deleteButton.addTarget(self, action: #selector(deleteButtonTap), for: .touchUpInside)
         deleteButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(deleteButton)
         NSLayoutConstraint.activate([
@@ -115,5 +117,12 @@ final class DeleteNftFromCartViewController: UIViewController {
     @objc private func cancelButtonTap() {
         delegate?.turnOffBlurEffect()
         self.dismiss(animated: false)
+    }
+    
+    @objc private func deleteButtonTap() {
+        guard let nftModel else { return }
+        delegate?.deleteNft(nftModel: nftModel)
+        delegate?.turnOffBlurEffect()
+        self.dismiss(animated: true)
     }
 }
