@@ -39,18 +39,23 @@ final class StatisticViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func onClick() {
-        let actionSheet = UIAlertController(title: nil, message: titleAlert, preferredStyle: .actionSheet)
-        let sortByNameAction = UIAlertAction(title: sortByName, style: .default) { [weak self] _ in
+        let actionSheet = UIAlertController(title: nil,
+                                            message: titleAlert,
+                                            preferredStyle: .actionSheet)
+        let sortByNameAction = UIAlertAction(title: sortByName,
+                                             style: .default) { [weak self] _ in
             guard let self = self else {return}
             sortedByName()
         }
-        let sortByRatingAction = UIAlertAction(title: sortByRating, style: .default) { [weak self] _ in
+        let sortByRatingAction = UIAlertAction(title: sortByRating,
+                                               style: .default) { [weak self] _ in
             guard let self = self else {return}
             sortedByRating()
         }
         actionSheet.addAction(sortByNameAction)
         actionSheet.addAction(sortByRatingAction)
-        actionSheet.addAction(UIAlertAction(title: closeAlert, style: .cancel))
+        actionSheet.addAction(UIAlertAction(title: closeAlert,
+                                            style: .cancel))
         self.present(actionSheet, animated: true)
     }
     

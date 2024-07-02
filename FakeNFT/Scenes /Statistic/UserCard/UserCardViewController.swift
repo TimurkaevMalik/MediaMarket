@@ -18,6 +18,7 @@ final class UserCardViewController: UIViewController {
         table.translatesAutoresizingMaskIntoConstraints = false
         table.delegate = self
         table.dataSource = self
+        table.isScrollEnabled = false
         return table
     }()
     
@@ -53,7 +54,7 @@ final class UserCardViewController: UIViewController {
         let viewController = WebViewViewController(website: user[0].website)
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .fullScreen
-        self.present(navigationController, animated: true)
+        self.present(navigationController, animated: false)
     }
     
     // MARK: - Private Methods
