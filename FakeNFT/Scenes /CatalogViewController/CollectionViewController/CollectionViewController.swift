@@ -8,6 +8,7 @@ final class CollectionViewController: UIViewController {
 
     private let nftInfo: CollectionNftModel
     private var nfts: [Nft] = []
+    private var orders: Order = Order(nfts: [])
     private let servicesAssembly: ServicesAssembly
 
     private lazy var coverCollectionImageView: UIImageView = {
@@ -218,6 +219,7 @@ extension CollectionViewController {
                 id: item.id
             )
 
+            cell.setupNetworkClient(with: self.servicesAssembly)
             cell.configCell(with: nft)
 
             return cell

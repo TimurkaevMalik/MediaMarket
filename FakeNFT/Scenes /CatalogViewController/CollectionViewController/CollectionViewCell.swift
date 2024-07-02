@@ -9,6 +9,11 @@ final class CollectionViewCell: UICollectionViewCell {
 
     // MARK: - Private Properties
 
+    private var id = ""
+    private var orders: Set<String> = []
+
+    private var servicesAssembly: ServicesAssembly?
+
     private lazy var coverImageView: UIImageView = {
         let coverImageView = UIImageView()
         coverImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -81,10 +86,16 @@ final class CollectionViewCell: UICollectionViewCell {
     // MARK: - Public Methods
 
     func configCell(with nft: Nft) {
+        id = nft.id
+        loadOrders()
         nameLabel.text = nft.name
         coverImageView.kf.setImage(with: nft.images[0])
         ratingStackView.setRating(nft.rating)
         priceLabel.text = "\(nft.price) ETH"
+    }
+
+    func setupNetworkClient(with client: ServicesAssembly) {
+        servicesAssembly = client
     }
 
     // MARK: - Private Methods
@@ -137,6 +148,29 @@ final class CollectionViewCell: UICollectionViewCell {
         cardButton.trailingAnchor.constraint(equalTo: coverImageView.trailingAnchor).isActive = true
     }
 
+    private func loadOrders() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let group = DispatchGroup()
+
+            group.enter()
+            self.servicesAssembly?.orderService.loadOrder { result in
+                switch result {
+                case .success(let orders):
+                    self.orders = Set(orders.nfts)
+                case .failure(let error):
+                    debugPrint(error.localizedDescription)
+                }
+
+                group.leave()
+            }
+
+            group.notify(queue: .main) {
+                self.isCard = self.orders.contains(self.id)
+                self.cardButton.setImage(UIImage(named: self.isCard ? "crossCart" : "emptyCart"), for: .normal)
+            }
+        }
+    }
+
     @objc
     private func didTapFavoriteButon() {
         favoriteButton.setImage(UIImage(named: isFavorite ? "redHeart" : "whiteHeart"), for: .normal)
@@ -145,7 +179,21 @@ final class CollectionViewCell: UICollectionViewCell {
 
     @objc
     private func didTapCardButon() {
-        cardButton.setImage(UIImage(named: isCard ? "crossCart" : "emptyCart"), for: .normal)
-        isCard = !isCard
+
+        if isCard {
+            orders.remove(id)
+        } else {
+            orders.insert(id)
+        }
+
+        servicesAssembly?.orderService.updateOrder(body: Array(orders)) { result in
+            switch result {
+            case .success:
+                self.isCard = !self.isCard
+                self.cardButton.setImage(UIImage(named: self.isCard ? "crossCart" : "emptyCart"), for: .normal)
+            case .failure(let error):
+                debugPrint(error.localizedDescription)
+            }
+        }
     }
 }
