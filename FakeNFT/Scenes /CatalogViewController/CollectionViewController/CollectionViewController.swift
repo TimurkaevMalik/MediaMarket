@@ -1,9 +1,14 @@
 import UIKit
 import WebKit
+import Kingfisher
 
 final class CollectionViewController: UIViewController {
 
     // MARK: - Private Properties
+
+    private let nftInfo: CollectionNftModel
+    private var nfts: [Nft] = []
+    private let servicesAssembly: ServicesAssembly
 
     private lazy var coverCollectionImageView: UIImageView = {
         let coverCollectionImageView = UIImageView()
@@ -42,9 +47,21 @@ final class CollectionViewController: UIViewController {
         return descriptionCollectionLabel
     }()
 
-    private var dataSource: UICollectionViewDiffableDataSource<Int, NftItem>?
+    private var dataSource: UICollectionViewDiffableDataSource<Int, Nft>?
     private var nftCollectionView: UICollectionView?
-    private var link: String?
+    private var link: URL?
+
+    // MARK: - Initializers
+
+    init(servicesAssembly: ServicesAssembly, nftInfo: CollectionNftModel) {
+        self.nftInfo = nftInfo
+        self.servicesAssembly = servicesAssembly
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: - Overrides Methods
 
@@ -52,23 +69,27 @@ final class CollectionViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
 
-        tempSetupMock()
+        setupCollectionInfo()
         setupCoverCollectionImage()
         setupNameLabel()
         setupAuthorLabel()
         setupDescriptionLabel()
-        setupNftCollectionView()
+        loadNftItems()
     }
 
     // MARK: - Private Methods
 
-    private func tempSetupMock() {
-        coverCollectionImageView.image = UIImage(named: "White")
-        nameCollectionLabel.text = "Peach"
+    private func setupCollectionInfo() {
+        coverCollectionImageView.kf.setImage(with: nftInfo.cover)
+        nameCollectionLabel.text = nftInfo.name
+        descriptionCollectionLabel.text = nftInfo.description
+    }
 
-        link = "https://www.ya.ru"
+    private func setupAuthorField() {
+
         let descriptionField = authorCollectionLabel.text ?? ""
-        let author = "Kek Lolov"
+        let author = nftInfo.author
+
         let fullText = descriptionField + author
 
         let attributedString = NSMutableAttributedString(string: fullText)
@@ -80,9 +101,6 @@ final class CollectionViewController: UIViewController {
         }
 
         authorCollectionLabel.attributedText = attributedString
-
-        descriptionCollectionLabel.text = "Персиковый — как облака над закатным солнцем в океане. В этой коллекции совмещены трогательная нежность и живая игривость сказочных зефирных зверей."
-
     }
 
     private func setupCoverCollectionImage() {
@@ -95,7 +113,10 @@ final class CollectionViewController: UIViewController {
 
     private func setupNameLabel() {
         view.addSubview(nameCollectionLabel)
-        nameCollectionLabel.topAnchor.constraint(equalTo: coverCollectionImageView.bottomAnchor, constant: 16).isActive = true
+        nameCollectionLabel.topAnchor.constraint(
+            equalTo: coverCollectionImageView.bottomAnchor,
+            constant: 16
+        ).isActive = true
         nameCollectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
         nameCollectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
         nameCollectionLabel.heightAnchor.constraint(equalToConstant: 28).isActive = true
@@ -103,7 +124,10 @@ final class CollectionViewController: UIViewController {
 
     private func setupAuthorLabel() {
         view.addSubview(authorCollectionLabel)
-        authorCollectionLabel.topAnchor.constraint(equalTo: nameCollectionLabel.bottomAnchor, constant: 12).isActive = true
+        authorCollectionLabel.topAnchor.constraint(
+            equalTo: nameCollectionLabel.bottomAnchor,
+            constant: 12
+        ).isActive = true
         authorCollectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
         authorCollectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
         authorCollectionLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
@@ -113,7 +137,10 @@ final class CollectionViewController: UIViewController {
         view.addSubview(descriptionCollectionLabel)
         descriptionCollectionLabel.topAnchor.constraint(equalTo: authorCollectionLabel.bottomAnchor).isActive = true
         descriptionCollectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        descriptionCollectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
+        descriptionCollectionLabel.trailingAnchor.constraint(
+            equalTo: view.trailingAnchor,
+            constant: -16
+        ).isActive = true
         descriptionCollectionLabel.heightAnchor.constraint(equalToConstant: 72).isActive = true
     }
 
@@ -172,7 +199,7 @@ extension CollectionViewController {
 
         guard let nftCollectionView = nftCollectionView else { return }
 
-        dataSource = UICollectionViewDiffableDataSource<Int, NftItem>(
+        dataSource = UICollectionViewDiffableDataSource<Int, Nft>(
             collectionView: nftCollectionView
         ) { (collectionView, indexPath, item) -> UICollectionViewCell? in
             guard let cell = collectionView.dequeueReusableCell(
@@ -182,13 +209,13 @@ extension CollectionViewController {
                 fatalError("Cannot create new cell")
             }
 
-            let nft = NftItem(
-                id: item.id,
+            let nft = Nft(
                 name: item.name,
+                images: item.images,
                 rating: item.rating,
                 price: item.price,
-                images: item.images,
-                isFavorite: item.isFavorite
+                author: item.author,
+                id: item.id
             )
 
             cell.configCell(with: nft)
@@ -200,24 +227,35 @@ extension CollectionViewController {
     private func applyInitialSnapshot() {
         guard let dataSource = dataSource else { return }
 
-        var snapshot = NSDiffableDataSourceSnapshot<Int, NftItem>()
+        var snapshot = NSDiffableDataSourceSnapshot<Int, Nft>()
         snapshot.appendSections([0])
-        let items = loadNftItems()
-        snapshot.appendItems(items, toSection: 0)
+        snapshot.appendItems(nfts, toSection: 0)
         dataSource.apply(snapshot, animatingDifferences: true)
     }
 
-    private func loadNftItems() -> [NftItem] {
+    private func loadNftItems() {
 
-        let item1 = NftItem(id: UUID(), name: "NFT 1", rating: 4, price: 99.99, images: [URL(string: "https://code.s3.yandex.net/Mobile/iOS/NFT/Beige/April/1.png")!], isFavorite: true)
-        let item2 = NftItem(id: UUID(), name: "NFT 2", rating: 5, price: 149.99, images: [URL(string: "https://code.s3.yandex.net/Mobile/iOS/NFT/Beige/April/2.png")!], isFavorite: false)
-        let item3 = NftItem(id: UUID(), name: "NFT 3", rating: 3, price: 79.99, images: [URL(string: "https://code.s3.yandex.net/Mobile/iOS/NFT/Gray/Dominique/1.png")!], isFavorite: true)
+        DispatchQueue.global(qos: .userInitiated).async {
+            let group = DispatchGroup()
+            for nftId in self.nftInfo.nfts {
+                group.enter()
+                self.servicesAssembly.nftService.loadNft(id: nftId.uuidString.lowercased()) { result in
+                    switch result {
+                    case .success(let nft):
+                        self.nfts.append(nft)
+                    case .failure(let error):
+                        print(error)
+                    }
+                    group.leave()
+                }
+            }
 
-        let item4 = NftItem(id: UUID(), name: "NFT 4", rating: 4, price: 99.99, images: [URL(string: "https://code.s3.yandex.net/Mobile/iOS/NFT/Beige/April/1.png")!], isFavorite: true)
-        let item5 = NftItem(id: UUID(), name: "NFT 5", rating: 5, price: 149.99, images: [URL(string: "https://code.s3.yandex.net/Mobile/iOS/NFT/Beige/April/2.png")!], isFavorite: false)
-        let item6 = NftItem(id: UUID(), name: "NFT 6", rating: 3, price: 79.99, images: [URL(string: "https://code.s3.yandex.net/Mobile/iOS/NFT/Gray/Dominique/1.png")!], isFavorite: true)
-
-        return [item1, item2, item3, item4, item5, item6]
+            group.notify(queue: .main) {
+                self.setupNftCollectionView()
+                self.link = self.nfts.first?.author
+                self.setupAuthorField()
+            }
+        }
     }
 }
 
@@ -226,13 +264,12 @@ extension CollectionViewController {
 extension CollectionViewController: WKNavigationDelegate {
 
     @objc func didTapLink() {
-        guard let link = link,
-              let url = URL(string: link) else { return }
+        guard let link = link else { return }
 
         let webViewController = UIViewController()
         let webView = WKWebView(frame: webViewController.view.bounds)
         webView.navigationDelegate = self
-        webView.load(URLRequest(url: url))
+        webView.load(URLRequest(url: link))
 
         let backButton = UIBarButtonItem(title: nil, style: .plain, target: nil, action: nil)
         backButton.tintColor = .black

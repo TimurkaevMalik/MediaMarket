@@ -48,7 +48,6 @@
 		41EBB8562C3043B600AF11EF /* CollectionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41EBB8552C3043B600AF11EF /* CollectionRequest.swift */; };
 		41EBB8582C3044E800AF11EF /* CollectionNftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41EBB8572C3044E800AF11EF /* CollectionNftModel.swift */; };
 		41EBB85A2C304D8900AF11EF /* CollectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41EBB8592C304D8900AF11EF /* CollectionService.swift */; };
-		41F9F0C62C27261B00596E0C /* NftItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F9F0C52C27261B00596E0C /* NftItem.swift */; };
 		41F9F0C82C27358100596E0C /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F9F0C72C27358100596E0C /* RatingView.swift */; };
 		BCDC91642C1B7A57008CCAA9 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDC91632C1B7A57008CCAA9 /* ProfileViewController.swift */; };
 		BCDC91672C1B81AF008CCAA9 /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDC91662C1B81AF008CCAA9 /* CartViewController.swift */; };
@@ -119,7 +118,6 @@
 		41EBB8552C3043B600AF11EF /* CollectionRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionRequest.swift; sourceTree = "<group>"; };
 		41EBB8572C3044E800AF11EF /* CollectionNftModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionNftModel.swift; sourceTree = "<group>"; };
 		41EBB8592C304D8900AF11EF /* CollectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionService.swift; sourceTree = "<group>"; };
-		41F9F0C52C27261B00596E0C /* NftItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftItem.swift; sourceTree = "<group>"; };
 		41F9F0C72C27358100596E0C /* RatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingView.swift; sourceTree = "<group>"; };
 		BCDC91632C1B7A57008CCAA9 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		BCDC91662C1B81AF008CCAA9 /* CartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
@@ -364,7 +362,6 @@
 			isa = PBXGroup;
 			children = (
 				41B2E6B32C27163000CE750E /* CollectionViewCell.swift */,
-				41F9F0C52C27261B00596E0C /* NftItem.swift */,
 				41F9F0C72C27358100596E0C /* RatingView.swift */,
 				41ABE4B32C2ACC0400B41634 /* CollectionViewController.swift */,
 			);
@@ -605,7 +602,6 @@
 				BCDC91642C1B7A57008CCAA9 /* ProfileViewController.swift in Sources */,
 				41F9F0C82C27358100596E0C /* RatingView.swift in Sources */,
 				3F6806D529CBBEC700B4F915 /* NetworkTask.swift in Sources */,
-				41F9F0C62C27261B00596E0C /* NftItem.swift in Sources */,
 				0CF2C2DB2A783C1B00FDC837 /* LoadingView.swift in Sources */,
 				3F68069729CBBAF100B4F915 /* AppDelegate.swift in Sources */,
 				3F68069929CBBAF100B4F915 /* SceneDelegate.swift in Sources */,

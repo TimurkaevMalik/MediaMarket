@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class CollectionViewCell: UICollectionViewCell {
 
@@ -8,7 +9,7 @@ final class CollectionViewCell: UICollectionViewCell {
 
     // MARK: - Private Properties
 
-   private lazy var coverImageView: UIImageView = {
+    private lazy var coverImageView: UIImageView = {
         let coverImageView = UIImageView()
         coverImageView.translatesAutoresizingMaskIntoConstraints = false
         coverImageView.layer.cornerRadius = 12
@@ -37,6 +38,7 @@ final class CollectionViewCell: UICollectionViewCell {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.font = .boldSystemFont(ofSize: 17)
         nameLabel.textColor = .black
+        nameLabel.numberOfLines = 2
         return nameLabel
     }()
 
@@ -78,9 +80,9 @@ final class CollectionViewCell: UICollectionViewCell {
 
     // MARK: - Public Methods
 
-    func configCell(with nft: NftItem) {
+    func configCell(with nft: Nft) {
         nameLabel.text = nft.name
-        coverImageView.image = UIImage(named: "MockCell")
+        coverImageView.kf.setImage(with: nft.images[0])
         ratingStackView.setRating(nft.rating)
         priceLabel.text = "\(nft.price) ETH"
     }
@@ -113,8 +115,8 @@ final class CollectionViewCell: UICollectionViewCell {
 
     private func setupNameLabel() {
         contentView.addSubview(nameLabel)
-        nameLabel.widthAnchor.constraint(equalToConstant: 68).isActive = true
-        nameLabel.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        nameLabel.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        nameLabel.heightAnchor.constraint(equalToConstant: 44).isActive = true
         nameLabel.topAnchor.constraint(equalTo: ratingStackView.bottomAnchor, constant: 5).isActive = true
         nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
     }

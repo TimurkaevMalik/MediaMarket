@@ -90,7 +90,7 @@ final class CatalogViewController: UIViewController {
             title: NSLocalizedString("Catalog.alertSecondButton", comment: ""),
             style: .default
         ) { _ in
-            self.nftsCollection.sort { $0.nfts.count < $1.nfts.count }
+            self.nftsCollection.sort { $0.nfts.count > $1.nfts.count }
             self.tableView.reloadData()
         }
 
@@ -129,9 +129,12 @@ extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCell = tableView.cellForRow(at: indexPath)
         selectedCell?.isSelected = false
-        navigationController?.pushViewController(CollectionViewController(), animated: true)
-    }
 
+        navigationController?.pushViewController(
+            CollectionViewController(servicesAssembly: servicesAssembly, nftInfo: nftsCollection[indexPath.row]),
+            animated: true
+        )
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -147,7 +150,7 @@ extension CatalogViewController: UITableViewDataSource {
         guard let cell = cell,
               !nftsCollection.isEmpty else { return UITableViewCell()}
 
-        var currentCollection = nftsCollection[indexPath.row]
+        let currentCollection = nftsCollection[indexPath.row]
 
         let catalog = CatalogModel(
             name: currentCollection.name,
