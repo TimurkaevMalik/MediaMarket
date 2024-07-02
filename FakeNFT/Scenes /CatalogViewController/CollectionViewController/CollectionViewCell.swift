@@ -9,8 +9,13 @@ final class CollectionViewCell: UICollectionViewCell {
 
     // MARK: - Private Properties
 
+    internal let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView()
+
     private var id = ""
     private var orders: Set<String> = []
+    private var likes: Set<String> = []
+    private var isFavorite = false
+    private var isCard = false
 
     private var servicesAssembly: ServicesAssembly?
 
@@ -63,9 +68,6 @@ final class CollectionViewCell: UICollectionViewCell {
         return cardButton
     }()
 
-    private var isFavorite = false
-    private var isCard = false
-
     // MARK: - Initializers
 
     override init(frame: CGRect) {
@@ -77,6 +79,7 @@ final class CollectionViewCell: UICollectionViewCell {
         setupNameLabel()
         setupPriceLabel()
         setupCardButton()
+        setupActivityIndicator()
     }
 
     required init?(coder: NSCoder) {
@@ -88,6 +91,7 @@ final class CollectionViewCell: UICollectionViewCell {
     func configCell(with nft: Nft) {
         id = nft.id
         loadOrders()
+        loadLikes()
         nameLabel.text = nft.name
         coverImageView.kf.setImage(with: nft.images[0])
         ratingStackView.setRating(nft.rating)
@@ -171,14 +175,58 @@ final class CollectionViewCell: UICollectionViewCell {
         }
     }
 
+    private func loadLikes() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let group = DispatchGroup()
+
+            group.enter()
+            self.servicesAssembly?.profileService.loadProfile { result in
+                switch result {
+                case .success(let profile):
+                    self.likes = Set(profile.likes)
+                case .failure(let error):
+                    debugPrint(error.localizedDescription)
+                }
+
+                group.leave()
+            }
+
+            group.notify(queue: .main) {
+                self.isFavorite = self.likes.contains(self.id)
+                self.favoriteButton.setImage(UIImage(named: self.isFavorite ? "redHeart" : "whiteHeart"), for: .normal)
+            }
+        }
+    }
+
     @objc
     private func didTapFavoriteButon() {
-        favoriteButton.setImage(UIImage(named: isFavorite ? "redHeart" : "whiteHeart"), for: .normal)
-        isFavorite = !isFavorite
+        activityIndicator.startAnimating()
+
+        loadLikes()
+
+        if isFavorite {
+            likes.remove(id)
+        } else {
+            likes.insert(id)
+        }
+
+        servicesAssembly?.profileService.setProfile(body: Array(likes)) { result in
+            switch result {
+            case .success:
+                self.isFavorite = !self.isFavorite
+                self.favoriteButton.setImage(UIImage(named: self.isFavorite ? "redHeart" : "whiteHeart"), for: .normal)
+            case .failure(let error):
+                debugPrint(error.localizedDescription)
+            }
+        }
+        activityIndicator.stopAnimating()
     }
 
     @objc
     private func didTapCardButon() {
+        activityIndicator.startAnimating()
+
+        loadOrders()
 
         if isCard {
             orders.remove(id)
@@ -195,5 +243,15 @@ final class CollectionViewCell: UICollectionViewCell {
                 debugPrint(error.localizedDescription)
             }
         }
+        activityIndicator.stopAnimating()
+    }
+}
+
+// MARK: - LoadingView
+
+extension CollectionViewCell: LoadingView {
+    private func setupActivityIndicator() {
+        contentView.addSubview(activityIndicator)
+        activityIndicator.constraintCenters(to: contentView)
     }
 }
