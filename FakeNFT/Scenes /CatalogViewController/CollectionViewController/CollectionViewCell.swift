@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class CollectionViewCell: UICollectionViewCell {
 
@@ -8,7 +9,17 @@ final class CollectionViewCell: UICollectionViewCell {
 
     // MARK: - Private Properties
 
-   private lazy var coverImageView: UIImageView = {
+    internal let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView()
+
+    private var id = ""
+    private var orders: Set<String> = []
+    private var likes: Set<String> = []
+    private var isFavorite = false
+    private var isCard = false
+
+    private var servicesAssembly: ServicesAssembly?
+
+    private lazy var coverImageView: UIImageView = {
         let coverImageView = UIImageView()
         coverImageView.translatesAutoresizingMaskIntoConstraints = false
         coverImageView.layer.cornerRadius = 12
@@ -37,6 +48,7 @@ final class CollectionViewCell: UICollectionViewCell {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.font = .boldSystemFont(ofSize: 17)
         nameLabel.textColor = .black
+        nameLabel.numberOfLines = 2
         return nameLabel
     }()
 
@@ -56,9 +68,6 @@ final class CollectionViewCell: UICollectionViewCell {
         return cardButton
     }()
 
-    private var isFavorite = false
-    private var isCard = false
-
     // MARK: - Initializers
 
     override init(frame: CGRect) {
@@ -70,6 +79,7 @@ final class CollectionViewCell: UICollectionViewCell {
         setupNameLabel()
         setupPriceLabel()
         setupCardButton()
+        setupActivityIndicator()
     }
 
     required init?(coder: NSCoder) {
@@ -78,11 +88,18 @@ final class CollectionViewCell: UICollectionViewCell {
 
     // MARK: - Public Methods
 
-    func configCell(with nft: NftItem) {
+    func configCell(with nft: Nft) {
+        id = nft.id
+        loadOrders()
+        loadLikes()
         nameLabel.text = nft.name
-        coverImageView.image = UIImage(named: "MockCell")
+        coverImageView.kf.setImage(with: nft.images[0])
         ratingStackView.setRating(nft.rating)
         priceLabel.text = "\(nft.price) ETH"
+    }
+
+    func setupNetworkClient(with client: ServicesAssembly) {
+        servicesAssembly = client
     }
 
     // MARK: - Private Methods
@@ -113,8 +130,8 @@ final class CollectionViewCell: UICollectionViewCell {
 
     private func setupNameLabel() {
         contentView.addSubview(nameLabel)
-        nameLabel.widthAnchor.constraint(equalToConstant: 68).isActive = true
-        nameLabel.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        nameLabel.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        nameLabel.heightAnchor.constraint(equalToConstant: 44).isActive = true
         nameLabel.topAnchor.constraint(equalTo: ratingStackView.bottomAnchor, constant: 5).isActive = true
         nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
     }
@@ -135,15 +152,106 @@ final class CollectionViewCell: UICollectionViewCell {
         cardButton.trailingAnchor.constraint(equalTo: coverImageView.trailingAnchor).isActive = true
     }
 
+    private func loadOrders() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let group = DispatchGroup()
+
+            group.enter()
+            self.servicesAssembly?.orderService.loadOrder { result in
+                switch result {
+                case .success(let orders):
+                    self.orders = Set(orders.nfts)
+                case .failure(let error):
+                    debugPrint(error.localizedDescription)
+                }
+
+                group.leave()
+            }
+
+            group.notify(queue: .main) {
+                self.isCard = self.orders.contains(self.id)
+                self.cardButton.setImage(UIImage(named: self.isCard ? "crossCart" : "emptyCart"), for: .normal)
+            }
+        }
+    }
+
+    private func loadLikes() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let group = DispatchGroup()
+
+            group.enter()
+            self.servicesAssembly?.profileService.loadProfile { result in
+                switch result {
+                case .success(let profile):
+                    self.likes = Set(profile.likes)
+                case .failure(let error):
+                    debugPrint(error.localizedDescription)
+                }
+
+                group.leave()
+            }
+
+            group.notify(queue: .main) {
+                self.isFavorite = self.likes.contains(self.id)
+                self.favoriteButton.setImage(UIImage(named: self.isFavorite ? "redHeart" : "whiteHeart"), for: .normal)
+            }
+        }
+    }
+
     @objc
     private func didTapFavoriteButon() {
-        favoriteButton.setImage(UIImage(named: isFavorite ? "redHeart" : "whiteHeart"), for: .normal)
-        isFavorite = !isFavorite
+        activityIndicator.startAnimating()
+
+        loadLikes()
+
+        if isFavorite {
+            likes.remove(id)
+        } else {
+            likes.insert(id)
+        }
+
+        servicesAssembly?.profileService.setProfile(body: Array(likes)) { result in
+            switch result {
+            case .success:
+                self.isFavorite = !self.isFavorite
+                self.favoriteButton.setImage(UIImage(named: self.isFavorite ? "redHeart" : "whiteHeart"), for: .normal)
+            case .failure(let error):
+                debugPrint(error.localizedDescription)
+            }
+        }
+        activityIndicator.stopAnimating()
     }
 
     @objc
     private func didTapCardButon() {
-        cardButton.setImage(UIImage(named: isCard ? "crossCart" : "emptyCart"), for: .normal)
-        isCard = !isCard
+        activityIndicator.startAnimating()
+
+        loadOrders()
+
+        if isCard {
+            orders.remove(id)
+        } else {
+            orders.insert(id)
+        }
+
+        servicesAssembly?.orderService.updateOrder(body: Array(orders)) { result in
+            switch result {
+            case .success:
+                self.isCard = !self.isCard
+                self.cardButton.setImage(UIImage(named: self.isCard ? "crossCart" : "emptyCart"), for: .normal)
+            case .failure(let error):
+                debugPrint(error.localizedDescription)
+            }
+        }
+        activityIndicator.stopAnimating()
+    }
+}
+
+// MARK: - LoadingView
+
+extension CollectionViewCell: LoadingView {
+    private func setupActivityIndicator() {
+        contentView.addSubview(activityIndicator)
+        activityIndicator.constraintCenters(to: contentView)
     }
 }
