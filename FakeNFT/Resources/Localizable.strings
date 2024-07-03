@@ -11,6 +11,8 @@
 "Statistic.userCard.website" = "Перейти на сайт пользователя";
 "Statistic.userCard.nft" = "Коллекция NFT";
 "Statistic.userCard.error" = "Не удалось открыть сайт";
+"Statistic.nftCollection.title" = "Коллекция NFT";
+"Statistic.nftCollection.noNft" = "У пользователя еще нет NFT";
 
 
 
