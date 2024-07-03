@@ -14,7 +14,7 @@ final class ProfileFactory {
     private let fetchProfileService = FetchProfileService.shared
     private let updateProfileService = UpdateProfileService.shared
     
-    private let token = MalikToken.token
+    private let token = RequestConstants.token
     
     init(delegate: ProfileFactoryDelegate) {
         self.delegate = delegate

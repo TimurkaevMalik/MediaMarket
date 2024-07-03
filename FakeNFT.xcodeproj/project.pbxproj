@@ -54,7 +54,6 @@
 		BC6638FA2C2094A800A5155C /* UIBlockingProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6638F92C2094A800A5155C /* UIBlockingProgressHUD.swift */; };
 		BC88B81D2C21ADFC0048CDB0 /* Delegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC88B81C2C21ADFC0048CDB0 /* Delegates.swift */; };
 		BC88B81F2C21EAE00048CDB0 /* ProfileProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC88B81E2C21EAE00048CDB0 /* ProfileProtocols.swift */; };
-		BC88B8222C21EB6A0048CDB0 /* MalikToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC88B8212C21EB6A0048CDB0 /* MalikToken.swift */; };
 		BC8AE4AB2C1EA6F800416740 /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8AE4AA2C1EA6F800416740 /* AlertViewController.swift */; };
 		BC8C0B782C1DE4C40014A9CA /* ProfileTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8C0B772C1DE4C40014A9CA /* ProfileTableCell.swift */; };
 		BCB354D82C1D7A10005FA7DD /* RedactingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB354D72C1D7A10005FA7DD /* RedactingViewController.swift */; };
@@ -159,7 +158,6 @@
 		BC6638F92C2094A800A5155C /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
 		BC88B81C2C21ADFC0048CDB0 /* Delegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Delegates.swift; sourceTree = "<group>"; };
 		BC88B81E2C21EAE00048CDB0 /* ProfileProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileProtocols.swift; sourceTree = "<group>"; };
-		BC88B8212C21EB6A0048CDB0 /* MalikToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MalikToken.swift; sourceTree = "<group>"; };
 		BC8AE4AA2C1EA6F800416740 /* AlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
 		BC8C0B772C1DE4C40014A9CA /* ProfileTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableCell.swift; sourceTree = "<group>"; };
 		BCB354D72C1D7A10005FA7DD /* RedactingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedactingViewController.swift; sourceTree = "<group>"; };
@@ -487,14 +485,6 @@
 			path = ProfileModels;
 			sourceTree = "<group>";
 		};
-		BC88B8202C21EB550048CDB0 /* token */ = {
-			isa = PBXGroup;
-			children = (
-				BC88B8212C21EB6A0048CDB0 /* MalikToken.swift */,
-			);
-			path = token;
-			sourceTree = "<group>";
-		};
 		BC8AE4A92C1EA6D600416740 /* AlertViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -532,7 +522,6 @@
 		BCDC91622C1B7A3F008CCAA9 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				BC88B8202C21EB550048CDB0 /* token */,
 				BC4890592C29602D004FCBDC /* Helpers */,
 				BC09442E2C2EACD9005E25B3 /* UICustomElements */,
 				BC6638F12C2085F900A5155C /* ProfileModels */,
@@ -857,7 +846,6 @@
 				BCD8FFB72C2ACC2B00198C30 /* extensions.swift in Sources */,
 				3F6806D729CBC50A00B4F915 /* CellsReusingUtils.swift in Sources */,
 				BCD8FFB32C2ACAD300198C30 /* NFTCollectionCell.swift in Sources */,
-				BC88B8222C21EB6A0048CDB0 /* MalikToken.swift in Sources */,
 				BCFE3F2B2C223A0100B309FB /* ProfileModels.swift in Sources */,
 				0C79EE612A76DCD600EE90EA /* NftByIdRequest.swift in Sources */,
 				E19CD5AB2A98B56600CA39A5 /* NftImageCollectionViewCell.swift in Sources */,

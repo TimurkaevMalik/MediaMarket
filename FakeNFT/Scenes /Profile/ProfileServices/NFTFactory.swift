@@ -14,7 +14,7 @@ final class NFTFactory {
     private let fetchNFTService = FetchNFTService.shared
     private let updateNFTService = UpdateNFTService.shared
     
-    private let token = MalikToken.token
+    private let token = RequestConstants.token
     
     init(delegate: NFTFactoryDelegate) {
         self.delegate = delegate
