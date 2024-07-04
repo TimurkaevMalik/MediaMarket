@@ -41,11 +41,11 @@
 ## Module 3:
 
 #### Верстка
-- Таблица c NFT пользователя (est: 40 min; fact: x min).
-- Ячейки таблицы с NFT пользователя (est: 60 min; fact: x min).
+- Таблица c NFT пользователя (est: 40 min; fact: 20 min).
+- Ячейки таблицы с NFT пользователя (est: 60 min; fact: 60 min).
 
 #### Логика
-- Загрузка NFT пользователя - иконка, название, рейтинг, стоимость, сердечко (est: 200 min; fact: x min).
-- Добавление NFT в корзину (est: 60 min; fact: x min).
+- Загрузка NFT пользователя - иконка, название, рейтинг, стоимость, сердечко (est: 200 min; fact: 100 min).
+- Добавление NFT в корзину (est: 60 min; fact: 30 min).
 
-`Total:` est: 360 min; fact: x min.
+`Total:` est: 360 min; fact: 210 min.
