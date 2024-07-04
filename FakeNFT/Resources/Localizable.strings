@@ -5,14 +5,19 @@
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
 
-<<<<<<< HEAD
-
-
-=======
 "Catalog.alertTitle" = "Сортировка";
 "Catalog.alertFirstButton" = "По названию";
 "Catalog.alertSecondButton" = "По количеству NFT";
 "Catalog.alertCancelButton" = "Закрыть";
 
 "Collection.nameCollectionLabelText" = "Автор коллекции: ";
->>>>>>> origin/develop
+
+"Statistic.sortAlert.title" = "Сортировка";
+"Statistic.sortAlert.name" = "По имени";
+"Statistic.sortAlert.rating" = "По рейтингу";
+"Statistic.sortAlert.close" = "Закрыть";
+"Statistic.userCard.website" = "Перейти на сайт пользователя";
+"Statistic.userCard.nft" = "Коллекция NFT";
+"Statistic.userCard.error" = "Не удалось открыть сайт";
+"Statistic.nftCollection.title" = "Коллекция NFT";
+"Statistic.nftCollection.noNft" = "У пользователя еще нет NFT";

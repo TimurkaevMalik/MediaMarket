@@ -1,9 +1,4 @@
 enum RequestConstants {
-<<<<<<< HEAD
-    static let token = "838f0366-1991-4b2c-bd1c-d136072f8080"
-    static let baseURL = "d5dn3j2ouj72b0ejucbl.apigw.yandexcloud.net"
-=======
     static let baseURL = "https://d5dn3j2ouj72b0ejucbl.apigw.yandexcloud.net"
     static let token = "838f0366-1991-4b2c-bd1c-d136072f8080"
->>>>>>> origin/develop
 }

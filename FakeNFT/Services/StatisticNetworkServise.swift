@@ -10,7 +10,7 @@ final class StatisticNetworkServise {
     
     // MARK: - Public Methods
     func fetchUsers(completion: @escaping (Result<Users, Error>) -> Void) {
-        guard let url = URL(string: "https://\(self.url)/api/v1/users") else { return }
+        guard let url = URL(string: "\(self.url)/api/v1/users") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -46,7 +46,7 @@ final class StatisticNetworkServise {
     }
     
     func fetchNft(id: String, completion: @escaping (Result<NftStatistic, Error>) -> Void) {
-        guard let url = URL(string: "https://\(self.url)/api/v1/nft/\(id)") else { return }
+        guard let url = URL(string: "\(self.url)/api/v1/nft/\(id)") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "Accept")
