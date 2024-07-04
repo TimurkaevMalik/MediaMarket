@@ -5,5 +5,14 @@
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
 
+<<<<<<< HEAD
 
 
+=======
+"Catalog.alertTitle" = "Сортировка";
+"Catalog.alertFirstButton" = "По названию";
+"Catalog.alertSecondButton" = "По количеству NFT";
+"Catalog.alertCancelButton" = "Закрыть";
+
+"Collection.nameCollectionLabelText" = "Автор коллекции: ";
+>>>>>>> origin/develop
