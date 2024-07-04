@@ -41,6 +41,7 @@
 		3FC8C38B29D242E90081F015 /* ProductDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC8C38A29D242E90081F015 /* ProductDetailsTableViewCell.swift */; };
 		3FC8C39129D2453B0081F015 /* ExampleRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC8C39029D2453B0081F015 /* ExampleRequest.swift */; };
 		3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC8C39229D246BA0081F015 /* DateFormatters+Presets.swift */; };
+		770EFA222C36EBB00080CC71 /* LocalizableStat.strings in Resources */ = {isa = PBXBuildFile; fileRef = 770EFA212C36EBB00080CC71 /* LocalizableStat.strings */; };
 		77295EAC2C3400DF004D3558 /* NftCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77295EAB2C3400DF004D3558 /* NftCollectionViewCell.swift */; };
 		77295EAE2C344625004D3558 /* NftStatistic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77295EAD2C344625004D3558 /* NftStatistic.swift */; };
 		774CD5C52C2CB0AE009EA76A /* UserCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774CD5C42C2CB0AE009EA76A /* UserCardViewController.swift */; };
@@ -112,6 +113,7 @@
 		3FC8C38A29D242E90081F015 /* ProductDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		3FC8C39029D2453B0081F015 /* ExampleRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleRequest.swift; sourceTree = "<group>"; };
 		3FC8C39229D246BA0081F015 /* DateFormatters+Presets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatters+Presets.swift"; sourceTree = "<group>"; };
+		770EFA212C36EBB00080CC71 /* LocalizableStat.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = LocalizableStat.strings; sourceTree = "<group>"; };
 		77295EAB2C3400DF004D3558 /* NftCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftCollectionViewCell.swift; sourceTree = "<group>"; };
 		77295EAD2C344625004D3558 /* NftStatistic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftStatistic.swift; sourceTree = "<group>"; };
 		774CD5C42C2CB0AE009EA76A /* UserCardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCardViewController.swift; sourceTree = "<group>"; };
@@ -290,7 +292,7 @@
 				BCDC91622C1B7A3F008CCAA9 /* ProfileVeiwController */,
 				0CFCB7472A7808870009A829 /* CatalogViewController */,
 				BCDC91652C1B818D008CCAA9 /* CartViewController */,
-				BCDC91682C1B81DC008CCAA9 /* Statistic */,
+				BCDC91682C1B81DC008CCAA9 /* StatisticViewController */,
 				0CF2C2D92A783C1600FDC837 /* Common */,
 				0C79EE642A76DDCF00EE90EA /* NftDetails */,
 				3F6806C829CBBC8100B4F915 /* ProductDetails */,
@@ -369,7 +371,6 @@
 		774CD5CB2C2EAE90009EA76A /* ListUsers */ = {
 			isa = PBXGroup;
 			children = (
-				BCDC91692C1B8249008CCAA9 /* StatisticViewController.swift */,
 				77D07F772C2ABCB900399074 /* StatisticCollectionViewCell.swift */,
 			);
 			path = ListUsers;
@@ -409,14 +410,15 @@
 			path = CartViewController;
 			sourceTree = "<group>";
 		};
-		BCDC91682C1B81DC008CCAA9 /* Statistic */ = {
+		BCDC91682C1B81DC008CCAA9 /* StatisticViewController */ = {
 			isa = PBXGroup;
 			children = (
+				BCDC91692C1B8249008CCAA9 /* StatisticViewController.swift */,
 				774CD5CB2C2EAE90009EA76A /* ListUsers */,
 				774CD5CA2C2EAE57009EA76A /* UserCard */,
 				774CD5CC2C2EAECB009EA76A /* NftCollection */,
 			);
-			path = Statistic;
+			path = StatisticViewController;
 			sourceTree = "<group>";
 		};
 		E19CD5A92A98B55900CA39A5 /* Cell */ = {
@@ -442,6 +444,7 @@
 				3F68069F29CBBAF200B4F915 /* Assets.xcassets */,
 				3F6806A129CBBAF200B4F915 /* LaunchScreen.storyboard */,
 				E1CD40DB2A96BECC00BE7FE8 /* Localizable.strings */,
+				770EFA212C36EBB00080CC71 /* LocalizableStat.strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -561,6 +564,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F6806A329CBBAF200B4F915 /* LaunchScreen.storyboard in Resources */,
+				770EFA222C36EBB00080CC71 /* LocalizableStat.strings in Resources */,
 				E1CD40DC2A96BECC00BE7FE8 /* Localizable.strings in Resources */,
 				3F6806A029CBBAF200B4F915 /* Assets.xcassets in Resources */,
 			);
