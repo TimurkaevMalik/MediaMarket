@@ -10,36 +10,36 @@ import UIKit
 import Kingfisher
 
 final class PaymentMethodeCell: UICollectionViewCell {
-    
+
     // MARK: - Public Properties
-    
+
     var paymentMethodModel: PaymentMethodModel?
-    
+
     // MARK: - Private Properties
-    
+
     private let backgroundCellView = UIView()
     private let nameLable = UILabel()
     private let abbreviationLable = UILabel()
     private let imageView = UIImageView()
     private let backgroundImageView = UIView()
-    
+
     // MARK: - Public Methods
-    
+
     func setupCell(paymentMethodModel: PaymentMethodModel) {
         self.paymentMethodModel = paymentMethodModel
         setupViews()
     }
-    
+
     func selectCell() {
         backgroundCellView.layer.borderWidth = 1
     }
-    
+
     func deselectCell() {
         backgroundCellView.layer.borderWidth = 0
     }
-    
+
     // MARK: - Private Methods
-    
+
     private func setupViews() {
         addBackground()
         addBackgroundImage()
@@ -47,7 +47,7 @@ final class PaymentMethodeCell: UICollectionViewCell {
         addNameLable()
         addAbbreviationLable()
     }
-    
+
     private func addBackground() {
         backgroundCellView.backgroundColor = UIColor(named: "YPLightGray")
         backgroundCellView.layer.masksToBounds = true
@@ -62,7 +62,7 @@ final class PaymentMethodeCell: UICollectionViewCell {
             backgroundCellView.topAnchor.constraint(equalTo: contentView.topAnchor)
         ])
     }
-    
+
     private func addBackgroundImage() {
         backgroundImageView.backgroundColor = UIColor(named: "YPBlack")
         backgroundImageView.layer.masksToBounds = true
@@ -76,7 +76,7 @@ final class PaymentMethodeCell: UICollectionViewCell {
             backgroundImageView.widthAnchor.constraint(equalToConstant: 36)
         ])
     }
-    
+
     private func addImageView() {
         guard let paymentMethodModel else { return }
         guard let url = URL(string: paymentMethodModel.imageURL) else { return }
@@ -91,7 +91,7 @@ final class PaymentMethodeCell: UICollectionViewCell {
             imageView.trailingAnchor.constraint(equalTo: backgroundImageView.trailingAnchor, constant: -2.25)
         ])
     }
-    
+
     private func addNameLable() {
         guard let paymentMethodModel else { return }
         nameLable.text = paymentMethodModel.name
@@ -104,7 +104,7 @@ final class PaymentMethodeCell: UICollectionViewCell {
             nameLable.topAnchor.constraint(equalTo: backgroundCellView.topAnchor, constant: 5)
         ])
     }
-    
+
     private func addAbbreviationLable() {
         guard let paymentMethodModel else { return }
         abbreviationLable.text = paymentMethodModel.abbreviation

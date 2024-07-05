@@ -14,13 +14,13 @@ protocol NftInCartCellDelegate: AnyObject {
 }
 
 final class NftInCartCell: UITableViewCell {
-    
+
     // MARK: - Public Properties
-    
+
     weak var delegate: NftInCartCellDelegate?
-    
+
     // MARK: - Private Properties
-    
+
     private let nftImageView = UIImageView()
     private let nftNameLable = UILabel()
     private let ratingView = StarRatingView()
@@ -29,7 +29,7 @@ final class NftInCartCell: UITableViewCell {
     private var nftModel: NftInCartModel?
 
     // MARK: - Public Methods
-    
+
     func setupCell(nftModel: NftInCartModel) {
         addNftImage(imageStr: nftModel.picture)
         addNftName(name: nftModel.name)
@@ -38,9 +38,9 @@ final class NftInCartCell: UITableViewCell {
         addDeleteNftButton()
         self.nftModel = nftModel
     }
-    
+
     // MARK: - Private Methods
-    
+
     private func addNftImage(imageStr: String) {
         guard let url = URL(string: imageStr) else { return }
         nftImageView.kf.indicatorType = .activity
@@ -56,7 +56,7 @@ final class NftInCartCell: UITableViewCell {
             nftImageView.heightAnchor.constraint(equalToConstant: 108)
         ])
     }
-    
+
     private func addNftName(name: String) {
         nftNameLable.text = name
         nftNameLable.font = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -68,7 +68,7 @@ final class NftInCartCell: UITableViewCell {
             nftNameLable.topAnchor.constraint(equalTo: nftImageView.topAnchor, constant: 8)
         ])
     }
-    
+
     private func addRatingView(rating: Int) {
         ratingView.rating = rating
         ratingView.translatesAutoresizingMaskIntoConstraints = false
@@ -80,7 +80,7 @@ final class NftInCartCell: UITableViewCell {
             ratingView.widthAnchor.constraint(equalToConstant: 68)
         ])
     }
-    
+
     private func addNftPriceLable(price: Double) {
         let title = UILabel()
         title.text = "Цена"
@@ -101,9 +101,9 @@ final class NftInCartCell: UITableViewCell {
             nftPriceLable.leadingAnchor.constraint(equalTo: nftImageView.trailingAnchor, constant: 20),
             nftPriceLable.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 2)
         ])
-        
+
     }
-    
+
     private func addDeleteNftButton() {
         deleteNftButton.setImage(UIImage(named: "DeleteNftInCart"), for: .normal)
         deleteNftButton.addTarget(self, action: #selector(deleteNftButtonTap), for: .touchUpInside)
@@ -116,9 +116,9 @@ final class NftInCartCell: UITableViewCell {
             deleteNftButton.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
-    
+
     // MARK: - Private Actions
-    
+
     @objc private func deleteNftButtonTap() {
         guard let nftModel else { return }
         delegate?.deleteNftFromCart(nftModel: nftModel)

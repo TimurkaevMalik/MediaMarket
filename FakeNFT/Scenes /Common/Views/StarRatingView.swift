@@ -9,34 +9,34 @@ import Foundation
 import UIKit
 
 final class StarRatingView: UIView {
-    
+
     // MARK: - Public Properties
-    
+
     var rating: Int = 0 {
         didSet {
             updateStars()
         }
     }
-    
+
     // MARK: - Private Properties
-    
+
     private var starsStackView: UIStackView!
     private let filledStarImage = UIImage(named: "filledStarImage")
     private let emptyStarImage = UIImage(named: "emptyStarImage")
-    
+
     // MARK: - Initializers
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Private Methods
-    
+
     private func setupView() {
         starsStackView = UIStackView()
         starsStackView.axis = .horizontal
@@ -63,7 +63,7 @@ final class StarRatingView: UIView {
         }
         updateStars()
     }
-    
+
     private func updateStars() {
         for (index, view) in starsStackView.arrangedSubviews.enumerated() {
             if let imageView = view as? UIImageView {
@@ -73,4 +73,3 @@ final class StarRatingView: UIView {
         }
     }
 }
-

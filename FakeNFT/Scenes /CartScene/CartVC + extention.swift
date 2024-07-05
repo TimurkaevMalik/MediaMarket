@@ -11,17 +11,17 @@ import UIKit
 // MARK: - UITableViewDelegate
 
 extension CartViewController: UITableViewDelegate {
-    
+
 }
 
 // MARK: - UITableViewDataSource
 
 extension CartViewController: UITableViewDataSource {
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         nfts.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = NftInCartCell()
         cell.setupCell(nftModel: nfts[indexPath.row])
@@ -33,7 +33,7 @@ extension CartViewController: UITableViewDataSource {
 // MARK: - NftInCartCellDelegate
 
 extension CartViewController: NftInCartCellDelegate {
-    
+
     func deleteNftFromCart(nftModel: NftInCartModel) {
         let vc = DeleteNftFromCartViewController()
         vc.delegate = self
@@ -51,7 +51,7 @@ extension CartViewController: NftInCartCellDelegate {
 }
 
 extension CartViewController: DeleteNftFromCartViewControllerDelegate {
-    
+
     func deleteNft(nftModel: NftInCartModel) {
         var newArrayNftId: [String] = []
         nfts.forEach { nft in
@@ -61,14 +61,14 @@ extension CartViewController: DeleteNftFromCartViewControllerDelegate {
         }
         cartNetworkService.deleteNFTFromBasket(nftID: newArrayNftId) { [weak self] result in
             switch result {
-            case .success():
+            case .success:
                 self?.reloadNfts()
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
             }
         }
     }
-    
+
     func turnOffBlurEffect() {
         blurEffectView.isHidden = true
     }

@@ -9,16 +9,16 @@ import UIKit
 import ProgressHUD
 
 final class CartViewController: UIViewController {
-    
+
     // MARK: - Public Properties
-    
+
     let servicesAssembly: ServicesAssembly
     var nfts: [NftInCartModel] = []
     let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
     let cartNetworkService = CartNetworkService()
-    
+
     // MARK: - Private Properties
-    
+
     private let bottomBackground = UIView()
     private let nftTableView = UITableView()
     private let paymentButton = UIButton()
@@ -26,42 +26,42 @@ final class CartViewController: UIViewController {
     private let nftPriceLable = UILabel()
     private let cartIsEmptyLable = UILabel()
     private let sortButton = UIButton()
-    private var sortMethod: Int? = nil
-    
+    private var sortMethod: Int?
+
     // MARK: - Initializers
-    
+
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         reloadNfts()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         reloadNfts()
     }
-    
+
     // MARK: - Public Methods
-    
+
     func turnOnBlurEffect() {
         blurEffectView.isHidden = false
     }
-    
+
     func reloadNfts() {
          var nfts: [NftInCartModel] = []
          ProgressHUD.show()
-         cartNetworkService.fetchOrder() { [weak self] result in
+         cartNetworkService.fetchOrder { [weak self] result in
              switch result {
              case .success(let order):
                  var numberOfCicle = 0
@@ -103,10 +103,9 @@ final class CartViewController: UIViewController {
              }
          }
      }
-     
-    
+
     // MARK: - Private Methods
-    
+
     private func setupViews() {
         view.backgroundColor = UIColor(named: "YPWhite")
         addCartIsEmptyLable()
@@ -118,7 +117,7 @@ final class CartViewController: UIViewController {
         addBlurEffectToWindow()
         addSortButton()
     }
-    
+
     private func reloadView() {
         if nfts.isEmpty {
             cartIsEmptyLable.isHidden = false
@@ -141,7 +140,7 @@ final class CartViewController: UIViewController {
             sortButton.isHidden = false
         }
     }
-    
+
     private func addBottomBackground() {
         bottomBackground.backgroundColor = UIColor(named: "YPLightGray")
         bottomBackground.layer.masksToBounds = true
@@ -156,7 +155,7 @@ final class CartViewController: UIViewController {
             bottomBackground.heightAnchor.constraint(equalToConstant: 159)
         ])
     }
-    
+
     private func addNftTableView() {
         nftTableView.delegate = self
         nftTableView.dataSource = self
@@ -173,7 +172,7 @@ final class CartViewController: UIViewController {
             nftTableView.bottomAnchor.constraint(equalTo: bottomBackground.topAnchor)
         ])
     }
-    
+
     private func addPaymentButton() {
         paymentButton.setTitle("К оплате", for: .normal)
         paymentButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -192,7 +191,7 @@ final class CartViewController: UIViewController {
             paymentButton.widthAnchor.constraint(equalToConstant: 240)
         ])
     }
-    
+
     private func addNftCountLable() {
         nftCountLable.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         nftCountLable.textColor = UIColor(named: "YPBlack")
@@ -204,7 +203,7 @@ final class CartViewController: UIViewController {
             nftCountLable.topAnchor.constraint(equalTo: bottomBackground.topAnchor, constant: 16)
         ])
     }
-    
+
     private func addNftPriceLable() {
         nftPriceLable.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         nftPriceLable.textColor = UIColor(named: "YPGreen")
@@ -217,7 +216,7 @@ final class CartViewController: UIViewController {
             nftPriceLable.trailingAnchor.constraint(equalTo: paymentButton.leadingAnchor, constant: 24)
         ])
     }
-    
+
     private func addBlurEffect() {
         let blurEffect = UIBlurEffect(style: .regular)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
@@ -231,7 +230,7 @@ final class CartViewController: UIViewController {
             tabBar.addSubview(tabBarBlurEffectView)
         }
     }
-    
+
     private func addCartIsEmptyLable() {
         cartIsEmptyLable.text = "Корзина пустая"
         cartIsEmptyLable.font = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -244,7 +243,7 @@ final class CartViewController: UIViewController {
             cartIsEmptyLable.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
-    
+
     private func addBlurEffectToWindow() {
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = windowScene.windows.first {
@@ -257,7 +256,7 @@ final class CartViewController: UIViewController {
             }
         }
     }
-    
+
     private func returnFullPrice() -> String {
         var price: Double = 0
         nfts.forEach { nft in
@@ -266,7 +265,7 @@ final class CartViewController: UIViewController {
         let formattedNumber = String(format: "%.2f", price)
         return formattedNumber
     }
-    
+
     private func addSortButton() {
         sortButton.setImage(UIImage(named: "SortButton"), for: .normal)
         sortButton.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
@@ -280,7 +279,7 @@ final class CartViewController: UIViewController {
             sortButton.heightAnchor.constraint(equalToConstant: 42)
         ])
     }
-    
+
     private func showSortAlert() {
             let alert = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
             let sortByPriceAction = UIAlertAction(title: "По цене", style: .default) { [weak self] _ in
@@ -305,7 +304,7 @@ final class CartViewController: UIViewController {
             alert.addAction(cancelAction)
             present(alert, animated: true, completion: nil)
         }
-    
+
     private func sortNft() {
         if self.sortMethod != nil {
             switch sortMethod {
@@ -320,9 +319,9 @@ final class CartViewController: UIViewController {
             }
         }
     }
-    
+
     // MARK: - Private Actions
-    
+
     @objc private func paymentButtonTap() {
         let paymentVC = PaymentViewController()
         paymentVC.cartViewController = self
@@ -330,7 +329,7 @@ final class CartViewController: UIViewController {
         navController.modalPresentationStyle = .fullScreen
         self.present(navController, animated: true)
     }
-    
+
     @objc private func sortButtonTapped() {
         showSortAlert()
     }

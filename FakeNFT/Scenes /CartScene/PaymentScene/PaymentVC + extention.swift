@@ -11,14 +11,14 @@ import UIKit
 // MARK: - UICollectionViewDelegate
 
 extension PaymentViewController: UICollectionViewDelegate {
-    
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? PaymentMethodeCell {
             cell.selectCell()
             self.selectedPaymentMethode = cell.paymentMethodModel
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? PaymentMethodeCell {
             cell.deselectCell()
@@ -29,11 +29,11 @@ extension PaymentViewController: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension PaymentViewController: UICollectionViewDataSource {
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return paymentMethods.count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? PaymentMethodeCell else { return UICollectionViewCell() }
         cell.setupCell(paymentMethodModel: paymentMethods[indexPath.row])
@@ -44,7 +44,7 @@ extension PaymentViewController: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension PaymentViewController: UICollectionViewDelegateFlowLayout {
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout else {
                     return CGSize(width: 168, height: 46)

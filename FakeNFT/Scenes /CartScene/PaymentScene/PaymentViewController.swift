@@ -10,21 +10,21 @@ import UIKit
 import ProgressHUD
 
 final class PaymentViewController: UIViewController {
-    
+
     // MARK: - Public Properties
-    
+
     var paymentMethods: [PaymentMethodModel] = []
     var selectedPaymentMethode: PaymentMethodModel?
     var cartViewController: CartViewController?
-    
+
     // MARK: - Private Properties
-    
+
     private let paymentMethodeColletionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.sectionInset = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
         layout.minimumInteritemSpacing = 7
-        layout.minimumLineSpacing = 7 
+        layout.minimumLineSpacing = 7
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return collectionView
     }()
@@ -33,22 +33,22 @@ final class PaymentViewController: UIViewController {
     private let userAgreementButton = UIButton()
     private let paymentButton = UIButton()
     private let cartNetworkService = CartNetworkService()
-    
+
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         requestCurrencies()
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         roundTopCorners(view: backgroundView, radius: 12)
     }
-    
+
     // MARK: - Public Methods
     // MARK: - Private Methods
-    
+
     private func setupViews() {
         view.backgroundColor = UIColor(named: "YPWhite")
         setupNavBar()
@@ -58,7 +58,7 @@ final class PaymentViewController: UIViewController {
         addUserAgreementButton()
         addPaymentButton()
     }
-    
+
     private func setupNavBar() {
         title = "Выберите способ оплаты"
         self.navigationController?.navigationBar.titleTextAttributes = [
@@ -72,7 +72,7 @@ final class PaymentViewController: UIViewController {
         backButton.tintColor = .black
         self.navigationItem.leftBarButtonItem = backButton
     }
-    
+
     private func addPaymentMethodeColletionView() {
         paymentMethodeColletionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(paymentMethodeColletionView)
@@ -83,13 +83,13 @@ final class PaymentViewController: UIViewController {
             paymentMethodeColletionView.bottomAnchor.constraint(equalTo: backgroundView.topAnchor)
         ])
     }
-    
+
     private func setupPaymentMethodeColletionView() {
         paymentMethodeColletionView.delegate = self
         paymentMethodeColletionView.dataSource = self
         paymentMethodeColletionView.register(PaymentMethodeCell.self, forCellWithReuseIdentifier: "cell")
     }
-    
+
     private func addBackgroundView() {
         backgroundView.backgroundColor = UIColor(named: "YPLightGray")
         backgroundView.layer.masksToBounds = true
@@ -102,14 +102,14 @@ final class PaymentViewController: UIViewController {
             backgroundView.heightAnchor.constraint(equalToConstant: 186)
         ])
     }
-    
+
     func roundTopCorners(view: UIView, radius: CGFloat) {
         let path = UIBezierPath(roundedRect: view.bounds, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: radius, height: radius))
         let mask = CAShapeLayer()
         mask.path = path.cgPath
         view.layer.mask = mask
     }
-    
+
     private func addBbackroundTextLable() {
         backgroundTextLable.text = "Совершая покупку, вы соглашаетесь с условиями"
         backgroundTextLable.textColor = UIColor(named: "YPBlack")
@@ -121,7 +121,7 @@ final class PaymentViewController: UIViewController {
             backgroundTextLable.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 16)
         ])
     }
-    
+
     private func addUserAgreementButton() {
         userAgreementButton.setTitle("Пользовательского соглашения", for: .normal)
         userAgreementButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .regular)
@@ -137,7 +137,7 @@ final class PaymentViewController: UIViewController {
             userAgreementButton.heightAnchor.constraint(equalToConstant: 26)
         ])
     }
-    
+
     private func addPaymentButton() {
         paymentButton.setTitle("Оплатить", for: .normal)
         paymentButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -155,7 +155,7 @@ final class PaymentViewController: UIViewController {
             paymentButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
-    
+
     private func requestCurrencies() {
         ProgressHUD.show()
         cartNetworkService.requestCurrencies { [weak self] result in
@@ -179,7 +179,7 @@ final class PaymentViewController: UIViewController {
             ProgressHUD.dismiss()
         }
     }
-    
+
     private func requestPayment() {
         ProgressHUD.show()
         cartNetworkService.requestPayment { [weak self] result in
@@ -202,7 +202,7 @@ final class PaymentViewController: UIViewController {
             ProgressHUD.dismiss()
         }
     }
-    
+
     private func showAlert() {
         let alertController = UIAlertController(title: nil, message: "Не удалось произвести оплату", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "Отмена", style: .default, handler: nil)
@@ -215,17 +215,17 @@ final class PaymentViewController: UIViewController {
     }
 
     // MARK: - Private Actions
-    
+
     @objc private func backButtonTapped() {
         dismiss(animated: true)
     }
-    
+
     @objc private func userAgreementButtonTapped() {
         let vc = UserAgreementViewController()
         vc.modalPresentationStyle = .automatic
         self.present(vc, animated: true)
     }
-    
+
     @objc private func paymentButtonTapped() {
         requestPayment()
     }

@@ -8,15 +8,15 @@
 import Foundation
 
 final class CartNetworkService {
-    
+
     typealias OrderCompletion = (Result<OrderModel, Error>) -> Void
     typealias NFTCompletion = (Result<NftFromNetworkModel, Error>) -> Void
     typealias CurrenciesCompletion  = (Result<CurrenciesModel, Error>) -> Void
     typealias PaymentCompletion  = (Result<PaymentModel, Error>) -> Void
-    
+
     private let url: String = RequestConstants.baseURL
     private let tocken: String = RequestConstants.token
-    
+
     func fetchOrder(completion: @escaping OrderCompletion) {
         guard let url = URL(string: "\(self.url)/api/v1/orders/1") else { return }
         var request = URLRequest(url: url)
@@ -52,7 +52,7 @@ final class CartNetworkService {
         }
         task.resume()
     }
-    
+
     func requestByNftId(id: String, completion: @escaping NFTCompletion) {
         guard let url = URL(string: "\(self.url)/api/v1/nft/\(id)") else { return }
         var request = URLRequest(url: url)
@@ -88,7 +88,7 @@ final class CartNetworkService {
         }
         task.resume()
     }
-    
+
     func requestCurrencies(completion: @escaping CurrenciesCompletion) {
         guard let url = URL(string: "\(self.url)/api/v1/currencies") else { return }
         var request = URLRequest(url: url)
@@ -124,7 +124,7 @@ final class CartNetworkService {
         }
         task.resume()
     }
-    
+
     func requestPayment(completion: @escaping PaymentCompletion) {
         guard let url = URL(string: "\(self.url)/api/v1/orders/1/payment/1") else { return }
         var request = URLRequest(url: url)
@@ -160,7 +160,7 @@ final class CartNetworkService {
         }
         task.resume()
     }
-    
+
     func deleteNFTFromBasket(nftID: [String], completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: "\(self.url)/api/v1/orders/1") else { return }
         var request = URLRequest(url: url)

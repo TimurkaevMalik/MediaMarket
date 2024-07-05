@@ -14,28 +14,28 @@ protocol DeleteNftFromCartViewControllerDelegate: AnyObject {
 }
 
 final class DeleteNftFromCartViewController: UIViewController {
-    
+
     // MARK: - Public Properties
-    
-    var nftModel: NftInCartModel? = nil
+
+    var nftModel: NftInCartModel?
     weak var delegate: DeleteNftFromCartViewControllerDelegate?
-    
+
     // MARK: - Private Properties
-    
+
     private let nftImageView = UIImageView()
     private let textLable = UILabel()
     private let deleteButton = UIButton()
     private let cancelButton = UIButton()
-    
+
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
     }
-    
+
     // MARK: - Private Methods
-    
+
     private func setupViews() {
         addTextLable()
         addDeleteButton()
@@ -44,7 +44,7 @@ final class DeleteNftFromCartViewController: UIViewController {
             addNftImageView(imageStr: imageStr)
         }
     }
-    
+
     private func addTextLable() {
         textLable.text = "Вы уверены, что хотите удалить объект из корзины?"
         textLable.font = UIFont.systemFont(ofSize: 13, weight: .regular)
@@ -59,7 +59,7 @@ final class DeleteNftFromCartViewController: UIViewController {
             textLable.widthAnchor.constraint(equalToConstant: 180)
         ])
     }
-    
+
     private func addNftImageView(imageStr: String) {
         guard let url = URL(string: imageStr) else { return }
         nftImageView.kf.setImage(with: url, placeholder: UIImage(named: "placeholder"))
@@ -74,7 +74,7 @@ final class DeleteNftFromCartViewController: UIViewController {
             nftImageView.heightAnchor.constraint(equalToConstant: 108)
         ])
     }
-    
+
     private func setupButton(name: String, color: UIColor, button: UIButton) {
         button.setTitle(name, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -83,7 +83,7 @@ final class DeleteNftFromCartViewController: UIViewController {
         button.layer.masksToBounds = false
         button.layer.cornerRadius = 12
     }
-    
+
     private func addDeleteButton() {
         guard let color = UIColor(named: "YPRed") else { return }
         setupButton(name: "Удалить", color: color, button: deleteButton)
@@ -97,7 +97,7 @@ final class DeleteNftFromCartViewController: UIViewController {
             deleteButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
-    
+
     private func addCancelButton() {
         guard let color = UIColor(named: "YPWhite") else { return }
         setupButton(name: "Вернуться", color: color, button: cancelButton)
@@ -111,14 +111,14 @@ final class DeleteNftFromCartViewController: UIViewController {
             cancelButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
-    
+
     // MARK: - Private Actions
-    
+
     @objc private func cancelButtonTap() {
         delegate?.turnOffBlurEffect()
         self.dismiss(animated: false)
     }
-    
+
     @objc private func deleteButtonTap() {
         guard let nftModel else { return }
         delegate?.deleteNft(nftModel: nftModel)

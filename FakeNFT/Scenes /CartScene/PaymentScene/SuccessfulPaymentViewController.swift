@@ -9,34 +9,34 @@ import Foundation
 import UIKit
 
 final class SuccessfulPaymentViewController: UIViewController {
-    
+
     // MARK: - Public Properties
-    
+
     var paymentViewController: PaymentViewController?
     var cartViewController: CartViewController?
-    
+
     // MARK: - Private Properties
-    
+
     private let imageView = UIImageView()
     private let textLabel = UILabel()
     private let backButton = UIButton()
-    
+
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
     }
-    
+
     // MARK: - Private Methods
-    
+
     private func setupViews() {
         view.backgroundColor = UIColor(named: "YPWhite")
         addImageView()
         addTextLabel()
         addBackButton()
     }
-    
+
     private func addImageView() {
         imageView.image = UIImage(named: "catInCart")
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -47,7 +47,7 @@ final class SuccessfulPaymentViewController: UIViewController {
             imageView.heightAnchor.constraint(equalToConstant: 278)
         ])
     }
-    
+
     private func addTextLabel() {
         textLabel.text = "Успех! Оплата прошла, поздравляем с покупкой!"
         textLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
@@ -62,7 +62,7 @@ final class SuccessfulPaymentViewController: UIViewController {
             textLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20)
         ])
     }
-    
+
     private func addBackButton() {
         backButton.setTitle("Вернутся в каталог", for: .normal)
         backButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -80,9 +80,9 @@ final class SuccessfulPaymentViewController: UIViewController {
             backButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
-    
+
     // MARK: - Private Actions
-    
+
     @objc private func backButtonTapped() {
         self.dismiss(animated: true)
         self.paymentViewController?.dismiss(animated: true)

@@ -1,5 +1,5 @@
 //
-//  ProfileViewController.swift
+//  StatisticViewController.swift
 //  FakeNFT
 //
 //  Created by Malik Timurkaev on 13.06.2024.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-final class ProfileViewController: UIViewController {
-    
+class StatisticViewController: UIViewController {
+
     let servicesAssembly: ServicesAssembly
 
     init(servicesAssembly: ServicesAssembly) {
@@ -19,7 +19,7 @@ final class ProfileViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "YPWhite")
