@@ -62,6 +62,8 @@
 		774CD5C72C2CB94A009EA76A /* UserCardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774CD5C62C2CB94A009EA76A /* UserCardTableViewCell.swift */; };
 		774CD5C92C2E99CA009EA76A /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774CD5C82C2E99CA009EA76A /* WebViewViewController.swift */; };
 		774CD5CE2C2EAEF9009EA76A /* NftCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774CD5CD2C2EAEF9009EA76A /* NftCollectionViewController.swift */; };
+		77CCF49E2C37F7B8000FA666 /* OrderStat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CCF49D2C37F7B8000FA666 /* OrderStat.swift */; };
+		77CCF4A02C37FC0D000FA666 /* LikeStat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CCF49F2C37FC0D000FA666 /* LikeStat.swift */; };
 		77D07F782C2ABCB900399074 /* StatisticCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D07F772C2ABCB900399074 /* StatisticCollectionViewCell.swift */; };
 		77D07F7B2C2B189700399074 /* StatisticNetworkServise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D07F7A2C2B189700399074 /* StatisticNetworkServise.swift */; };
 		77D07F7E2C2C2C0700399074 /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D07F7D2C2C2C0700399074 /* Users.swift */; };
@@ -190,6 +192,8 @@
 		774CD5C62C2CB94A009EA76A /* UserCardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCardTableViewCell.swift; sourceTree = "<group>"; };
 		774CD5C82C2E99CA009EA76A /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
 		774CD5CD2C2EAEF9009EA76A /* NftCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftCollectionViewController.swift; sourceTree = "<group>"; };
+		77CCF49D2C37F7B8000FA666 /* OrderStat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStat.swift; sourceTree = "<group>"; };
+		77CCF49F2C37FC0D000FA666 /* LikeStat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeStat.swift; sourceTree = "<group>"; };
 		77D07F772C2ABCB900399074 /* StatisticCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticCollectionViewCell.swift; sourceTree = "<group>"; };
 		77D07F7A2C2B189700399074 /* StatisticNetworkServise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticNetworkServise.swift; sourceTree = "<group>"; };
 		77D07F7D2C2C2C0700399074 /* Users.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
@@ -530,6 +534,8 @@
 			children = (
 				77D07F7D2C2C2C0700399074 /* Users.swift */,
 				77295EAD2C344625004D3558 /* NftStatistic.swift */,
+				77CCF49D2C37F7B8000FA666 /* OrderStat.swift */,
+				77CCF49F2C37FC0D000FA666 /* LikeStat.swift */,
 			);
 			path = Statistic;
 			sourceTree = "<group>";
@@ -911,12 +917,14 @@
 				77295EAE2C344625004D3558 /* NftStatistic.swift in Sources */,
 				77295EAC2C3400DF004D3558 /* NftCollectionViewCell.swift in Sources */,
 				BC09442D2C2E9FF4005E25B3 /* FavoriteNFTCollectionCell.swift in Sources */,
+				77CCF4A02C37FC0D000FA666 /* LikeStat.swift in Sources */,
 				BC88B81F2C21EAE00048CDB0 /* ProfileProtocols.swift in Sources */,
 				41B2E6AF2C25DFAF00CE750E /* CatalogViewCell.swift in Sources */,
 				413DF7972C3468DF00EEE378 /* GetLikesRequest.swift in Sources */,
 				0C79EE682A76DE0900EE90EA /* NftDetailPresenter.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,
 				0CFCB7402A78002A0009A829 /* NftService.swift in Sources */,
+				77CCF49E2C37F7B8000FA666 /* OrderStat.swift in Sources */,
 				BCDC91642C1B7A57008CCAA9 /* ProfileViewController.swift in Sources */,
 				77D07F782C2ABCB900399074 /* StatisticCollectionViewCell.swift in Sources */,
 				BC4890582C2946B4004FCBDC /* ProfileFactory.swift in Sources */,
