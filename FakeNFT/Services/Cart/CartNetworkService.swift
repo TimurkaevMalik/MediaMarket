@@ -168,11 +168,12 @@ final class CartNetworkService {
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue(self.tocken, forHTTPHeaderField: "X-Practicum-Mobile-Token")
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        let nftsString = nftID.joined(separator: ",")
-        let bodyString = "nfts=\(nftsString)"
-        guard let bodyData = bodyString.data(using: .utf8) else { return }
-        request.httpBody = bodyData
-        
+        if !nftID.isEmpty {
+            let nftsString = nftID.joined(separator: ",")
+            let bodyString = "nfts=\(nftsString)"
+            guard let bodyData = bodyString.data(using: .utf8) else { return }
+            request.httpBody = bodyData
+        }
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 DispatchQueue.main.async {
