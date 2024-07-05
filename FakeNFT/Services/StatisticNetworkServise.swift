@@ -81,18 +81,19 @@ final class StatisticNetworkServise {
         task.resume()
     }
     
-    func addCart(ids: OrderStat, completion: @escaping (Result<Void, Error>) -> Void) {
+    func updateCart(ids: OrderStat, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: "\(self.url)/api/v1/orders/1") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue(self.token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        let nftsString = ids.nfts.joined(separator: ",")
-        let bodyString = "nfts=\(nftsString)"
-        guard let bodyData = bodyString.data(using: .utf8) else { return }
-        request.httpBody = bodyData
-        
+        if !ids.nfts.isEmpty {
+            let nftsString = ids.nfts.joined(separator: ",")
+            let bodyString = "nfts=\(nftsString)"
+            guard let bodyData = bodyString.data(using: .utf8) else { return }
+            request.httpBody = bodyData
+        }
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 DispatchQueue.main.async {

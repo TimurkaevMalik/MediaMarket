@@ -31,7 +31,7 @@ final class NftCollectionViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "YPWhite")
         setupNavBar()
-        if nftsId.isEmpty == false {
+        if !nftsId.isEmpty {
             ProgressHUD.show()
             reloadNfts()
             reloadLikes()
@@ -136,6 +136,19 @@ final class NftCollectionViewController: UIViewController {
             }
         }
     }
+    
+    private func updateCart(){
+        statisticNetworkServise.updateCart(ids: nftsInOrder[0]) { [weak self] result in
+            switch result {
+            case .success():
+                ProgressHUD.dismiss()
+                self?.collectionView.reloadData()
+            case .failure(let error):
+                ProgressHUD.dismiss()
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+    }
 }
 
 
@@ -158,14 +171,14 @@ extension NftCollectionViewController: UICollectionViewDataSource, UICollectionV
         if let nftURL = URL(string: nfts[indexPath.item].images[0]) {
             cell.updateNftImage(image: nftURL)
         }
-        if likes.isEmpty == false {
+        if !likes.isEmpty {
             if likes[0].likes.contains(nfts[indexPath.item].id) {
                 cell.updateLikeImage(image: UIImage(named: "redHeart") ?? UIImage())
             } else {
                 cell.updateLikeImage(image: UIImage(named: "whiteHeart") ?? UIImage())
             }
         }
-        if nftsInOrder.isEmpty == false {
+        if !nftsInOrder.isEmpty {
             if nftsInOrder[0].nfts.contains(nfts[indexPath.item].id) {
                 cell.updateCartButton(image: UIImage(named: "crossCart") ?? UIImage())
             } else {
@@ -198,21 +211,18 @@ extension NftCollectionViewController: NftCollectionViewCellDelegate {
         guard let indexPath = collectionView.indexPath(for: cell)
         else { return }
         ProgressHUD.show()
-        if nftsInOrder[0].nfts.contains(nfts[indexPath.item].id) {
-            ProgressHUD.dismiss()
-            cell.updateCartButton(image: UIImage(named: "emptyCart") ?? UIImage())
+        if !nftsInOrder.isEmpty {
+            if nftsInOrder[0].nfts.contains(nfts[indexPath.item].id) {
+                let deleteNftIndex = nftsInOrder[0].nfts.firstIndex(of: nfts[indexPath.item].id) ?? Int()
+                nftsInOrder[0].nfts.remove(at: deleteNftIndex)
+                updateCart()
+            } else {
+                nftsInOrder[0].nfts.append(nfts[indexPath.item].id)
+                updateCart()
+            }
         } else {
             nftsInOrder[0].nfts.append(nfts[indexPath.item].id)
-            statisticNetworkServise.addCart(ids: nftsInOrder[0]) { [weak self] result in
-                switch result {
-                case .success():
-                    ProgressHUD.dismiss()
-                    cell.updateCartButton(image: UIImage(named: "crossCart") ?? UIImage())
-                case .failure(let error):
-                    ProgressHUD.dismiss()
-                    print("Error: \(error.localizedDescription)")
-                }
-            }
+            updateCart()
         }
     }
 }
