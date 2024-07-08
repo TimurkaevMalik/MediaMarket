@@ -32,13 +32,11 @@ final class NftCollectionViewController: UIViewController {
         view.backgroundColor = UIColor(named: "YPWhite")
         setupNavBar()
         if !nftsId.isEmpty {
-            ProgressHUD.show()
+            setupCollectionView()
+            setupConstraint()
             reloadNfts()
             reloadLikes()
             reloadCart()
-            ProgressHUD.dismiss()
-            setupCollectionView()
-            setupConstraint()
         } else {
             showNoNftLabel()
         }
@@ -112,9 +110,11 @@ final class NftCollectionViewController: UIViewController {
     }
     
     private func reloadLikes(){
+        ProgressHUD.show()
         statisticNetworkServise.fetchLike() { [weak self] result in
             switch result {
             case .success(let likes):
+                ProgressHUD.dismiss()
                 self?.likes.append(likes)
                 self?.collectionView.reloadData()
             case .failure(let error):
@@ -124,10 +124,26 @@ final class NftCollectionViewController: UIViewController {
         }
     }
     
+    private func updateLike(){
+        ProgressHUD.show()
+        statisticNetworkServise.updateLike(ids: likes[0]) { [weak self] result in
+            switch result {
+            case .success():
+                ProgressHUD.dismiss()
+                self?.collectionView.reloadData()
+            case .failure(let error):
+                ProgressHUD.dismiss()
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     private func reloadCart(){
+        ProgressHUD.show()
         statisticNetworkServise.fetchCart() { [weak self] result in
             switch result {
             case .success(let ndtsInOrder):
+                ProgressHUD.dismiss()
                 self?.nftsInOrder.append(ndtsInOrder)
                 self?.collectionView.reloadData()
             case .failure(let error):
@@ -138,6 +154,7 @@ final class NftCollectionViewController: UIViewController {
     }
     
     private func updateCart(){
+        ProgressHUD.show()
         statisticNetworkServise.updateCart(ids: nftsInOrder[0]) { [weak self] result in
             switch result {
             case .success():
@@ -207,10 +224,27 @@ extension NftCollectionViewController: UICollectionViewDelegateFlowLayout {
 
 // MARK: - NftCollectionViewCellDelegate
 extension NftCollectionViewController: NftCollectionViewCellDelegate {
+    func changeLike(_ cell: NftCollectionViewCell) {
+        guard let indexPath = collectionView.indexPath(for: cell)
+        else { return }
+        if !likes.isEmpty {
+            if likes[0].likes.contains(nfts[indexPath.item].id) {
+                let deleteNftIndex = likes[0].likes.firstIndex(of: nfts[indexPath.item].id) ?? Int()
+                likes[0].likes.remove(at: deleteNftIndex)
+                updateLike()
+            } else {
+                likes[0].likes.append(nfts[indexPath.item].id)
+                updateLike()
+            }
+        } else {
+            nftsInOrder[0].nfts.append(nfts[indexPath.item].id)
+            updateCart()
+        }
+    }
+    
     func changeCart(_ cell: NftCollectionViewCell) {
         guard let indexPath = collectionView.indexPath(for: cell)
         else { return }
-        ProgressHUD.show()
         if !nftsInOrder.isEmpty {
             if nftsInOrder[0].nfts.contains(nfts[indexPath.item].id) {
                 let deleteNftIndex = nftsInOrder[0].nfts.firstIndex(of: nfts[indexPath.item].id) ?? Int()

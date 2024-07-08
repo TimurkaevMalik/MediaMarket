@@ -189,4 +189,41 @@ final class StatisticNetworkServise {
         }
         task.resume()
     }
+    
+    func updateLike(ids: LikeStat, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let url = URL(string: "\(self.url)/api/v1/profile/1") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue(self.token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        if !ids.likes.isEmpty {
+            let nftsString = ids.likes.joined(separator: ",")
+            let bodyString = "likes=\(nftsString)"
+            guard let bodyData = bodyString.data(using: .utf8) else { return }
+            request.httpBody = bodyData
+        }
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                DispatchQueue.main.async {
+                    completion(.failure(error ?? URLError(.badServerResponse)))
+                }
+                return
+            }
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                do {
+                    DispatchQueue.main.async {
+                        completion(.success(()))
+                    }
+                }
+            } else {
+                let httpResponse = response as? HTTPURLResponse
+                let statusCodeError = NSError(domain: "", code: httpResponse?.statusCode ?? 500, userInfo: nil)
+                DispatchQueue.main.async {
+                    completion(.failure(statusCodeError))
+                }
+            }
+        }
+        task.resume()
+    }
 }

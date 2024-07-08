@@ -5,6 +5,8 @@ import Kingfisher
 
 protocol NftCollectionViewCellDelegate: AnyObject {
     func changeCart(_ cell: NftCollectionViewCell)
+    func changeLike(_ cell: NftCollectionViewCell)
+
 }
 
 final class NftCollectionViewCell: UICollectionViewCell {
@@ -16,7 +18,7 @@ final class NftCollectionViewCell: UICollectionViewCell {
     private let rating = UIStackView()
     private let nameLabel = UILabel()
     private let priceLabel = UILabel()
-    private let likeImage = UIImageView()
+    private let likeButton = UIButton()
     private let cartButton = UIButton()
     
     // MARK: - Initializers
@@ -25,7 +27,7 @@ final class NftCollectionViewCell: UICollectionViewCell {
         self.backgroundColor = UIColor(named: "YPWhite")
         setupNftImage()
         setupRating()
-        setupLikeImage()
+        setupLikeButton()
         setupCartButton()
         setupNameLabel()
         setupPriceLabel()
@@ -39,7 +41,10 @@ final class NftCollectionViewCell: UICollectionViewCell {
     // MARK: - Actions
     @objc private func onClickCartButton() {
         delegate?.changeCart(self)
-        //TODO добавление в корзину
+    }
+    
+    @objc private func onClickLikeButton() {
+        delegate?.changeLike(self)
     }
     
     // MARK: - Public Methods
@@ -71,7 +76,7 @@ final class NftCollectionViewCell: UICollectionViewCell {
     }
     
     func updateLikeImage(image: UIImage){
-        likeImage.image = image
+        likeButton.setImage(image, for: .normal)
     }
     
     func updateCartButton(image: UIImage){
@@ -100,10 +105,13 @@ final class NftCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    private func setupLikeImage(){
-        contentView.addSubview(likeImage)
-        likeImage.backgroundColor = .clear
-        likeImage.image = UIImage(named: "whiteHeart")
+    private func setupLikeButton(){
+        contentView.addSubview(likeButton)
+        likeButton.backgroundColor = .clear
+        likeButton.setImage(UIImage(named: "whiteHeart"), for: .normal)
+        likeButton.addTarget(self,
+                             action: #selector(onClickLikeButton),
+                             for: .touchUpInside)
     }
     
     private func setupCartButton(){
@@ -127,7 +135,7 @@ final class NftCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupConstraint(){
-        [nftImage, rating, nameLabel, priceLabel, likeImage, cartButton].forEach {
+        [nftImage, rating, nameLabel, priceLabel, likeButton, cartButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
@@ -150,8 +158,10 @@ final class NftCollectionViewCell: UICollectionViewCell {
             priceLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             priceLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 4),
             
-            likeImage.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-            likeImage.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            likeButton.trailingAnchor.constraint(equalTo: trailingAnchor),
+            likeButton.topAnchor.constraint(equalTo: topAnchor),
+            likeButton.heightAnchor.constraint(equalToConstant: 40),
+            likeButton.widthAnchor.constraint(equalToConstant: 40),
             
             cartButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             cartButton.topAnchor.constraint(equalTo: rating.bottomAnchor, constant: 4),
