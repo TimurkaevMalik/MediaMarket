@@ -37,36 +37,36 @@
 ## Module 2:
 
 #### Верстка Экрана "Мои NFT"
-- Загаловок сверху экрана (est: 10 min; fact: x min).
-- Заголовок пустого экрана (est: 10 min; fact: x min).
-- Кнопка сортировки (est: 25 min; fact: x min).
-- Таблица (est: 50 min; fact: x min).
-- Ячейки таблицы (est: 80 min; fact: x min).
+- Загаловок сверху экрана (est: 10 min; fact: 10 min).
+- Заголовок пустого экрана (est: 10 min; fact: 10 min).
+- Кнопка сортировки (est: 25 min; fact: 25 min).
+- Таблица (est: 50 min; fact: 80 min).
+- Ячейки таблицы (est: 80 min; fact: 80 min).
 
 #### Логика Экрана Профиля
-- Переход на экран "Мои NFT" (est: 5 min; fact: x min).
+- Переход на экран "Мои NFT" (est: 5 min; fact: 5 min).
 
 #### Логика Экрана "Мои NFT"
-- Алерт способа сортировки (est: 80 min; fact: x min).
-- Добавление NFT в избранное (est: 60 min; fact: x min).
-- Удалени NFT из избранного (est: 60 min; fact: x min).
+- Алерт способа сортировки (est: 80 min; fact: 20 min).
+- Добавление NFT в избранное (est: 60 min; fact: 100 min).
+- Удалени NFT из избранного (est: 60 min; fact: 100 min).
 
-`Total:` est: 375 min; fact: x min.
+`Total:` est: 375 min; fact: 400 min.
 
 
 ## Module 3:
 
 #### Верстка Экрана "Избранные NFT"
-- Загаловок сверху экрана (est: 10 min; fact: x min).
-- Заголовок пустого экрана (est: 10 min; fact: x min).
-- Коллекция (est: 60 min; fact: x min).
-- Ячейки коллекции (est: 80 min; fact: x min).
+- Загаловок сверху экрана (est: 10 min; fact: 10 min).
+- Заголовок пустого экрана (est: 10 min; fact: 5 min).
+- Коллекция (est: 60 min; fact: 40 min).
+- Ячейки коллекции (est: 80 min; fact: 30 min).
 
 #### Логика Экрана Профиля
-- Переход на экран "Избранные NFT" (est: 5 min; fact: x min).
-- Переход на cайт(WebView) пользователя (est: 120 min; fact: x min).
+- Переход на экран "Избранные NFT" (est: 5 min; fact: 5 min).
+- Переход на cайт(WebView) пользователя (est: 120 min; fact: 60 min).
 
 #### Логика Экрана "Избранные NFT"
-- Удалени NFT из избранного (est: 60 min; fact: x min).
+- Удалени NFT из избранного (est: 60 min; fact: 50 min).
 
-`Total:` est: 345 min; fact: x min.
+`Total:` est: 345 min; fact: 200 min.
