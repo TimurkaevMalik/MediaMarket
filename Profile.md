@@ -1,6 +1,6 @@
 Тимуркаев Малик Русланович
 <br /> Эпик: Профиль
-<br /> Ссылка: https://github.com/users/olegSprite/projects/1/views/1
+<br /> Ссылка на проект: https://github.com/users/olegSprite/projects/1/views/1
 
 <hr>
 
