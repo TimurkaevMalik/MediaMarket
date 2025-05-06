@@ -1,10 +1,5 @@
 # ТЗ мобильного приложения FakeNFT
 
-# Ссылки
-[Командный проект](https://github.com/users/olegSprite/projects/1/views/1) - крайний правый, пятый столб
-
-[Дизайн Figma](https://www.figma.com/file/k1LcgXHGTHIeiCv4XuPbND/FakeNFT-(YP)?node-id=96-5542&t=YdNbOI8EcqdYmDeg-0)
-
 # Назначение и цели приложения
 
 Приложение помогает пользователям просматривать и покупать NFT (Non-Fungible Token). Функционал покупки иммитируется с помощью мокового сервера.
